@@ -25,11 +25,12 @@
     "name": "Website",
     "url": "https://lumina.sh"
   },
-  "tabs": [
+  "anchors": [
     {
       "name": "API Reference",
       "url": "api-reference",
-      "openapi": "/docs/api-reference/openapi.json"
+      "openapi": "/docs/api-reference/openapi.json",
+      "icon": "square-terminal"
     }
   ],
   "navigation": [
