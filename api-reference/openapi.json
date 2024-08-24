@@ -1,72 +1,130 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.0.3",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "title": "server",
+    "description": "",
     "license": {
-      "name": "MIT"
+      "name": ""
     },
-    "version": "1.0.0"
+    "version": "0.1.0"
   },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
   "paths": {
-    "/plants": {
+    "/api/figure/{figure_id}/url": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "tags": [
+          "figure"
+        ],
+        "operationId": "get_figure_url",
         "parameters": [
           {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
+            "name": "figure_id",
+            "in": "path",
+            "description": "The ID of the figure",
+            "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "Successful retrieval of figure URL",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
+                  "$ref": "#/components/schemas/FigureUrl"
                 }
               }
             }
           },
-          "400": {
-            "description": "Unexpected error",
+          "404": {
+            "description": "Figure not found"
+          }
+        }
+      }
+    },
+    "/api/file/{file_id}": {
+      "get": {
+        "tags": [
+          "crate::api_routes::metadata"
+        ],
+        "operationId": "get_file_metadata",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "description": "The ID of the file",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File metadata retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/FileMetadata"
                 }
               }
             }
+          },
+          "404": {
+            "description": "File metadata not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
-      },
+      }
+    },
+    "/api/file/{file_id}/url": {
+      "get": {
+        "tags": [
+          "crate::api_routes::metadata"
+        ],
+        "operationId": "get_file_url",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "description": "The ID of the file",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File URL retrieved successfully",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/search": {
       "post": {
-        "description": "Creates a new plant in the store",
+        "tags": [
+          "search"
+        ],
+        "operationId": "search",
         "requestBody": {
-          "description": "Plant to add to the store",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/SearchPayload"
               }
             }
           },
@@ -74,57 +132,50 @@
         },
         "responses": {
           "200": {
-            "description": "plant response",
+            "description": "Successful search",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
+                  "$ref": "#/components/schemas/SearchResult"
                 }
               }
             }
           },
           "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Bad request"
           }
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
+    "/api/search/figures": {
+      "post": {
+        "tags": [
+          "search"
         ],
-        "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
+        "operationId": "figure_search_route",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FigureSearchPayload"
+              }
+            }
           },
-          "400": {
-            "description": "unexpected error",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful figure search",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/FigureSearchResult"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad request"
           }
         }
       }
@@ -132,64 +183,231 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
+      "FigureUrl": {
         "type": "object",
         "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
+          "url": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
+      "FileMetadata": {
+        "type": "object",
+        "required": [
+          "file_id",
+          "title",
+          "date_published",
+          "sources",
+          "types"
+        ],
+        "properties": {
+          "abstract": {
+            "type": "string",
+            "nullable": true
           },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
+          "authors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Author"
+            },
+            "nullable": true
+          },
+          "citation_count": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "date_published": {
+            "type": "string"
+          },
+          "doi": {
+            "type": "string",
+            "nullable": true
+          },
+          "file_id": {
+            "type": "string"
+          },
+          "has_pdf": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "is_oa": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "journals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Journal"
+            },
+            "nullable": true
+          },
+          "open_alex_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "pmid": {
+            "type": "string",
+            "nullable": true
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Topic"
+            },
+            "nullable": true
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string"
             }
           }
-        ]
+        }
       },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
+      "FileUrl": {
         "type": "object",
+        "required": [
+          "url"
+        ],
         "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "SearchPayload": {
+        "type": "object",
+        "required": [
+          "query",
+          "search_type",
+          "highlight_results"
+        ],
+        "properties": {
+          "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Filters"
+              }
+            ],
+            "nullable": true
           },
-          "message": {
+          "highlight_delimiters": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "highlight_max_length": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "minimum": 0
+          },
+          "highlight_max_num": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "minimum": 0
+          },
+          "highlight_results": {
+            "type": "boolean"
+          },
+          "highlight_threshold": {
+            "type": "number",
+            "format": "float",
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "minimum": 0
+          },
+          "page_size": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "minimum": 0
+          },
+          "query": {
+            "type": "string"
+          },
+          "recency_bias": {
+            "type": "number",
+            "format": "float",
+            "nullable": true
+          },
+          "score_threshold": {
+            "type": "number",
+            "format": "float",
+            "nullable": true
+          },
+          "search_type": {
+            "type": "string"
+          }
+        }
+      },
+      "SearchResult": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "abstract_chunk": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AbstractChunk"
+              }
+            ],
+            "nullable": true
+          },
+          "doi": {
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "metadata": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Metadata"
+              }
+            ],
+            "nullable": true
+          },
+          "title": {
             "type": "string"
           }
         }
       }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
-      }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "search",
+      "description": "Search endpoints"
+    },
+    {
+      "name": "figure",
+      "description": "Figure endpoints"
+    },
+    {
+      "name": "file",
+      "description": "File endpoints"
+    }
+  ]
 }
