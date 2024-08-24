@@ -8,7 +8,7 @@
   "anchors": [
     {
       "name": "API Reference",
-      "openapi": "/docs/openapi.json",
+      "openapi": "./docs/openapi.json",
       "url": "api-reference",
       "icon": "square-terminal"
     }
