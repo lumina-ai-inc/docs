@@ -5,6 +5,14 @@
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
   },
+  "anchors": [
+    {
+      "name": "API Reference",
+      "openapi": "/docs/openapi.json",
+      "url": "api-reference",
+      "icon": "square-terminal"
+    }
+  ],
   "favicon": "/favicon.svg",
   "colors": {
     "primary": "#0D9373",
