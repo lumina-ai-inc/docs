@@ -25,14 +25,6 @@
     "name": "Website",
     "url": "https://lumina.sh"
   },
-  "anchors": [
-    {
-      "name": "API Reference",
-      "url": "api-reference",
-      "openapi": "/docs/openapi.json",
-      "icon": "square-terminal"
-    }
-  ],
   "navigation": [
     {
       "group": "Get Started",
@@ -69,8 +61,8 @@
     }
   ],
   "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://www.linkedin.com/company/mintsearch"
+    "x": "https://x.com/lumina_ai_inc",
+    "github": "https://github.com/lumina-ai-inc",
+    "linkedin": "https://www.linkedin.com/company/lumina-ai-inc"
   }
 }
