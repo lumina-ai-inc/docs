@@ -157,7 +157,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/FigureSearchPayload"
+                "$ref": "#/components/schemas/"
               }
             }
           },

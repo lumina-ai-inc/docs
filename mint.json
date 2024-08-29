@@ -5,15 +5,13 @@
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
   },
-  
   "tabs": [
     {
       "name": "API Reference",
-      "url": "api-reference",
-      "openapi": "https://server.lumina.sh/docs/openapi.json"
+      "openapi": "https://server.lumina.sh/docs/openapi.json",
+      "url": "api-reference"
     }
   ],
-
   "favicon": "/favicon.svg",
   "colors": {
     "primary": "#0D9373",
