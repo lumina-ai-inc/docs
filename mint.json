@@ -5,14 +5,15 @@
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
   },
-  "anchors": [
+  
+  "tabs": [
     {
       "name": "API Reference",
-      "openapi": "https://server.lumina.sh/redoc",
-      "url": "https://server.lumina.sh/redoc",
-      "icon": "square-terminal"
+      "url": "api-reference",
+      "openapi": "https://server.lumina.sh/redoc"
     }
   ],
+
   "favicon": "/favicon.svg",
   "colors": {
     "primary": "#0D9373",
