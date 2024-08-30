@@ -17,12 +17,11 @@
     }
   },
   "tabs": [
-    {
-      "name": "API Reference",
-      "url": "api-reference",
-      "openapi": "https://server.lumina.sh/docs/openapi.json"
-    }
-  ],
+      {
+        "name": "API Reference",
+        "url": "api-reference"
+      }
+    ],
   "topbarLinks": [
     {
       "name": "Support",
