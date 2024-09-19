@@ -1,0 +1,465 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "ChunkMyDocs API",
+        "description": "API service for document layout analysis and chunking to convert document into RAG/LLM-ready data.",
+        "contact": {
+            "name": "Lumina",
+            "url": "https://lumina.sh",
+            "email": "ishaan@lumina.sh"
+        },
+        "license": {
+            "name": ""
+        },
+        "version": "0.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://chunkmydocs.com",
+            "description": "Production server"
+        },
+        {
+            "url": "http://localhost:8000",
+            "description": "Local development server"
+        }
+    ],
+    "paths": {
+        "/api/task": {
+            "post": {
+                "tags": [
+                    "task"
+                ],
+                "summary": "Create Task",
+                "description": "Queue a document for extraction and get a task ID back to poll for status",
+                "operationId": "create_extraction_task",
+                "requestBody": {
+                    "description": "Multipart form encoded data to create an task",
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UploadForm"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Detailed information describing the task such that it's status can be polled for",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TaskResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error related to creating the task",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/task/{task_id}": {
+            "get": {
+                "tags": [
+                    "task"
+                ],
+                "summary": "Get Task",
+                "description": "Keep track of the progress of an extraction task by polling this route with the task ID.",
+                "operationId": "get_task_status",
+                "parameters": [
+                    {
+                        "name": "task_id",
+                        "in": "path",
+                        "description": "Id of the task to get.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detailed information describing the task",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TaskResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error related to getting the task",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "tags": [
+                    "health"
+                ],
+                "summary": "Health Check",
+                "description": "Confirmation that the service can respond to requests",
+                "operationId": "health_check",
+                "responses": {
+                    "200": {
+                        "description": "Confirmation that the service can respond to requests and the version of the service",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Chunk": {
+                "type": "object",
+                "required": [
+                    "segments",
+                    "markdown"
+                ],
+                "properties": {
+                    "markdown": {
+                        "type": "string"
+                    },
+                    "segments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Segment"
+                        }
+                    }
+                }
+            },
+            "Configuration": {
+                "type": "object",
+                "required": [
+                    "model"
+                ],
+                "properties": {
+                    "model": {
+                        "$ref": "#/components/schemas/Model"
+                    },
+                    "target_chunk_length": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                }
+            },
+            "Model": {
+                "type": "string",
+                "enum": [
+                    "Fast",
+                    "HighQuality"
+                ]
+            },
+            "Segment": {
+                "type": "object",
+                "required": [
+                    "left",
+                    "top",
+                    "width",
+                    "height",
+                    "page_number",
+                    "page_width",
+                    "page_height",
+                    "text",
+                    "type"
+                ],
+                "properties": {
+                    "height": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "left": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "page_height": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "page_number": {
+                        "type": "integer",
+                        "format": "int32",
+                        "minimum": 0
+                    },
+                    "page_width": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "text": {
+                        "type": "string"
+                    },
+                    "top": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/SegmentType"
+                    },
+                    "width": {
+                        "type": "number",
+                        "format": "float"
+                    }
+                }
+            },
+            "SegmentType": {
+                "type": "string",
+                "enum": [
+                    "Title",
+                    "Section header",
+                    "Text",
+                    "List item",
+                    "Table",
+                    "Picture",
+                    "Caption",
+                    "Formula",
+                    "Footnote",
+                    "Page header",
+                    "Page footer"
+                ]
+            },
+            "Status": {
+                "type": "string",
+                "enum": [
+                    "Starting",
+                    "Processing",
+                    "Succeeded",
+                    "Failed",
+                    "Canceled"
+                ]
+            },
+            "TableOcr": {
+                "type": "string",
+                "enum": [
+                    "HTML",
+                    "JSON"
+                ]
+            },
+            "TaskResponse": {
+                "type": "object",
+                "required": [
+                    "task_id",
+                    "status",
+                    "created_at",
+                    "message",
+                    "configuration"
+                ],
+                "properties": {
+                    "configuration": {
+                        "$ref": "#/components/schemas/Configuration"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "file_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "finished_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "input_file_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "output": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Chunk"
+                        },
+                        "nullable": true
+                    },
+                    "page_count": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/Status"
+                    },
+                    "task_id": {
+                        "type": "string"
+                    },
+                    "task_url": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "Tier": {
+                "type": "string",
+                "enum": [
+                    "Free",
+                    "PayAsYouGo",
+                    "Enterprise",
+                    "SelfHosted"
+                ]
+            },
+            "UploadForm": {
+                "type": "object",
+                "required": [
+                    "file",
+                    "model"
+                ],
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "model": {
+                        "$ref": "#/components/schemas/Model"
+                    },
+                    "target_chunk_length": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                }
+            },
+            "Usage": {
+                "type": "object",
+                "required": [
+                    "usage",
+                    "usage_limit",
+                    "usage_type",
+                    "unit",
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "unit": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "usage": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "usage_limit": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "usage_type": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UsageType": {
+                "type": "string",
+                "enum": [
+                    "Fast",
+                    "HighQuality",
+                    "Segment"
+                ]
+            },
+            "User": {
+                "type": "object",
+                "required": [
+                    "user_id",
+                    "api_keys",
+                    "tier",
+                    "created_at",
+                    "updated_at",
+                    "usage"
+                ],
+                "properties": {
+                    "api_keys": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "customer_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tier": {
+                        "$ref": "#/components/schemas/Tier"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "usage": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UsageLimit"
+                        }
+                    },
+                    "user_id": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "health",
+            "description": "Endpoint for checking the health of the service."
+        },
+        {
+            "name": "task",
+            "description": "Endpoints for creating and getting task status"
+        }
+    ]
+}

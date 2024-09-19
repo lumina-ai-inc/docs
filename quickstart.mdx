@@ -1,86 +1,112 @@
----
-title: 'Quickstart'
-description: 'Start building awesome documentation in under 5 minutes'
----
+This guide provides a streamlined approach to using the Chunkr API for document processing and analysis with Python.
+The way you use the API is by creating a task for each document you want to process, and then polling the task status until it is completed.
+Checkout our github [repo](https://github.com/lumina-ai-inc/chunkr) for more examples and to view the full code.
 
-## Setup your development
+## Setup
 
-Learn how to update your docs locally and and deploy them to the public.
+1. **Create an Account and Get API Key**
 
-### Edit and preview
+   Go to [chunkr.ai](https://chunkr.ai) and create an account. Once logged in, navigate to your account settings or API section to obtain your API key.
 
-<AccordionGroup>
-  <Accordion icon="github" title="Clone your docs locally">
-    During the onboarding process, we created a repository on your Github with
-    your docs content. You can find this repository on our
-    [dashboard](https://dashboard.mintlify.com). To clone the repository
-    locally, follow these
-    [instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
-    in your terminal.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Preview changes">
-    Previewing helps you make sure your changes look as intended. We built a
-    command line interface to render these changes locally. 1. Install the
-    [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the
-    documentation changes locally with this command: ``` npm i -g mintlify ```
-    2. Run the following command at the root of your documentation (where
-    `mint.json` is): ``` mintlify dev ```
-  </Accordion>
-</AccordionGroup>
+2. **Set Up Environment Variables**
 
-### Deploy your changes
+   Create a `.env` file in your project directory and add your API key:
 
-<AccordionGroup>
+   ```bash
+   echo "INGEST_SERVER__API_KEY=your_api_key_here" > .env
+   echo "INGEST_SERVER__URL=https://api.chunkr.ai" >> .env
+   ```
 
-<Accordion icon="message-bot" title="Install our Github app">
-  Our Github app automatically deploys your changes to your docs site, so you
-  don't need to manage deployments yourself. You can find the link to install on
-  your [dashboard](https://dashboard.mintlify.com). Once the bot has been
-  successfully installed, there should be a check mark next to the commit hash
-  of the repo.
-</Accordion>
-<Accordion icon="rocket" title="Push your changes">
-  [Commit and push your changes to
-  Git](https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository#about-git-push)
-  for your changes to update in your docs site. If you push and don't see that
-  the Github app successfully deployed your changes, you can also manually
-  update your docs through our [dashboard](https://dashboard.mintlify.com).
-</Accordion>
+   Replace `your_api_key_here` with the actual API key you obtained from chunkr.ai.
 
-</AccordionGroup>
+3. **Create the Script**
 
-## Update your docs
+   Create a new file named `process_documents.py` and copy the following code into it:
 
-Add content directly in your files with MDX syntax and React components. You can use any of our components, or even build your own.
+   ```python
+   import os, requests, time, glob, json
+   from dotenv import load_dotenv
 
-<CardGroup>
+   load_dotenv(override=True)
 
-<Card title="Style Your Docs" icon="paintbrush" href="/settings/global">
-  Add flair to your docs with personalized branding.
-</Card>
+   def get_base_url(): return os.getenv("INGEST_SERVER__URL")
+   def get_headers(): return {"Authorization": os.getenv("INGEST_SERVER__API_KEY")}
 
-<Card
-  title="Add API Endpoints"
-  icon="square-code"
-  href="/api-playground/configuration"
->
-  Implement your OpenAPI spec and enable API user interaction.
-</Card>
+   def create_task(file_path):
+       with open(file_path, "rb") as file:
+           response = requests.post(f"{get_base_url()}/api/task",
+               files={"file": (os.path.basename(file_path), file, "application/pdf")},
+               data={"model": "HighQuality", "target_chunk_length": 0},
+               headers=get_headers()
+           )
+       if response.status_code != 200:
+           raise Exception(f"API request failed with status code {response.status_code}: {response.text}")
+       return response.json()["task_url"]
 
-<Card
-  title="Integrate Analytics"
-  icon="chart-mixed"
-  href="/analytics/supported-integrations"
->
-  Draw insights from user interactions with your documentation.
-</Card>
+   def get_task(task_url): return requests.get(task_url, headers=get_headers()).json()
 
-<Card
-  title="Host on a Custom Domain"
-  icon="browser"
-  href="/settings/custom-domain/subdomain"
->
-  Keep your docs on your own website's subdomain.
-</Card>
+   def save_to_json(output, file_name):
+       output_json_path = os.path.join(os.path.dirname(__file__), "output", f"{file_name}_json.json")
+       os.makedirs(os.path.dirname(output_json_path), exist_ok=True)
+       json.dump(output, open(output_json_path, "w"))
+       return output_json_path
 
-</CardGroup>
+   def process_files():
+       for file_path in glob.glob(os.path.join("input", "*.pdf")):
+           print(f"Processing file: {file_path}")
+           try:
+               task_url = create_task(file_path)
+               while True:
+                   task = get_task(task_url)
+                   print(f"Task status: {task['status']}")
+                   if task["status"] == "Succeeded":
+                       output = task.get("output")
+                       if output is None: raise Exception(f"Output not found for {file_path}")
+                       print(f"Downloading bounding boxes for {file_path}...")
+                       output_json_path = save_to_json(output, os.path.basename(file_path).split(".")[0])
+                       print(f"Downloaded json response to {output_json_path}")
+                       break
+                   if task["status"] in ["Failed", "Canceled"]:
+                       print(f"Task ended with status: {task['status']}")
+                       break
+                   time.sleep(1)
+           except Exception as e:
+               print(f"Error processing {file_path}: {str(e)}")
+
+   if __name__ == "__main__": process_files()
+   ```
+
+4. **Install Required Packages**
+
+   Install the necessary Python packages:
+
+   ```bash
+   pip install requests python-dotenv
+   ```
+
+5. **Prepare Input Files**
+
+   Create an `input` folder in the same directory and place your PDF files there.
+
+6. Run the script to start processing:
+
+   ```bash
+   python process_documents.py
+   ```
+
+7. The script will process all PDF files in the `input` folder:
+
+   - It creates a task for each PDF file
+   - Monitors the task status
+   - When a task succeeds, it downloads the output (bounding boxes) and saves it as a JSON file in the `output` folder
+
+8. Check the console output for processing status and any error messages.
+
+9. Once completed, you'll find the JSON output files in the `output` folder, named after the original PDF files.
+10. To annotate the PDF with the bounding boxes, you can use the `annotate_pdf.py` script in our github [repo](https://github.com/lumina-ai-inc/chunkr/blob/main/pyscripts/annotate.py)
+
+11. Here's an example of an annotated PDF with bounding boxes:
+
+![Annotated PDF Example](sample2.png)
+
+This image shows a PDF document with bounding boxes drawn around the detected text regions, demonstrating the output of the annotation process.

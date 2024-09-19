@@ -1,21 +1,22 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Chunkr",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
   },
+  "theme": "venus",
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
+    "primary": "#8D8D86",
+    "light": "#FFFFFF",
+    "dark": "#000000",
     "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
+      "from": "#8D8D86",
+      "to": "#8D8D86"
     }
   },
-  "tabs": [
+  "anchors": [
     {
       "name": "API Reference",
       "url": "api-reference",
@@ -29,7 +30,7 @@
     }
   ],
   "topbarCtaButton": {
-    "name": "Website",
+    "name": "Try Chunkr",
     "url": "https://chunkr.ai"
   },
   "navigation": [
@@ -38,32 +39,7 @@
       "pages": [
         "introduction",
         "quickstart",
-        "development"
-      ]
-    },
-    {
-      "group": "Essentials",
-      "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
-      ]
-    },
-    {
-      "group": "API Documentation",
-      "pages": [
-        "api-reference/introduction"
-      ]
-    },
-    {
-      "group": "Endpoint Examples",
-      "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "outputs"
       ]
     }
   ],
