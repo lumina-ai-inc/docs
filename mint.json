@@ -1,7 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
   "name": "Starter Kit",
-  "openapi": "https://server.lumina.sh/docs/openapi.json",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
@@ -19,7 +18,8 @@
   "tabs": [
     {
       "name": "API Reference",
-      "url": "api-reference"
+      "url": "api-reference",
+      "openapi": "https://api.chunkr.ai/docs/openapi.json"
     }
   ],
   "topbarLinks": [
@@ -30,7 +30,7 @@
   ],
   "topbarCtaButton": {
     "name": "Website",
-    "url": "https://lumina.sh"
+    "url": "https://chunkr.ai"
   },
   "navigation": [
     {
@@ -69,7 +69,7 @@
   ],
   "footerSocials": {
     "x": "https://x.com/lumina_ai_inc",
-    "github": "https://github.com/lumina-ai-inc",
+    "github": "https://github.com/lumina-ai-inc/chunkr",
     "linkedin": "https://www.linkedin.com/company/lumina-ai-inc"
   }
 }
