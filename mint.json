@@ -20,7 +20,7 @@
     {
       "name": "API Reference",
       "url": "api-reference",
-      "openapi": "https://api.chunkr.ai/docs/openapi.json"
+      "openapi": "https://localhost:8000/docs/openapi.json"
     }
   ],
   "topbarLinks": [
