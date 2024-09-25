@@ -20,7 +20,7 @@
     {
       "name": "API Reference",
       "url": "api-reference",
-      "openapi": "https://localhost:8000/docs/openapi.json"
+      "openapi": "/openapi.json"
     }
   ],
   "topbarLinks": [
@@ -39,7 +39,8 @@
       "pages": [
         "introduction",
         "quickstart",
-        "outputs"
+        "outputs",
+        "pipeline"
       ]
     }
   ],

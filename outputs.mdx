@@ -4,32 +4,35 @@ The ChunkMyDocs API processes documents by analyzing their layout and segmenting
 
 ## Segments vs. Chunks
 
-- **Segments**: These are the fundamental building blocks extracted from the document. Each segment represents a specific part of the document, such as a title, section header, paragraph, list item, table, picture, caption, formula, footnote, page header, or footer. Segments are identified based on their bounding boxes and content type.
+- **Segments**: These are the fundamental building blocks extracted from the document. Each segment represents a specific part of the document, such as a title, section header, paragraph, list item, table, picture, caption, formula, footnote, page header, or footer. Segments are identified using unique identifiers, precise bounding boxes, and their content type.
 
-- **Chunks**: Chunks are collections of one or more segments. They serve as higher-level groupings that can be used for various downstream applications like indexing, searching, or further analysis. The way segments are grouped into chunks depends on the `target_chunk_length` parameter:
+- **Chunks**: Chunks are collections of one or more segments. They serve as higher-level groupings that can be used for various downstream applications like indexing, searching, or further analysis. The grouping of segments into chunks depends on the `target_chunk_length` parameter:
 
-  - **No Chunking (`target_chunk_length = 0`)**: When the target chunk length is set to zero, each segment is treated as an individual chunk. This means there's a 1-to-1 relationship between segments and chunks, preserving the original structure of the document without any additional grouping.
+  - **No Chunking (`target_chunk_length = 0`)**: Each segment is treated as an individual chunk, maintaining a one-to-one relationship and preserving the original document structure without additional grouping.
 
-  - **With Chunking (`target_chunk_length > 0`)**: When a target chunk length is specified, segments are grouped into chunks up to the defined length. This grouping excludes headers and footers to maintain the integrity of the main content. For example, if `target_chunk_length` is set to 512, each chunk can contain up to 512 words.
+  - **With Chunking (`target_chunk_length > 0`)**: Segments are grouped into chunks up to the defined length, excluding headers and footers to maintain content integrity. For example, with `target_chunk_length = 512`, each chunk can contain up to 512 words.
 
 ## Segment and Chunk Models
 
 ### Segment Model
 
-The Segment model represents individual elements extracted from the document. It includes the following properties:
+The `Segment` model represents individual elements extracted from the document. It includes the following properties:
 
-- `left`, `top`, `width`, `height`: Float values defining the bounding box
-- `page_number`: Integer specifying the page (minimum 0)
-- `page_width`, `page_height`: Float values for page dimensions
-- `text`: String containing the segment's text content
-- `type`: Reference to the SegmentType schema
+- `segment_id`: Unique identifier for the segment.
+- `bbox`: Bounding box defining the segment's position on the page.
+- `page_number`: Integer specifying the page number.
+- `page_width`, `page_height`: Dimensions of the page.
+- `content`: Text content of the segment.
+- `segment_type`: Type of the segment (e.g., Title, Text, Table).
+- `ocr`: Optional OCR results associated with the segment.
+- `image`, `html`, `markdown`: Optional representations of the segment's content.
 
 ### Chunk Model
 
-The Chunk model represents a collection of segments. It consists of:
+The `Chunk` model represents a collection of segments. It consists of:
 
-- `segments`: An array of Segment objects
-- `markdown`: A string containing the markdown representation of the chunk
+- `segments`: An array of `Segment` objects.
+- `chunk_length`: Integer specifying the length of the chunk in words.
 
 For detailed schema information, please refer to the API documentation.
 
@@ -37,9 +40,9 @@ For detailed schema information, please refer to the API documentation.
 
 Accurate annotation of segments relies on precise bounding boxes, which are determined based on the document's DPI (Dots Per Inch). DPI affects the scaling and positioning of elements within the document:
 
-- **Bounding Boxes**: Each segment has a bounding box defined by the `left`, `top`, `width`, and `height` properties. These coordinates are used to locate the segment within the page. Accurate bounding boxes ensure that annotations and any further processing align correctly with the original document layout.
+- **Bounding Boxes**: Each segment has a bounding box defined by its top-left and bottom-right coordinates. These coordinates locate the segment within the page, ensuring that annotations and further processing align correctly with the original document layout.
 
-- **DPI Considerations**: The DPI setting of a document influences how bounding boxes are calculated. A higher DPI means more pixels per inch, resulting in smaller bounding boxes for the same physical area. Conversely, a lower DPI results in larger bounding boxes. When annotating or processing documents, it's essential to account for DPI to maintain consistency across different documents and ensure that annotations are correctly scaled and positioned.
+- **DPI Considerations**: The DPI setting influences how bounding boxes are calculated. By default, all incoming files are scaled to 150 DPI, and bounding box coordinates are based on this scaling to maintain consistency.
 
 ## Annotating Segments and Chunks
 
@@ -55,11 +58,11 @@ def draw_bounding_boxes(pdf_path: str, output_data: TaskResponse, output_path: s
         "Caption": (1, 0, 0),
         "Footnote": (0, 1, 0),
         "Formula": (0, 0, 1),
-        "List item": (1, 1, 0),
-        "Page footer": (1, 0.5, 0),
-        "Page header": (0.5, 0, 0.5),
+        "ListItem": (1, 1, 0),
+        "PageFooter": (1, 0.5, 0),
+        "PageHeader": (0.5, 0, 0.5),
         "Picture": (1, 0.75, 0.8),
-        "Section header": (0.6, 0.3, 0),
+        "SectionHeader": (0.6, 0.3, 0),
         "Table": (0.54, 0, 0),
         "Text": (0, 0, 0),
         "Title": (1, 0, 0)
@@ -67,11 +70,16 @@ def draw_bounding_boxes(pdf_path: str, output_data: TaskResponse, output_path: s
 
     pdf_document = fitz.open(pdf_path)
 
-    for chunk in output_data.output or []:
+    for chunk in output_data.chunks or []:
         for seg in chunk.segments:
             page = pdf_document[seg.page_number - 1]
-            rect = fitz.Rect(seg.left, seg.top, seg.left + seg.width, seg.top + seg.height)
-            color = color_map.get(seg.type.value, (0, 0, 0))
+            rect = fitz.Rect(
+                seg.bbox.top_left[0],
+                seg.bbox.top_left[1],
+                seg.bbox.bottom_right[0],
+                seg.bbox.bottom_right[1]
+            )
+            color = color_map.get(seg.segment_type, (0, 0, 0))
             page.draw_rect(rect, color=color, width=1)
 
     pdf_document.save(output_path)
@@ -81,10 +89,7 @@ def draw_bounding_boxes(pdf_path: str, output_data: TaskResponse, output_path: s
 ### How It Works
 
 1. **Color Mapping**: Each segment type is assigned a specific color for easy differentiation during annotation.
-
 2. **Processing Segments**: The script iterates through all chunks and their respective segments, drawing rectangles around each segment based on their bounding box coordinates.
-
-3. **DPI Adjustment**: If documents have varying DPI settings, ensure that the bounding box calculations within the script account for DPI to maintain accurate annotations.
 
 By understanding and utilizing segments and chunks effectively, along with accurate bounding box annotations, you can leverage the ChunkMyDocs API to its full potential, enabling robust document analysis and processing workflows.
 
