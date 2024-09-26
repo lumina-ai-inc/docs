@@ -1,0 +1,38 @@
+{
+    "sourceFile": "task-response.mdx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1727324129656,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1727324285491,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n ---\n-title: Task Response\n+title: Task response\n description: \"Understanding the task object\"\n ---\n The chunkr api works by creating a task for each document you want to process, and then processing them asynchronously.\n While the task is processing you can use the `task_url` to poll the task status until it is completed.\n@@ -35,13 +35,13 @@\n ## Status\n \n The task status can be one of the following:\n \n-- `Starting`: The task is queued and waiting to be processed.\n-- `Processing`: The task is still processing.\n-- `Succeeded`: The task is successful.\n-- `Failed`: The task failed.\n-- `Cancelled`: The task was cancelled. (coming soon)\n+- `Starting`: The task is queued and waiting to be processed\n+- `Processing`: The task is still processing\n+- `Succeeded`: The task is successful\n+- `Failed`: The task failed\n+- `Cancelled`: The task was cancelled (coming soon)\n \n ## Task Url\n \n The task url is the url to poll and get the task object.\n"
+                },
+                {
+                    "date": 1727325342406,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,12 +1,10 @@\n ---\n title: Task response\n description: \"Understanding the task object\"\n ---\n-The chunkr api works by creating a task for each document you want to process, and then processing them asynchronously.\n-While the task is processing you can use the `task_url` to poll the task status until it is completed.\n-You can see how to create and get a task [here](/quickstart#create-a-task-with-curl)\n \n+\n ## Task Object\n \n Both creating and gettting tasks return a task object. \n It contains the information about the file you are processing as well as the output when the task is successful.\n"
+                },
+                {
+                    "date": 1727325542414,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n \n \n ## Task Object\n \n-Both creating and gettting tasks return a task object. \n+Both creating and getting tasks return a task object. \n It contains the information about the file you are processing as well as the output when the task is successful.\n \n ```json\n {\n"
+                },
+                {
+                    "date": 1727325786048,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,11 @@\n ---\n title: Task response\n description: \"Understanding the task object\"\n ---\n+The chunkr api works by creating a task for each document you want to process, and then processing them asynchronously.\n+Both creating and getting tasks return a task object. Click [here](/task-response) to learn more about the task response.\n \n-\n ## Task Object\n \n Both creating and getting tasks return a task object. \n It contains the information about the file you are processing as well as the output when the task is successful.\n"
+                },
+                {
+                    "date": 1727325905599,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n title: Task response\n description: \"Understanding the task object\"\n ---\n The chunkr api works by creating a task for each document you want to process, and then processing them asynchronously.\n-Both creating and getting tasks return a task object. Click [here](/task-response) to learn more about the task response.\n+Both creating and getting tasks return a task object. \n \n ## Task Object\n \n Both creating and getting tasks return a task object. \n"
+                }
+            ],
+            "date": 1727324129656,
+            "name": "Commit-0",
+            "content": "---\ntitle: Task Response\ndescription: \"Understanding the task object\"\n---\nThe chunkr api works by creating a task for each document you want to process, and then processing them asynchronously.\nWhile the task is processing you can use the `task_url` to poll the task status until it is completed.\nYou can see how to create and get a task [here](/quickstart#create-a-task-with-curl)\n\n## Task Object\n\nBoth creating and gettting tasks return a task object. \nIt contains the information about the file you are processing as well as the output when the task is successful.\n\n```json\n{\n  \"task_id\": \"1234567890\",\n  \"status\": \"Processing\",\n  \"created_at\": \"2023-04-01T12:00:00Z\",\n  \"finished_at\": null,\n  \"expires_at\": \"2023-04-08T12:00:00Z\",\n  \"message\": \"Segementing\",\n  \"input_file_url\": \"https://presigned_url\",\n  \"output\": null,\n  \"task_url\": \"https://api.chunkr.ai/task/1234567890\",\n  \"configuration\": {\n    \"model\": \"Fast\",\n    \"ocr_strategy\": \"Auto\",\n    \"target_chunk_length\": 512\n  },\n  \"file_name\": \"document.pdf\",\n  \"page_count\": 10\n}\n```\n\n## Status\n\nThe task status can be one of the following:\n\n- `Starting`: The task is queued and waiting to be processed.\n- `Processing`: The task is still processing.\n- `Succeeded`: The task is successful.\n- `Failed`: The task failed.\n- `Cancelled`: The task was cancelled. (coming soon)\n\n## Task Url\n\nThe task url is the url to poll and get the task object.\n\n\n\n\n"
+        }
+    ]
+}

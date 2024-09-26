@@ -1,0 +1,50 @@
+---
+title: Task response
+description: "Understanding the task object"
+---
+The chunkr api works by creating a task for each document you want to process, and then processing them asynchronously.
+Both creating and getting tasks return a task object. 
+
+## Task Object
+
+Both creating and getting tasks return a task object. 
+It contains the information about the file you are processing as well as the output when the task is successful.
+
+```json
+{
+  "task_id": "1234567890",
+  "status": "Processing",
+  "created_at": "2023-04-01T12:00:00Z",
+  "finished_at": null,
+  "expires_at": "2023-04-08T12:00:00Z",
+  "message": "Segementing",
+  "input_file_url": "https://presigned_url",
+  "output": null,
+  "task_url": "https://api.chunkr.ai/task/1234567890",
+  "configuration": {
+    "model": "Fast",
+    "ocr_strategy": "Auto",
+    "target_chunk_length": 512
+  },
+  "file_name": "document.pdf",
+  "page_count": 10
+}
+```
+
+## Status
+
+The task status can be one of the following:
+
+- `Starting`: The task is queued and waiting to be processed
+- `Processing`: The task is still processing
+- `Succeeded`: The task is successful
+- `Failed`: The task failed
+- `Cancelled`: The task was cancelled (coming soon)
+
+## Task Url
+
+The task url is the url to poll and get the task object.
+
+
+
+
