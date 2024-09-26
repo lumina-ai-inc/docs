@@ -1,5 +1,5 @@
 ---
-title: Models
+title: Model
 description: "Picking a segmentation model"
 ---
 
@@ -30,8 +30,8 @@ If you require great table, image or handwriting segmentation consistently, then
 
 You can select which model to use by setting the `model` parameter in the `POST` request body.
 
-```json
-{
-  "model": "HighQuality" | "Fast"
+```typescript
+interface Model {
+  model: "HighQuality" | "Fast";
 }
 ```

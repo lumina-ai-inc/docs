@@ -54,7 +54,7 @@
       "group": "Output",
       "pages": [
         "chunks",
-        "segments",
+        "segment",
         "bounding-boxes",
         "ocr"
       ]

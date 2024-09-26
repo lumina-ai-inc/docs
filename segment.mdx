@@ -1,0 +1,21 @@
+We use AI to identify and extract individual elements from the document, which we call segments.
+
+## Segment Model
+
+The `Segment` model represents individual elements extracted from the document. It includes the following properties:
+
+```typescript
+interface Segment {
+    segment_id: string;
+    bbox: BoundingBox;
+    page_number: number;
+    page_width: number;
+    page_height: number;
+    content: string;
+    segment_type: SegmentType; 
+    ocr?: OCRResult[];
+    image?: string;
+    html?: string;
+    markdown?: string;
+}
+```

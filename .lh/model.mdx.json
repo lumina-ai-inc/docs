@@ -1,0 +1,22 @@
+{
+    "sourceFile": "model.mdx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1727387968049,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1727387996224,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -29,9 +29,9 @@\n ## Configuration\n \n You can select which model to use by setting the `model` parameter in the `POST` request body.\n \n-```json\n-{\n+```typescript\n+interface Model {\n   \"model\": \"HighQuality\" | \"Fast\"\n }\n ```\n"
+                }
+            ],
+            "date": 1727387968049,
+            "name": "Commit-0",
+            "content": "---\ntitle: Model\ndescription: \"Picking a segmentation model\"\n---\n\nWe offer two types of segmentation models for creating bounding boxes - <b>Fast</b> and <b>HighQuality</b>. This section details the differences between each model, and when a specific model should be used.\n\n## Fast\n\nThe Fast model uses <a>LightGBM</a> and runs on CPUs - which makes it blazingly fast. It depends on a pre-existing text-layer to create bounding boxes.\n\nThis makes it great for text, table and formula segmentation - but it struggles when dealing with images.\nIt can still segment images that are surrounded/bounded by text to some degree. A good example is graphs that have Y/X axes with labels.\n\n## HighQuality\n\nThe HighQuality model uses <a>VGT</a> - a state-of-the-art two-stream Vision Grid Transformer, and runs on GPUs.\nThis model 'has eyes' and can understand layouts with intelligence, so a pre-existing text-layer is not required and it's better at classifying content into <a>segment types</a>.\n\nThis model can handle it all - any level of complexity for text layouts, tables, images, formulas and handwriting.\n\n## What will work best for me?\n\nIn most cases, we recommend using the Fast model for it's speed and cost benefits,\nand using the HighQuality model as a fallback for when the `content` field in the `output` object is empty (i.e when the Fast model returns an empty string).\n\nIf you require great table, image or handwriting segmentation consistently, then you should use the HighQuality model.\n\n## Configuration\n\nYou can select which model to use by setting the `model` parameter in the `POST` request body.\n\n```json\n{\n  \"model\": \"HighQuality\" | \"Fast\"\n}\n```\n"
+        }
+    ]
+}

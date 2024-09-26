@@ -11,24 +11,24 @@ Both creating and getting tasks return a task object.
 Both creating and getting tasks return a task object.
 It contains the information about the file you are processing as well as the output when the task is successful.
 
-```json
-{
-  "task_id": "1234567890",
-  "status": "Processing",
-  "created_at": "2023-04-01T12:00:00Z",
-  "finished_at": null,
-  "expires_at": "2023-04-08T12:00:00Z",
-  "message": "Segementing",
-  "input_file_url": "https://presigned_url",
-  "output": null,
-  "task_url": "https://api.chunkr.ai/task/1234567890",
-  "configuration": {
-    "model": "Fast",
-    "ocr_strategy": "Auto",
-    "target_chunk_length": 512
-  },
-  "file_name": "document.pdf",
-  "page_count": 10
+```typescript
+interface TaskResponse {
+  task_id: string;
+  status: "Starting" | "Processing" | "Succeeded" | "Failed" | "Cancelled";
+  created_at: string;
+  finished_at: string | null;
+  expires_at: string;
+  message: string;
+  input_file_url: string;
+  output: Chunk[];
+  task_url: string;
+  configuration: {
+    model: Model;
+    ocr_strategy: OcrStrategy;
+    target_chunk_length: number;
+  };
+  file_name: string;
+  page_count: number;
 }
 ```
 
@@ -54,9 +54,17 @@ The input file url is a presigned url to the file you are processing.
 
 The output is the processed data of the file you are processing. You can find more information about the output in the [output](/output) section.
 
+On status `Succeeded`, the output will contain a `chunks` array. Click [here](/chunks) to learn more about the chunk object.
+
+```typescript
+type Output = {
+  chunks: Chunk[];
+};
+```
+
 ## Configuration
 
-The configuration is the configuration you used to create the task. You can find more information about how to configure the task in the [configuration](/configuration) section.
+The configuration is the configuration you used to create the task. You can find more information about how to configure the task in the [configuration](/model) section.
 
 ## Task Url
 
