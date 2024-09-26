@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 5,
+            "activePatchIndex": 11,
             "patches": [
                 {
                     "date": 1727324129656,
@@ -28,6 +28,30 @@
                 {
                     "date": 1727325905599,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n title: Task response\n description: \"Understanding the task object\"\n ---\n The chunkr api works by creating a task for each document you want to process, and then processing them asynchronously.\n-Both creating and getting tasks return a task object. Click [here](/task-response) to learn more about the task response.\n+Both creating and getting tasks return a task object. \n \n ## Task Object\n \n Both creating and getting tasks return a task object. \n"
+                },
+                {
+                    "date": 1727326203075,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -40,8 +40,16 @@\n - `Succeeded`: The task is successful\n - `Failed`: The task failed\n - `Cancelled`: The task was cancelled (coming soon)\n \n+## Input File Url\n+\n+The input file url is a presigned url to the file you are processing.\n+\n+## Output\n+\n+The output is the processed data of the file you are processing. You can find more information about the output in the [output](/output) section.\n+\n ## Task Url\n \n The task url is the url to poll and get the task object.\n \n"
+                },
+                {
+                    "date": 1727326230971,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -48,8 +48,12 @@\n ## Output\n \n The output is the processed data of the file you are processing. You can find more information about the output in the [output](/output) section.\n \n+## Configuration\n+\n+The configuration is the configuration you used to create the task. You can find more information about the configuration in the [configuration](/configuration) section.\n+\n ## Task Url\n \n The task url is the url to poll and get the task object.\n \n"
+                },
+                {
+                    "date": 1727326246161,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -50,9 +50,9 @@\n The output is the processed data of the file you are processing. You can find more information about the output in the [output](/output) section.\n \n ## Configuration\n \n-The configuration is the configuration you used to create the task. You can find more information about the configuration in the [configuration](/configuration) section.\n+The configuration is the configuration you used to create the task. You can find more information about how to configure the task in the [configuration](/configuration) section.\n \n ## Task Url\n \n The task url is the url to poll and get the task object.\n"
+                },
+                {
+                    "date": 1727326275184,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -40,8 +40,12 @@\n - `Succeeded`: The task is successful\n - `Failed`: The task failed\n - `Cancelled`: The task was cancelled (coming soon)\n \n+## Message\n+\n+The message is a message that is displayed to the user. It is used to provide feedback on the task status.\n+\n ## Input File Url\n \n The input file url is a presigned url to the file you are processing.\n \n"
+                },
+                {
+                    "date": 1727326302274,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -42,9 +42,9 @@\n - `Cancelled`: The task was cancelled (coming soon)\n \n ## Message\n \n-The message is a message that is displayed to the user. It is used to provide feedback on the task status.\n+The message is a message that is displayed to the user. It is used to provide feedback on the task status and potential errors.\n \n ## Input File Url\n \n The input file url is a presigned url to the file you are processing.\n"
+                },
+                {
+                    "date": 1727326319623,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -42,9 +42,9 @@\n - `Cancelled`: The task was cancelled (coming soon)\n \n ## Message\n \n-The message is a message that is displayed to the user. It is used to provide feedback on the task status and potential errors.\n+The message is a message that is displayed to the user. It is used to provide more information about the task status and potential errors.\n \n ## Input File Url\n \n The input file url is a presigned url to the file you are processing.\n"
                 }
             ],
             "date": 1727324129656,
