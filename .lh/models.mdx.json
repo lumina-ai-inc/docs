@@ -3,11 +3,15 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 0,
+            "activePatchIndex": 1,
             "patches": [
                 {
                     "date": 1727415235681,
                     "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1727458516237,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -28,7 +28,7 @@\n \n ## What will work best for me?\n \n In most cases, we recommend using the Fast model for it's speed and cost benefits,\n-and using the HighQuality model as a fallback for when the `content` field in the `output` object is empty (i.e when the Fast model returns an empty string).\n+and using the HighQuality model as a fallback for when the `content` field in the `output` object is empty (i.e when the Fast model returns an empty array).\n \n If you require great table, image or handwriting segmentation consistently, then you should use the HighQuality model.\n"
                 }
             ],
             "date": 1727415235681,
