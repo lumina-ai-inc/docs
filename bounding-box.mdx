@@ -1,0 +1,24 @@
+The bounding box is a rectangle that bounds an item on the document. It is used for both segments and ocr results.
+
+## Bounding Box Model
+
+The `BoundingBox` model represents the bounding box of a segment and can be used to for highlights and annotations, as well as for VLM input as images.
+
+```typescript
+interface BoundingBox {
+    top_left: [number, number];
+    top_right: [number, number];
+    bottom_right: [number, number];
+    bottom_left: [number, number];
+}
+```
+
+## Coordinate System
+
+Each key in the `BoundingBox` model represents a corner of the bounding box, defined by its [x, y] coordinates within the image. The coordinate system follows the standard image convention:
+
+- The origin (0, 0) is located at the top-left corner of the image.
+- The x-coordinate increases from left to right.
+- The y-coordinate increases from top to bottom.
+
+This system allows for precise positioning of the bounding box within the document or image.

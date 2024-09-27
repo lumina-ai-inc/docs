@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 3,
+            "activePatchIndex": 4,
             "patches": [
                 {
                     "date": 1727387342990,
@@ -20,6 +20,10 @@
                 {
                     "date": 1727387821593,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,17 +3,9 @@\n ## Segment Model\n \n The `Segment` model represents individual elements extracted from the document. It includes the following properties:\n \n+```typescript\n interface Segment {\n-    segment_id: string;\n-    bbox: BoundingBox; // Assuming BoundingBox is defined elsewhere\n-    page_number: number;\n-    page_width: number;\n-    page_height: number;\n-    content: string;\n-    segment_type: SegmentType; // Assuming SegmentType is an enum or type defined elsewhere\n-    ocr?: OCRResult[]; // Optional array of OCRResult\n-    image?: string;\n-    html?: string;\n-    markdown?: string;\n\\ No newline at end of file\n-}\n+    \n+}\n+```\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1727388769318,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,9 +21,9 @@\n ```\n \n ## Bounding boxes\n \n-The `BoundingBox` model represents the bounding box of a segment and can be used to for highlights and annotations, as well as for LLM input as images.\n+The `BoundingBox` model represents the bounding box of a segment and can be used to for highlights and annotations, as well as for VLM input as images.\n \n ```typescript\n interface BoundingBox {\n     x: number;\n"
                 }
             ],
             "date": 1727387342990,

@@ -1,0 +1,66 @@
+{
+    "sourceFile": "ocr.mdx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 12,
+            "patches": [
+                {
+                    "date": 1727395255736,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1727395290823,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n The ocr object is the result from the ocr model, we use [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for this.\n \n-## Ocr Result\n+## Ocr Model\n \n The ocr result is a list of `OcrLine` objects.\n \n ```typescript\n"
+                },
+                {
+                    "date": 1727395332022,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,13 +1,13 @@\n The ocr object is the result from the ocr model, we use [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for this.\n \n ## Ocr Model\n \n-The ocr result is a list of `OcrLine` objects.\n+The ocr result is a list of `OCRResult` objects.\n \n ```typescript\n-interface OcrLine {\n+interface OCRResult {\n+    bbox: string;\n     text: string;\n-    bounding_box: BoundingBox;\n+    confidence: number;\n }\n-```\n-\n+```\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1727395341500,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-The ocr object is the result from the ocr model, we use [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for this.\n+The ocr object is the result from the ocr model, we use [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for this. It contains a list of `OCRResult` objects.\n \n ## Ocr Model\n \n The ocr result is a list of `OCRResult` objects.\n"
+                },
+                {
+                    "date": 1727395357844,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,13 @@\n The ocr object is the result from the ocr model, we use [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for this. It contains a list of `OCRResult` objects.\n \n ## Ocr Model\n \n+\n+\n+\n+\n+\n The ocr result is a list of `OCRResult` objects.\n \n ```typescript\n interface OCRResult {\n"
+                },
+                {
+                    "date": 1727395458337,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,13 +1,19 @@\n The ocr object is the result from the ocr model, we use [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for this. It contains a list of `OCRResult` objects.\n \n ## Ocr Model\n \n+```typescript\n+interface OCRResult {\n+    bbox: string;\n+    text: string;\n+    confidence: number;\n+}\n+```\n \n \n \n \n-\n The ocr result is a list of `OCRResult` objects.\n \n ```typescript\n interface OCRResult {\n"
+                },
+                {
+                    "date": 1727395478231,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,19 +1,8 @@\n The ocr object is the result from the ocr model, we use [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for this. It contains a list of `OCRResult` objects.\n \n-## Ocr Model\n+## Ocr Result Model\n \n-```typescript\n-interface OCRResult {\n-    bbox: string;\n-    text: string;\n-    confidence: number;\n-}\n-```\n-\n-\n-\n-\n The ocr result is a list of `OCRResult` objects.\n \n ```typescript\n interface OCRResult {\n"
+                },
+                {
+                    "date": 1727395497018,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n The ocr object is the result from the ocr model, we use [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for this. It contains a list of `OCRResult` objects.\n \n-## Ocr Result Model\n+## Ocr Result\n \n The ocr result is a list of `OCRResult` objects.\n \n ```typescript\n@@ -9,5 +9,6 @@\n     bbox: string;\n     text: string;\n     confidence: number;\n }\n-```\n\\ No newline at end of file\n+```\n+\n"
+                },
+                {
+                    "date": 1727395512000,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,9 @@\n-The ocr object is the result from the ocr model, we use [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for this. It contains a list of `OCRResult` objects.\n+The ocr object is the result from the ocr model, we use [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for this. \n+It contains a list of `OCRResult` objects.\n \n ## Ocr Result\n \n-The ocr result is a list of `OCRResult` objects.\n-\n ```typescript\n interface OCRResult {\n     bbox: string;\n     text: string;\n"
+                },
+                {
+                    "date": 1727395521990,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,9 +4,9 @@\n ## Ocr Result\n \n ```typescript\n interface OCRResult {\n-    bbox: string;\n+    bbox: BoundingBox;\n     text: string;\n     confidence: number;\n }\n ```\n"
+                },
+                {
+                    "date": 1727395624425,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,5 +9,9 @@\n     text: string;\n     confidence: number;\n }\n ```\n+Each segment is made form multiple `OCRResult` objects, and they can be used to identify and annotate the text in the segment. \n+This is useful for tasks such as text extraction, search and more specific highlighting. \n+For tables, each cell is an `OCRResult`.\n \n+Click [here](/bounding-boxes) to learn more about the bounding box model.\n"
+                },
+                {
+                    "date": 1727395641016,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,7 +11,7 @@\n }\n ```\n Each segment is made form multiple `OCRResult` objects, and they can be used to identify and annotate the text in the segment. \n This is useful for tasks such as text extraction, search and more specific highlighting. \n-For tables, each cell is an `OCRResult`.\n+For `segment_type` table, each cell is an `OCRResult`.\n \n Click [here](/bounding-boxes) to learn more about the bounding box model.\n"
+                },
+                {
+                    "date": 1727395692027,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,5 +13,18 @@\n Each segment is made form multiple `OCRResult` objects, and they can be used to identify and annotate the text in the segment. \n This is useful for tasks such as text extraction, search and more specific highlighting. \n For `segment_type` table, each cell is an `OCRResult`.\n \n+The bounding boxes are relative to the segment, so you might need to convert them to the document coordinate system before using them.\n+\n+```typescript\n+function convertToDocumentCoordinates(bbox: BoundingBox, segmentBBox: BoundingBox): BoundingBox {\n+    return {\n+        top_left: [bbox.bbox.top_left[0] + segmentBBox.bbox.top_left[0], bbox.bbox.top_left[1] + segmentBBox.bbox.top_left[1]],\n+        top_right: [bbox.bbox.top_right[0] + segmentBBox.bbox.top_left[0], bbox.bbox.top_right[1] + segmentBBox.bbox.top_left[1]],\n+        bottom_right: [bbox.bbox.bottom_right[0] + segmentBBox.bbox.top_left[0], bbox.bbox.bottom_right[1] + segmentBBox.bbox.top_left[1]],\n+        bottom_left: [bbox.bbox.bottom_left[0] + segmentBBox.bbox.top_left[0], bbox.bbox.bottom_left[1] + segmentBBox.bbox.top_left[1]],\n+    };\n+}\n+```\n+\n Click [here](/bounding-boxes) to learn more about the bounding box model.\n"
+                }
+            ],
+            "date": 1727395255736,
+            "name": "Commit-0",
+            "content": "The ocr object is the result from the ocr model, we use [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for this.\n\n## Ocr Result\n\nThe ocr result is a list of `OcrLine` objects.\n\n```typescript\ninterface OcrLine {\n    text: string;\n    bounding_box: BoundingBox;\n}\n```\n\n"
+        }
+    ]
+}
