@@ -40,7 +40,7 @@
     },
     {
       "group": "Task Configuration",
-      "pages": ["models", "chunking", "ocr-strategy"]
+      "pages": ["model", "chunking", "ocr-strategy"]
     },
     {
       "group": "Output",
