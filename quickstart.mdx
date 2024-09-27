@@ -9,38 +9,37 @@ The way you use the API is by creating a task for each document you want to proc
 
 2. **Create a task**
 
-    Use the following curl command to create a new task:
+   Use the following curl command to create a new task:
 
    ```bash
-    curl -X POST https://api.chunkmydocs.com/api/task \
+    curl -X POST https://api.chunkmydocs.com/api/v1/task \
         -H "Content-Type: multipart/form-data" \
         -H "Authorization: ${YOUR_API_KEY}" \
         -F "file=@/path/to/your/file.pdf" \
         -F "model=Fast" \
         -F "target_chunk_length=512" \
         -F "ocr_strategy=Auto"
-    ```
+   ```
 
    This command will return the task object containing the `task_id` needed for polling the task.
 
 3. **Get the task**
-    
+
    Use the following curl command to check the status of your task:
 
-    ```bash
-    curl -X GET https://api.chunkmydocs.com/api/task/${TASK_ID} \
-      -H "Authorization: ${YOUR_API_KEY}"
-    ```
+   ```bash
+   curl -X GET https://api.chunkmydocs.com/api/v1/task/${TASK_ID} \
+     -H "Authorization: ${YOUR_API_KEY}"
+   ```
 
    Keep polling this endpoint until the `status` field in the response changes to `Succeeded`. Once successful, the `output` field in the response will contain the processed data.
 
 4. **Interpreting the Response**
 
    The API returns a task object with the following key fields:
+
    - `task_id`: Unique identifier for the task
    - `status`: Current status of the task (Starting, Processing, Succeeded, Failed, or Canceled)
    - `output`: Contains the processed data when the task is successful
 
    For a full list of fields, and explanation of the output, refer to the [task response](/task-response) page.
-
-    
