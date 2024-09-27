@@ -4,7 +4,7 @@ description: "Understanding our intelligent chunking"
 ---
 
 Chunking is the process of grouping segments into groups (chunks). This varies based on end-application and use-case,
-but generally the goal is to put together <a>segments</a> that come together to form a cohesive idea.
+but generally the goal is to put together [segments](/segment) that come together to form a cohesive idea.
 The end case is usually indexing for search or organizing training data.
 
 We offer an intelligent chunking algorithm - which can be configured or turned off completely to return individual segments.
@@ -22,11 +22,11 @@ that can be configured by changing the `chunk_size` parameter.
 The chunking algorithm works as follows:
 
 1. Remove headers and footers
-2. Add to a chunk until we hit a <b>breaking condition</b>, or if the chunk word count is approximately equal to the `chunk_size`.
+2. Add to a chunk until we hit a **breaking condition**, or if the chunk word count is approximately equal to the `chunk_size`.
 
 ### Breaking Conditions
 
-We go down the segment hierarchy (from `Title -> Subheading -> Other`). Once we hit a segment type that is not the same as the current segment type, or if it goes back up the hierarchy, we break the chunk.
+We go down the segment hierarchy (from **Title -> Subheading -> Other**). Once we hit a segment type that is not the same as the current segment type, or if it goes back up the hierarchy, we break the chunk.
 
 ## Turning it off
 

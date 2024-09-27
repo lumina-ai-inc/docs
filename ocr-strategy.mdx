@@ -11,13 +11,13 @@ type OCRStrategy = "Auto" | "All" | "Off";
 
 ## Auto
 
-The Auto strategy was made to optimize for speed without sacrificing on quality. By default - it will carry out OCR on all <b>Picture</b> and <b>Table</b> `segment_type`.
+The Auto strategy was made to optimize for speed without sacrificing on quality. By default - it will carry out OCR on all **Picture** and **Table** `segment_type`.
 For other segment types - it will only perform OCR if a text layer doesn't exist.
 
 ## All
 
-The All strategy is the most comprehensive - it will perform OCR on all segments. This is useful if you want to
+This will perform OCR on all segments - if a text layer already exists, the `content` field will be populated from the OCR layer instead. This will also make sure you get image snips for every segment.
 
 ## Off
 
-The Off strategy is the most basic - it will not perform OCR on any segments. This is useful if you want to ignore all content that is not text.
+This is useful if you only want to use the existing text layer to populate the `content` field for segments, it will also reduce processing time significantly. **Table** with a text layer will not be structured, and **Picture** segments will not have any `content` returned.
