@@ -1,0 +1,52 @@
+---
+title: OCR
+---
+
+The ocr object is the result from the ocr model, we use [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for this.
+It contains a list of `OCRResult` objects.
+
+## OCR Result
+
+```typescript
+interface OCRResult {
+  bbox: BoundingBox;
+  text: string;
+  confidence: number;
+}
+```
+
+Each segment is made form multiple `OCRResult` objects, and they can be used to identify and annotate the text in the segment.
+This is useful for tasks such as text extraction, search and more specific highlighting.
+For `segment_type` table, each cell is an `OCRResult`.
+
+## Relative bounding box
+
+The bounding boxes are relative to the segment, so you might need to convert them to the document coordinate system before using them.
+
+```typescript
+function convertToDocumentCoordinates(
+  bbox: BoundingBox,
+  segmentBBox: BoundingBox
+): BoundingBox {
+  return {
+    top_left: [
+      bbox.bbox.top_left[0] + segmentBBox.bbox.top_left[0],
+      bbox.bbox.top_left[1] + segmentBBox.bbox.top_left[1],
+    ],
+    top_right: [
+      bbox.bbox.top_right[0] + segmentBBox.bbox.top_left[0],
+      bbox.bbox.top_right[1] + segmentBBox.bbox.top_left[1],
+    ],
+    bottom_right: [
+      bbox.bbox.bottom_right[0] + segmentBBox.bbox.top_left[0],
+      bbox.bbox.bottom_right[1] + segmentBBox.bbox.top_left[1],
+    ],
+    bottom_left: [
+      bbox.bbox.bottom_left[0] + segmentBBox.bbox.top_left[0],
+      bbox.bbox.bottom_left[1] + segmentBBox.bbox.top_left[1],
+    ],
+  };
+}
+```
+
+Click [here](/bounding-box) to learn more about the bounding box model.

@@ -1,0 +1,26 @@
+{
+    "sourceFile": "api-reference/task/get-task.mdx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1727318914989,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1727318950615,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,3 +1,3 @@\n ---\n-openapi: get /api/v1/task/{task_id}\n+openapi: get /api/task/{task_id}\n ---\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1727331363763,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,3 +1,3 @@\n ---\n-openapi: get /api/task/{task_id}\n+openapi: get /api/v1/task/{task_id}\n ---\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1727318914989,
+            "name": "Commit-0",
+            "content": "---\nopenapi: get /api/v1/task/{task_id}\n---"
+        }
+    ]
+}

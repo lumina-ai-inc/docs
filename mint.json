@@ -31,7 +31,7 @@
   ],
   "topbarCtaButton": {
     "name": "Try Chunkr",
-    "url": "https://chunkr.ai"
+    "url": "https://www.chunkr.ai"
   },
   "navigation": [
     {
@@ -39,8 +39,24 @@
       "pages": [
         "introduction",
         "quickstart",
-        "outputs",
-        "pipeline"
+        "task-response"
+      ]
+    },
+    {
+      "group": "Task Configuration",
+      "pages": [
+        "model",
+        "chunking",
+        "ocr-strategy"
+      ]
+    },
+    {
+      "group": "Output",
+      "pages": [
+        "chunks",
+        "segment",
+        "bounding-box",
+        "ocr"
       ]
     }
   ],

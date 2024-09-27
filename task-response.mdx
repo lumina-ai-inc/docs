@@ -1,0 +1,71 @@
+---
+title: Task response
+description: "Understanding the task object"
+---
+
+The chunkr api works by creating a task for each document you want to process, and then processing them asynchronously.
+Both creating and getting tasks return a task object.
+
+## Task Object
+
+Both creating and getting tasks return a task object.
+It contains the information about the file you are processing as well as the output when the task is successful.
+
+```typescript
+interface TaskResponse {
+  task_id: string;
+  status: "Starting" | "Processing" | "Succeeded" | "Failed" | "Cancelled";
+  created_at: string;
+  finished_at: string | null;
+  expires_at: string;
+  message: string;
+  input_file_url: string;
+  output: Chunk[];
+  task_url: string;
+  configuration: {
+    model: Model;
+    ocr_strategy: OcrStrategy;
+    target_chunk_length: number;
+  };
+  file_name: string;
+  page_count: number;
+}
+```
+
+## Status
+
+The task status can be one of the following:
+
+- `Starting`: The task is queued and waiting to be processed
+- `Processing`: The task is still processing
+- `Succeeded`: The task is successful
+- `Failed`: The task failed
+- `Cancelled`: The task was cancelled (coming soon)
+
+## Message
+
+The message is a message that is displayed to the user. It is used to provide more information about the task status and potential errors.
+
+## Input File Url
+
+The input file url is a presigned url to the file you are processing.
+
+## Output
+
+The output is the processed data of the file you are processing. You can find more information about the output in the [output](/output) section.
+
+On status `Succeeded`, the output will contain a `chunks` array. Click [here](/chunks) to learn more about the chunk object.
+
+```typescript
+type Output = {
+  chunks: Chunk[];
+};
+```
+
+## Configuration
+
+The configuration is the configuration you used to create the task. You can find more information about how to configure the task in the [configuration](/model) section.
+
+## Task Url
+
+The task url is the url to poll and get the task object.

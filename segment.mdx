@@ -1,0 +1,95 @@
+We use AI to identify and extract individual elements from the document, which we call segments.
+Each segment has a `bbox` which is the bounding box of the segment and a `segment_type` which is the type of the segment.
+
+## Segment Model
+
+The `Segment` model represents individual elements extracted from the document. It includes the following properties:
+
+```typescript
+interface Segment {
+    bbox: BoundingBox;
+    content: string;
+    html?: string;
+    image?: string;
+    markdown?: string;
+    ocr?: OCRResult[];
+    page_height: number;
+    page_number: number;
+    page_width: number;
+    segment_id: string;
+    segment_type: SegmentType; 
+}
+```
+
+## Bbox (Bounding box)
+
+The `BoundingBox` model represents the bounding box of a segment and can be used to for highlights and annotations, as well as for VLM input as images.
+Click [here](/bounding-box) to learn more about the bounding box model.
+
+## Content
+
+The `Content` model represents the content of a segment, we use the following rules to extract the content:
+
+- If `ocr` exists then use the text from the `ocr` if the average confidence is greater than the threshold
+- If the average confidence from `ocr` is less than the threshold then use the text layer of the document
+- If there is no `ocr` then use the text layer of the document
+
+## OCR
+
+The `ocr` field is the OCR result of a segment. Click [here](/ocr) to learn more about the OCR model.
+
+## Image
+
+The `image` is a presigned URL to the image of the segment. They are only generated for segments that are processed by ocr. 
+
+To learn more about how to configure the ocr please refer to the [ocr](/ocr) section.
+
+## HTML
+
+The `html` field is the html representation of a segment. It contains the `content` of the segment with the appropriate HTML tags applied for the `segment_type`.
+For tables the html will contain the table in html format and will be different from the raw `content` field, but will contain the same text.
+
+## Markdown
+
+The `markdown` field is the markdown representation of a segment. It contains the `content` of the segment with the appropriate markdown tags applied for the `segment_type`.
+For tables the markdown will contain the table in markdown format and will be different from the raw `content` field, but will contain the same text.
+
+## OCR
+
+The `ocr` field is the OCR result of a segment. Click [here](/ocr) to learn more about the OCR model.
+
+## Page height
+
+The `page_height` is the height of the page in pixels.
+
+## Page width
+
+The `page_width` is the width of the page in pixels.
+
+## Page number
+
+The `page_number` is the number of the page in the document where the segment is located.
+
+## Segment Types
+
+The `segment_type` is classified by the `Model` used during the segmentation process. To learn more about how to configure the model please refer to the [model](/model) section.
+
+This is the list of all the segment types in the order of the hierarchy:
+```typescript
+type SegmentType =
+  | "Title"
+  | "Section header"
+  | "Text"
+  | "List item"
+  | "Table"
+  | "Picture"
+  | "Caption"
+  | "Formula"
+  | "Footnote"
+  | "Page header"
+  | "Page footer"
+```
+
+
+
+

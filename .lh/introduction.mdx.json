@@ -1,0 +1,38 @@
+{
+    "sourceFile": "introduction.mdx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1727302058727,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1727302064280,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,8 @@\n ## Getting Started\n \n Chunkr is a service for document layout analysis and chunking to convert documents into RAG/LLM-ready data. We use transformer based segmentation models and OCR models to extract bounding boxes and structured text from documents.\n \n-![Sample Output](sample_output.jpeg)\n \n <CardGroup cols={2}>\n   <Card title=\"Quickstart\" icon=\"rocket\" href=\"/quickstart\">\n     Get started with Chunkr API in minutes\n"
+                },
+                {
+                    "date": 1727302119824,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,12 +6,11 @@\n ## Getting Started\n \n Chunkr is a service for document layout analysis and chunking to convert documents into RAG/LLM-ready data. We use transformer based segmentation models and OCR models to extract bounding boxes and structured text from documents.\n \n-\n <CardGroup cols={2}>\n   <Card title=\"Quickstart\" icon=\"rocket\" href=\"/quickstart\">\n-    Get started with Chunkr API in minutes\n+    Get started with Chunkr API in seconds\n   </Card>\n   <Card title=\"API Reference\" icon=\"book\" href=\"/api-reference\">\n     Explore the complete API documentation\n   </Card>\n"
+                },
+                {
+                    "date": 1727321875778,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,8 +6,10 @@\n ## Getting Started\n \n Chunkr is a service for document layout analysis and chunking to convert documents into RAG/LLM-ready data. We use transformer based segmentation models and OCR models to extract bounding boxes and structured text from documents.\n \n+![Model Diagram](sample2.png)\n+\n <CardGroup cols={2}>\n   <Card title=\"Quickstart\" icon=\"rocket\" href=\"/quickstart\">\n     Get started with Chunkr API in seconds\n   </Card>\n"
+                },
+                {
+                    "date": 1727321898007,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,8 @@\n ## Getting Started\n \n Chunkr is a service for document layout analysis and chunking to convert documents into RAG/LLM-ready data. We use transformer based segmentation models and OCR models to extract bounding boxes and structured text from documents.\n \n-![Model Diagram](sample2.png)\n \n <CardGroup cols={2}>\n   <Card title=\"Quickstart\" icon=\"rocket\" href=\"/quickstart\">\n     Get started with Chunkr API in seconds\n@@ -16,4 +15,6 @@\n   <Card title=\"API Reference\" icon=\"book\" href=\"/api-reference\">\n     Explore the complete API documentation\n   </Card>\n </CardGroup>\n+\n+![Model Diagram](sample2.png)\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1727322213490,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,6 +15,4 @@\n   <Card title=\"API Reference\" icon=\"book\" href=\"/api-reference\">\n     Explore the complete API documentation\n   </Card>\n </CardGroup>\n-\n-![Model Diagram](sample2.png)\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1727302058727,
+            "name": "Commit-0",
+            "content": "---\ntitle: Introduction to Chunkr API\ndescription: \"Welcome to the Chunkr API documentation\"\n---\n\n## Getting Started\n\nChunkr is a service for document layout analysis and chunking to convert documents into RAG/LLM-ready data. We use transformer based segmentation models and OCR models to extract bounding boxes and structured text from documents.\n\n![Sample Output](sample_output.jpeg)\n\n<CardGroup cols={2}>\n  <Card title=\"Quickstart\" icon=\"rocket\" href=\"/quickstart\">\n    Get started with Chunkr API in minutes\n  </Card>\n  <Card title=\"API Reference\" icon=\"book\" href=\"/api-reference\">\n    Explore the complete API documentation\n  </Card>\n</CardGroup>\n"
+        }
+    ]
+}

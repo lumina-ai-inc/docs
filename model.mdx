@@ -1,0 +1,34 @@
+---
+title: Model
+description: "Picking a segmentation model"
+---
+
+We offer two types of segmentation models for creating bounding boxes - **Fast** and **HighQuality**. This section details the differences between each model, and when a specific model should be used.
+
+## Configuration
+
+You can select which model to use by setting the `model` parameter in the `POST` request body.
+
+```typescript
+type Model = "HighQuality" | "Fast";
+```
+
+## Fast
+
+The Fast model uses [LightGBM](https://lightgbm.readthedocs.io/en/stable/) and runs on CPUs - which makes it much faster than the HighQuality model. It depends on a pre-existing text-layer to create bounding boxes.
+
+This makes it great for text, table and formula segmentation - but it struggles when dealing with images.
+It can still segment images that are surrounded/bounded by text to some degree. A good example is graphs that have Y/X axes with labels.
+
+## HighQuality
+
+The HighQuality model uses [VGT](https://arxiv.org/abs/2308.14978) - a state-of-the-art two-stream Vision Grid Transformer.
+This model 'has eyes' and can understand layouts with intelligence, so a pre-existing text-layer is not required.
+It's better at classifying content into [`segment_type`](/segment#segment-types).
+
+## What will work best for me?
+
+In most cases, we recommend using the Fast model for it's speed and cost benefits,
+and using the HighQuality model as a fallback for when the `content` field in the `output` object is empty (i.e when the Fast model returns an empty string).
+
+If you require great table, image or handwriting segmentation consistently, then you should use the HighQuality model.

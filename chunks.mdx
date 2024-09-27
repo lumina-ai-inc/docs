@@ -1,0 +1,27 @@
+---
+title: Chunks
+---
+
+The output of a task is a list of chunks. Each chunk is a collection of one or more segments.
+
+The grouping of segments into chunks depends on the `target_chunk_length` parameter. Click [here](/chunking) to learn more about how to configure it.
+
+## Chunk Model
+
+The `Chunk` model represents a collection of segments. It consists of:
+
+```typescript
+interface Chunk {
+    segments: Segment[];
+    chunk_length: number;
+}
+```
+
+## Segments
+
+This will contain an array of segments that make up the chunk.
+
+## Chunk Length
+
+This will contain the actual length of the chunk, i.e. number of words in the chunk.
+This may be different from the `target_chunk_length` as the segments are not split into smaller segments.
