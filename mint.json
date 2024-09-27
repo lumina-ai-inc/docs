@@ -45,7 +45,7 @@
     {
       "group": "Task Configuration",
       "pages": [
-        "model",
+        "models",
         "chunking",
         "ocr-strategy"
       ]
