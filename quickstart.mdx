@@ -12,7 +12,7 @@ The way you use the API is by creating a task for each document you want to proc
    Use the following curl command to create a new task:
 
    ```bash
-    curl -X POST https://api.chunkmydocs.com/api/v1/task \
+    curl -X POST https://api.chunkr.com/api/v1/task \
         -H "Content-Type: multipart/form-data" \
         -H "Authorization: ${YOUR_API_KEY}" \
         -F "file=@/path/to/your/file.pdf" \
@@ -28,7 +28,7 @@ The way you use the API is by creating a task for each document you want to proc
    Use the following curl command to check the status of your task:
 
    ```bash
-   curl -X GET https://api.chunkmydocs.com/api/v1/task/${TASK_ID} \
+   curl -X GET https://api.chunkr.com/api/v1/task/${TASK_ID} \
      -H "Authorization: ${YOUR_API_KEY}"
    ```
 
@@ -36,10 +36,58 @@ The way you use the API is by creating a task for each document you want to proc
 
 4. **Interpreting the Response**
 
-   The API returns a task object with the following key fields:
+   Here is an example of what the output might look like, for a full list of fields and explanation of the output, refer to the [task response](/task-response) page.
 
-   - `task_id`: Unique identifier for the task
-   - `status`: Current status of the task (Starting, Processing, Succeeded, Failed, or Canceled)
-   - `output`: Contains the processed data when the task is successful
-
-   For a full list of fields, and explanation of the output, refer to the [task response](/task-response) page.
+    ```json
+    {
+    "configuration": {
+        "model": "Fast",
+        "ocr_strategy": "Auto",
+        "target_chunk_length": 512
+    },
+    "created_at": "2023-04-15T10:30:00Z",
+    "expires_at": "2023-04-22T10:30:00Z",
+    "file_name": "document.pdf",
+    "finished_at": "2023-04-15T10:31:30Z",
+    "input_file_url": "https://storage.chunkr.com/input/document.pdf",
+    "message": "Task completed successfully",
+    "output": {
+        "chunk_length": 1,
+        "segments": [
+        {
+            "bbox": {
+            "bottom_left": [10.0, 70.0],
+            "bottom_right": [110.0, 70.0],
+            "top_left": [10.0, 20.0],
+            "top_right": [110.0, 20.0]
+            },
+            "content": "This is a sample text segment.",
+            "html": "<p>This is a sample text segment.</p>",
+            "image": null,
+            "markdown": "This is a sample text segment.",
+            "ocr": [
+            {
+                "bbox": {
+                "bottom_left": [10.0, 70.0],
+                "bottom_right": [110.0, 70.0],
+                "top_left": [10.0, 20.0],
+                "top_right": [110.0, 20.0]
+                },
+                "confidence": 0.95,
+                "text": "This is a sample text segment."
+            }
+            ],
+            "page_height": 842.0,
+            "page_number": 1,
+            "page_width": 595.0,
+            "segment_id": "81729b96-086b-49ce-8112-de8e109bfc3c",
+            "segment_type": "Text"
+        }
+        ]
+    },
+    "page_count": 5,
+    "status": "Succeeded",
+    "task_id": "65237fe1-d6f1-456b-9238-408b97a1536d",
+    "task_url": "https://api.chunkr.com/api/v1/task/65237fe1-d6f1-456b-9238-408b97a1536d"
+    }
+    ```
