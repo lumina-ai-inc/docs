@@ -1,0 +1,62 @@
+{
+    "sourceFile": "chunking.mdx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 11,
+            "patches": [
+                {
+                    "date": 1727398343991,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1727398365486,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n title: Chunking\n description: \"Understanding our intelligent chunking\"\n ---\n \n-Chunking is the process of grouping segments into logical chunks. This varies based on end-application and use-case,\n+Chunking is the process of grouping segments into logical chunks. The exact strategy varies based on end-application and use-case,\n but generally the goal is to put together [segments](/segment) that come together to form a cohesive idea.\n The end case is usually indexing for search or organizing training data.\n \n We offer an intelligent chunking algorithm - which can be configured or turned off completely to return individual segments.\n"
+                },
+                {
+                    "date": 1727398379210,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,9 +3,9 @@\n description: \"Understanding our intelligent chunking\"\n ---\n \n Chunking is the process of grouping segments into logical chunks. The exact strategy varies based on end-application and use-case,\n-but generally the goal is to put together [segments](/segment) that come together to form a cohesive idea.\n+but generally the goal is to put together [segments](/segment) to form a cohesive idea.\n The end case is usually indexing for search or organizing training data.\n \n We offer an intelligent chunking algorithm - which can be configured or turned off completely to return individual segments.\n This section details how are intelligent chunking works.\n"
+                },
+                {
+                    "date": 1727398395916,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,9 +4,9 @@\n ---\n \n Chunking is the process of grouping segments into logical chunks. The exact strategy varies based on end-application and use-case,\n but generally the goal is to put together [segments](/segment) to form a cohesive idea.\n-The end case is usually indexing for search or organizing training data.\n+Chunking is usually done for indexing or organizing training data.\n \n We offer an intelligent chunking algorithm - which can be configured or turned off completely to return individual segments.\n This section details how are intelligent chunking works.\n \n"
+                },
+                {
+                    "date": 1727398519697,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,8 +6,10 @@\n Chunking is the process of grouping segments into logical chunks. The exact strategy varies based on end-application and use-case,\n but generally the goal is to put together [segments](/segment) to form a cohesive idea.\n Chunking is usually done for indexing or organizing training data.\n \n+We use AI to determine the position and type of segments and then use it grouped together.\n+\n We offer an intelligent chunking algorithm - which can be configured or turned off completely to return individual segments.\n This section details how are intelligent chunking works.\n \n ## Configuration\n"
+                },
+                {
+                    "date": 1727398599566,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,10 +6,8 @@\n Chunking is the process of grouping segments into logical chunks. The exact strategy varies based on end-application and use-case,\n but generally the goal is to put together [segments](/segment) to form a cohesive idea.\n Chunking is usually done for indexing or organizing training data.\n \n-We use AI to determine the position and type of segments and then use it grouped together.\n-\n We offer an intelligent chunking algorithm - which can be configured or turned off completely to return individual segments.\n This section details how are intelligent chunking works.\n \n ## Configuration\n"
+                },
+                {
+                    "date": 1727398680136,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,11 @@\n ---\n title: Chunking\n description: \"Understanding our intelligent chunking\"\n ---\n+Chunking is the process of grouping segments into logical chunks. \n \n-Chunking is the process of grouping segments into logical chunks. The exact strategy varies based on end-application and use-case,\n+The exact strategy varies based on end-application and use-case,\n but generally the goal is to put together [segments](/segment) to form a cohesive idea.\n Chunking is usually done for indexing or organizing training data.\n \n We offer an intelligent chunking algorithm - which can be configured or turned off completely to return individual segments.\n"
+                },
+                {
+                    "date": 1727398704579,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,11 @@\n ---\n title: Chunking\n description: \"Understanding our intelligent chunking\"\n ---\n-Chunking is the process of grouping segments into logical chunks. \n \n+Chunking is the process of grouping segments into logical chunks. Our segmentation models can produce a hierachy of segments, and we use this to create chunks.\n+\n The exact strategy varies based on end-application and use-case,\n but generally the goal is to put together [segments](/segment) to form a cohesive idea.\n Chunking is usually done for indexing or organizing training data.\n \n"
+                },
+                {
+                    "date": 1727398724032,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n title: Chunking\n description: \"Understanding our intelligent chunking\"\n ---\n \n-Chunking is the process of grouping segments into logical chunks. Our segmentation models can produce a hierachy of segments, and we use this to create chunks.\n+Chunking is the process of grouping segments into logical chunks. Our segmentation models can produce a hierachy of segments, and we can use that to create chunks.\n \n The exact strategy varies based on end-application and use-case,\n but generally the goal is to put together [segments](/segment) to form a cohesive idea.\n Chunking is usually done for indexing or organizing training data.\n"
+                },
+                {
+                    "date": 1727398735399,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n title: Chunking\n description: \"Understanding our intelligent chunking\"\n ---\n \n-Chunking is the process of grouping segments into logical chunks. Our segmentation models can produce a hierachy of segments, and we can use that to create chunks.\n+Chunking is the process of grouping segments into logical chunks. Our segmentation models can produce a hierachy of [segments](/segment), and we can use that to create chunks.\n \n The exact strategy varies based on end-application and use-case,\n but generally the goal is to put together [segments](/segment) to form a cohesive idea.\n Chunking is usually done for indexing or organizing training data.\n"
+                },
+                {
+                    "date": 1727398750419,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,8 +4,9 @@\n ---\n \n Chunking is the process of grouping segments into logical chunks. Our segmentation [models](/model) can produce a hierachy of [segments](/segment), and we can use that to create chunks.\n \n+\n We offer an intelligent chunking algorithm - which can be configured or turned off completely to return individual segments.\n This section details how are intelligent chunking works.\n \n ## Configuration\n"
+                },
+                {
+                    "date": 1727398777637,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,8 +4,10 @@\n ---\n \n Chunking is the process of grouping segments into logical chunks. Our segmentation [models](/model) can produce a hierarchy of [segments](/segment), and we can use that to create chunks.\n \n+The exact strategy varies based on end-application and use-case, but generally the goal is to put together [segments](/segment) to form a cohesive idea.\n+\n We offer an intelligent chunking algorithm - which can be configured or turned off completely to return individual segments.\n This section details how are intelligent chunking works.\n \n ## Configuration\n"
+                }
+            ],
+            "date": 1727398343991,
+            "name": "Commit-0",
+            "content": "---\ntitle: Chunking\ndescription: \"Understanding our intelligent chunking\"\n---\n\nChunking is the process of grouping segments into logical chunks. This varies based on end-application and use-case,\nbut generally the goal is to put together [segments](/segment) that come together to form a cohesive idea.\nThe end case is usually indexing for search or organizing training data.\n\nWe offer an intelligent chunking algorithm - which can be configured or turned off completely to return individual segments.\nThis section details how are intelligent chunking works.\n\n## Configuration\n\nYou can configure intelligent chunking by setting the `target_chunk_length` parameter. This is the approximate number of words a chunk can contain. Setting it to `0` will turn off intelligent chunking.\n\n## Intelligent Chunking\n\nSegmentation is a core part of our intelligent chunking algorithm. We group segments into chunks based on their `segment_type` heirarchy and have an aproximate max-chunk size (word count)\nthat can be configured by changing the `chunk_size` parameter.\n\nThe chunking algorithm works as follows:\n\n1. Remove headers and footers\n2. Add to a chunk until we hit a **breaking condition**, or if the chunk word count is approximately equal to the `chunk_size`.\n\n### Breaking Conditions\n\nWe go down the segment hierarchy (from **Title -> Subheading -> Other**). Once we hit a segment type that is not the same as the current segment type, or if it goes back up the hierarchy, we break the chunk.\n\n## Turning it off\n\nIf you would like to receive individual segments as opposed to chunks, you can set `chunk_size` to `0`. This is recommended if you would like to handle chunking yourself.\n"
+        }
+    ]
+}

@@ -16,8 +16,8 @@ For other segment types - it will only perform OCR if a text layer doesn't exist
 
 ## All
 
-This will perform OCR on all segments - if a text layer already exists, the `content` field will be populated from the OCR layer instead. This will also make sure you get image snips for every segment.
+This will perform OCR on all segments.
 
 ## Off
 
-This is useful if you only want to use the existing text layer to populate the `content` field for segments, it will also reduce processing time significantly. **Table** with a text layer will not be structured, and **Picture** segments will not have any `content` returned.
+No OCR will be performed. This is useful if you only want to use the existing text layer and will **reduce processing time significantly**.

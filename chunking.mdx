@@ -3,31 +3,28 @@ title: Chunking
 description: "Understanding our intelligent chunking"
 ---
 
-Chunking is the process of grouping segments into groups (chunks). This varies based on end-application and use-case,
-but generally the goal is to put together [segments](/segment) that come together to form a cohesive idea.
-The end case is usually indexing for search or organizing training data.
+Chunking is the process of grouping segments into logical chunks. Our segmentation [models](/model) can produce a hierarchy of [segments](/segment), and we can use that to create chunks.
 
-We offer an intelligent chunking algorithm - which can be configured or turned off completely to return individual segments.
-This section details how are intelligent chunking works.
+The exact strategy varies based on end-application and use-case, but generally the goal is to put together [segments](/segment) in a way that maintains the context of the information.
+
+We offer an intelligent chunking algorithm but you can also turn it off to receive individual segments to handle chunking yourself.
 
 ## Configuration
 
-You can configure intelligent chunking by setting the `target_chunk_length` parameter. This is the approximate number of words a chunk can contain. Setting it to `0` will turn off intelligent chunking.
+You can configure intelligent chunking by setting the `target_chunk_length` parameter. This is the approximate number of words a chunk can contain. 
+
 
 ## Intelligent Chunking
-
-Segmentation is a core part of our intelligent chunking algorithm. We group segments into chunks based on their `segment_type` heirarchy and have an aproximate max-chunk size (word count)
-that can be configured by changing the `chunk_size` parameter.
 
 The chunking algorithm works as follows:
 
 1. Remove headers and footers
-2. Add to a chunk until we hit a **breaking condition**, or if the chunk word count is approximately equal to the `chunk_size`.
+2. Add segments to a chunk until we hit a **breaking condition**, or if the chunk length >= `target_chunk_length`.
 
 ### Breaking Conditions
 
-We go down the segment hierarchy (from **Title -> Subheading -> Other**). Once we hit a segment type that is not the same as the current segment type, or if it goes back up the hierarchy, we break the chunk.
+We go down the segment hierarchy (from **Title -> Section header -> Other**). Once we hit a `segment_type` that is higher in the hierarchy than the current segment type, we break the chunk.
 
 ## Turning it off
 
-If you would like to receive individual segments as opposed to chunks, you can set `chunk_size` to `0`. This is recommended if you would like to handle chunking yourself.
+Setting `target_chunk_length` to `0` will turn off intelligent chunking, and each chunk will contain a single segment. Click [here](/chunks) to learn more about the chunk model.

@@ -1,0 +1,30 @@
+{
+    "sourceFile": "ocr-strategy.mdx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 3,
+            "patches": [
+                {
+                    "date": 1727399382326,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1727399391572,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,5 +19,5 @@\n This will perform OCR on all segments.\n \n ## Off\n \n-This is useful if you only want to use the existing text layer to populate the `content` field for segments, it will also reduce processing time significantly.\n+This is useful if you only want to use the existing text layer, it will also reduce processing time significantly.\n"
+                },
+                {
+                    "date": 1727399417976,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,5 +19,5 @@\n This will perform OCR on all segments.\n \n ## Off\n \n-This is useful if you only want to use the existing text layer, it will also reduce processing time significantly.\n+This is useful if you only want to use the existing text layer and will **reduce processing time significantly**.\n"
+                },
+                {
+                    "date": 1727399433998,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,5 +19,5 @@\n This will perform OCR on all segments.\n \n ## Off\n \n-This is useful if you only want to use the existing text layer and will **reduce processing time significantly**.\n+No OCR will be performed. This is useful if you only want to use the existing text layer and will **reduce processing time significantly**.\n"
+                }
+            ],
+            "date": 1727399382326,
+            "name": "Commit-0",
+            "content": "---\ntitle: OCR Strategy\ndescription: \"Picking an OCR strategy\"\n---\n\nWe offer three types of OCR strategies - `Auto`, `All` and `Off`. This section details the differences between each strategy, and when a specific strategy should be used.\n\n```typescript\ntype OCRStrategy = \"Auto\" | \"All\" | \"Off\";\n```\n\n## Auto\n\nThe Auto strategy was made to optimize for speed without sacrificing on quality. By default - it will carry out OCR on all **Picture** and **Table** `segment_type`.\nFor other segment types - it will only perform OCR if a text layer doesn't exist.\n\n## All\n\nThis will perform OCR on all segments.\n\n## Off\n\nThis is useful if you only want to use the existing text layer to populate the `content` field for segments, it will also reduce processing time significantly.\n"
+        }
+    ]
+}

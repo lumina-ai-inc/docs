@@ -74,7 +74,7 @@ The `page_number` is the number of the page in the document where the segment is
 
 The `segment_type` is classified by the `Model` used during the segmentation process. To learn more about how to configure the model please refer to the [model](/model) section.
 
-This is the list of all the segment types:
+This is the list of all the segment types in the order of the hierarchy:
 ```typescript
 type SegmentType =
   | "Title"
@@ -89,6 +89,7 @@ type SegmentType =
   | "Page header"
   | "Page footer"
 ```
+
 
 
 

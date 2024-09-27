@@ -3,7 +3,7 @@ title: OCR
 ---
 
 The ocr object is the result from the ocr model, we use [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for this.
-It contains a list of`OCRResult` objects.
+It contains a list of `OCRResult` objects.
 
 ## OCR Result
 
@@ -18,6 +18,8 @@ interface OCRResult {
 Each segment is made form multiple `OCRResult` objects, and they can be used to identify and annotate the text in the segment.
 This is useful for tasks such as text extraction, search and more specific highlighting.
 For `segment_type` table, each cell is an `OCRResult`.
+
+## Relative bounding box
 
 The bounding boxes are relative to the segment, so you might need to convert them to the document coordinate system before using them.
 
@@ -47,4 +49,4 @@ function convertToDocumentCoordinates(
 }
 ```
 
-Click [here](/bounding-boxes) to learn more about the bounding box model.
+Click [here](/bounding-box) to learn more about the bounding box model.
