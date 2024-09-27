@@ -3,11 +3,21 @@ title: OCR Strategy
 description: "Picking an OCR strategy"
 ---
 
-OCR is used to extract text from textblocks, structure tables, and extract text from images. It is also linked to returning image-snips of segments from the document.
-
 We offer three types of OCR strategies - `Auto`, `All` and `Off`. This section details the differences between each strategy, and when a specific strategy should be used.
+
+```typescript
+type OCRStrategy = "Auto" | "All" | "Off";
+```
 
 ## Auto
 
 The Auto strategy was made to optimize for speed without sacrificing on quality. By default - it will carry out OCR on all <b>Picture</b> and <b>Table</b> `segment_type`.
-For other segment types - it will only perform OCR if a text layer doesn't exist
+For other segment types - it will only perform OCR if a text layer doesn't exist.
+
+## All
+
+The All strategy is the most comprehensive - it will perform OCR on all segments. This is useful if you want to
+
+## Off
+
+The Off strategy is the most basic - it will not perform OCR on any segments. This is useful if you want to ignore all content that is not text.

@@ -10,6 +10,10 @@ The end case is usually indexing for search or organizing training data.
 We offer an intelligent chunking algorithm - which can be configured or turned off completely to return individual segments.
 This section details how are intelligent chunking works.
 
+## Configuration
+
+You can configure intelligent chunking by setting the `target_chunk_length` parameter. This is the approximate number of words a chunk can contain. Setting it to `0` will turn off intelligent chunking.
+
 ## Intelligent Chunking
 
 Segmentation is a core part of our intelligent chunking algorithm. We group segments into chunks based on their `segment_type` heirarchy and have an aproximate max-chunk size (word count)
@@ -27,13 +31,3 @@ We go down the segment hierarchy (from `Title -> Subheading -> Other`). Once we 
 ## Turning it off
 
 If you would like to receive individual segments as opposed to chunks, you can set `chunk_size` to `0`. This is recommended if you would like to handle chunking yourself.
-
-## Configuration
-
-You can configure intelligent chunking by setting the `target_chunk_length` parameter. This is the approximate number of words a chunk can contain. Setting it to `0` will turn off intelligent chunking.
-
-```typescript
-interface Chunking {
-  target_chunk_length: number;
-}
-```
