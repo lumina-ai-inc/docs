@@ -22,12 +22,18 @@ The chunking algorithm works as follows:
 
 ### Breaking Conditions
 
-We go down the segment hierarchy (from `Title -> Subheading -> Other`).
-
-## Turning it off
+We go down the segment hierarchy (from `Title -> Subheading -> Other`). Once we hit a segment type that is not the same as the current segment type, or if it goes back up the hierarchy, we break the chunk.
 
 ## Turning it off
 
 If you would like to receive individual segments as opposed to chunks, you can set `chunk_size` to `0`. This is recommended if you would like to handle chunking yourself.
 
 ## Configuration
+
+You can configure intelligent chunking by setting the `target_chunk_length` parameter. This is the approximate number of words a chunk can contain. Setting it to `0` will turn off intelligent chunking.
+
+```typescript
+interface Chunking {
+  target_chunk_length: number;
+}
+```
