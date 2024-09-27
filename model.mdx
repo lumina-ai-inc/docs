@@ -15,17 +15,16 @@ type Model = "HighQuality" | "Fast";
 
 ## Fast
 
-The Fast model uses <a>LightGBM</a> and runs on CPUs - which makes it blazingly fast. It depends on a pre-existing text-layer to create bounding boxes.
+The Fast model uses [LightGBM](https://lightgbm.readthedocs.io/en/stable/) and runs on CPUs - which makes it much faster than the HighQuality model. It depends on a pre-existing text-layer to create bounding boxes.
 
 This makes it great for text, table and formula segmentation - but it struggles when dealing with images.
 It can still segment images that are surrounded/bounded by text to some degree. A good example is graphs that have Y/X axes with labels.
 
 ## HighQuality
 
-The HighQuality model uses <a>VGT</a> - a state-of-the-art two-stream Vision Grid Transformer, and runs on GPUs.
-This model 'has eyes' and can understand layouts with intelligence, so a pre-existing text-layer is not required and it's better at classifying content into <a>segment types</a>.
-
-This model can handle it all - any level of complexity for text layouts, tables, images, formulas and handwriting.
+The HighQuality model uses [VGT](https://arxiv.org/abs/2308.14978) - a state-of-the-art two-stream Vision Grid Transformer.
+This model 'has eyes' and can understand layouts with intelligence, so a pre-existing text-layer is not required.
+It's better at classifying content into [`segment_type`](/segment#segment-types).
 
 ## What will work best for me?
 
