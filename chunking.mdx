@@ -1,0 +1,33 @@
+---
+title: Chunking
+description: "Understanding our intelligent chunking"
+---
+
+Chunking is the process of grouping segments into groups (chunks). This varies based on end-application and use-case,
+but generally the goal is to put together <a>segments</a> that come together to form a cohesive idea.
+The end case is usually indexing for search or organizing training data.
+
+We offer an intelligent chunking algorithm - which can be configured or turned off completely to return individual segments.
+This section details how are intelligent chunking works.
+
+## Intelligent Chunking
+
+Segmentation is a core part of our intelligent chunking algorithm. We group segments into chunks based on their `segment_type` heirarchy and have an aproximate max-chunk size (word count)
+that can be configured by changing the `chunk_size` parameter.
+
+The chunking algorithm works as follows:
+
+1. Remove headers and footers
+2. Add to a chunk until we hit a <b>breaking condition</b>, or if the chunk word count is approximately equal to the `chunk_size`.
+
+### Breaking Conditions
+
+We go down the segment hierarchy (from `Title -> Subheading -> Other`).
+
+## Turning it off
+
+## Turning it off
+
+If you would like to receive individual segments as opposed to chunks, you can set `chunk_size` to `0`. This is recommended if you would like to handle chunking yourself.
+
+## Configuration

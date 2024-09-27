@@ -36,28 +36,15 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": [
-        "introduction",
-        "quickstart",
-        "task-response"
-      ]
+      "pages": ["introduction", "quickstart", "task-response"]
     },
     {
       "group": "Task Configuration",
-      "pages": [
-        "model",
-        "chunking",
-        "ocr-strategy"
-      ]
+      "pages": ["models", "chunking", "ocr-strategy"]
     },
     {
       "group": "Output",
-      "pages": [
-        "chunks",
-        "segment",
-        "bounding-box",
-        "ocr"
-      ]
+      "pages": ["chunks", "segment", "bounding-boxes", "ocr"]
     }
   ],
   "footerSocials": {
