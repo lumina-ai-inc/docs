@@ -12,11 +12,11 @@ The way you use the API is by creating a task for each document you want to proc
    Use the following curl command to create a new task:
 
    ```bash
-    curl -X POST https://api.chunkr.com/api/v1/task \
+    curl -X POST https://api.chunkr.ai/api/v1/task \
         -H "Content-Type: multipart/form-data" \
         -H "Authorization: ${YOUR_API_KEY}" \
         -F "file=@/path/to/your/file.pdf" \
-        -F "model=Fast" \
+        -F "model=HighQuality" \
         -F "target_chunk_length=512" \
         -F "ocr_strategy=Auto"
    ```
@@ -28,7 +28,7 @@ The way you use the API is by creating a task for each document you want to proc
    Use the following curl command to check the status of your task:
 
    ```bash
-   curl -X GET https://api.chunkr.com/api/v1/task/${TASK_ID} \
+   curl -X GET https://api.chunkr.ai/api/v1/task/${TASK_ID} \
      -H "Authorization: ${YOUR_API_KEY}"
    ```
 
@@ -49,7 +49,7 @@ The way you use the API is by creating a task for each document you want to proc
     "expires_at": "2023-04-22T10:30:00Z",
     "file_name": "document.pdf",
     "finished_at": "2023-04-15T10:31:30Z",
-    "input_file_url": "https://storage.chunkr.com/input/document.pdf",
+    "input_file_url": "https://storage.chunkr.ai/input/document.pdf",
     "message": "Task completed successfully",
     "output": {
         "chunk_length": 1,
@@ -88,6 +88,6 @@ The way you use the API is by creating a task for each document you want to proc
     "page_count": 5,
     "status": "Succeeded",
     "task_id": "65237fe1-d6f1-456b-9238-408b97a1536d",
-    "task_url": "https://api.chunkr.com/api/v1/task/65237fe1-d6f1-456b-9238-408b97a1536d"
+    "task_url": "https://api.chunkr.ai/api/v1/task/65237fe1-d6f1-456b-9238-408b97a1536d"
     }
     ```
