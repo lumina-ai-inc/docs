@@ -15,7 +15,7 @@ The way you use the API is by creating a task for each document you want to proc
     curl -X POST https://api.chunkr.ai/api/v1/task \
         -H "Content-Type: multipart/form-data" \
         -H "Authorization: ${YOUR_API_KEY}" \
-        -F "file=@/path/to/your/file.pdf" \
+        -F "file=@/path/to/your/file" \
         -F "model=HighQuality" \
         -F "target_chunk_length=512" \
         -F "ocr_strategy=Auto"

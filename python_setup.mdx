@@ -52,7 +52,7 @@ Checkout our github [repo](https://github.com/lumina-ai-inc/chunkr) for more exa
        return output_json_path
 
    def process_files():
-       for file_path in glob.glob(os.path.join("input", "*.pdf")):
+       for file_path in glob.glob(os.path.join("input", "*.{pdf,docx,xlsx,xls,doc,ppt,pptx}")):
            try:
                task_url = create_task(file_path)
                while True:
