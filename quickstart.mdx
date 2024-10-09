@@ -56,10 +56,10 @@ The way you use the API is by creating a task for each document you want to proc
         "segments": [
         {
             "bbox": {
-            "bottom_left": [10.0, 70.0],
-            "bottom_right": [110.0, 70.0],
-            "top_left": [10.0, 20.0],
-            "top_right": [110.0, 20.0]
+            "left": 10.0,
+            "top": 70.0,
+            "width": 110.0,
+            "height": 20.0
             },
             "content": "This is a sample text segment.",
             "html": "<p>This is a sample text segment.</p>",
@@ -68,12 +68,12 @@ The way you use the API is by creating a task for each document you want to proc
             "ocr": [
             {
                 "bbox": {
-                "bottom_left": [10.0, 70.0],
-                "bottom_right": [110.0, 70.0],
-                "top_left": [10.0, 20.0],
-                "top_right": [110.0, 20.0]
+                "left": 2.5,
+                "top": 10.0,
+                "width": 107.5,
+                "height": 10.0
                 },
-                "confidence": 0.95,
+                "confidence": 0.97,
                 "text": "This is a sample text segment."
             }
             ],

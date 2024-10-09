@@ -75,15 +75,15 @@ def draw_bounding_boxes(pdf_path: str, output_data: TaskResponse, output_path: s
     pdf_document = fitz.open(pdf_path)
 
     for chunk in output_data.chunks or []:
-        for seg in chunk.segments:
-            page = pdf_document[seg.page_number - 1]
+        for segment in chunk.segments:
+            page = pdf_document[segment.page_number - 1]
             rect = fitz.Rect(
-                seg.bbox.top_left[0],
-                seg.bbox.top_left[1],
-                seg.bbox.bottom_right[0],
-                seg.bbox.bottom_right[1]
+                segment.bbox.left,
+                segment.bbox.top,
+                segment.bbox.left + segment.bbox.width,
+                segment.bbox.top + segment.bbox.height
             )
-            color = color_map.get(seg.segment_type, (0, 0, 0))
+            color = color_map.get(segment.segment_type, (0, 0, 0))
             page.draw_rect(rect, color=color, width=1)
 
     pdf_document.save(output_path)

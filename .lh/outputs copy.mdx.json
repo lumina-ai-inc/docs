@@ -3,11 +3,19 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 0,
+            "activePatchIndex": 2,
             "patches": [
                 {
                     "date": 1727322216961,
                     "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1728442410988,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -74,17 +74,17 @@\n \n     pdf_document = fitz.open(pdf_path)\n \n     for chunk in output_data.chunks or []:\n-        for seg in chunk.segments:\n-            page = pdf_document[seg.page_number - 1]\n+        for segment in chunk.segments:\n+            page = pdf_document[segment.page_number - 1]\n             rect = fitz.Rect(\n-                seg.bbox.top_left[0],\n-                seg.bbox.top_left[1],\n-                seg.bbox.bottom_right[0],\n-                seg.bbox.bottom_right[1]\n+                segment.bbox.top_left[0],\n+                segment.bbox.top_left[1],\n+                segment.bbox.bottom_right[0],\n+                segment.bbox.bottom_right[1]\n             )\n-            color = color_map.get(seg.segment_type, (0, 0, 0))\n+            color = color_map.get(segment.segment_type, (0, 0, 0))\n             page.draw_rect(rect, color=color, width=1)\n \n     pdf_document.save(output_path)\n     pdf_document.close()\n"
+                },
+                {
+                    "date": 1728442441443,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -77,12 +77,12 @@\n     for chunk in output_data.chunks or []:\n         for segment in chunk.segments:\n             page = pdf_document[segment.page_number - 1]\n             rect = fitz.Rect(\n-                segment.bbox.top_left[0],\n-                segment.bbox.top_left[1],\n-                segment.bbox.bottom_right[0],\n-                segment.bbox.bottom_right[1]\n+                segment.bbox.left,\n+                segment.bbox.top,\n+                segment.bbox.left + segment.bbox.width,\n+                segment.bbox.top + segment.bbox.height\n             )\n             color = color_map.get(segment.segment_type, (0, 0, 0))\n             page.draw_rect(rect, color=color, width=1)\n \n"
                 }
             ],
             "date": 1727322216961,
