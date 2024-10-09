@@ -20,6 +20,8 @@ The Fast model uses [LightGBM](https://lightgbm.readthedocs.io/en/stable/) and r
 This makes it great for text, table and formula segmentation - but it struggles when dealing with images.
 It can still segment images that are surrounded/bounded by text to some degree. A good example is graphs that have Y/X axes with labels.
 
+The fast model can't be used for PDFs without a text-layer.
+
 ## HighQuality
 
 The HighQuality model uses [VGT](https://arxiv.org/abs/2308.14978) - a state-of-the-art two-stream Vision Grid Transformer.
