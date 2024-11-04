@@ -48,7 +48,7 @@
         "models",
         "chunking",
         "ocr-strategy",
-        "structured-extraction"
+        "structured_extraction"
       ]
     },
     {
