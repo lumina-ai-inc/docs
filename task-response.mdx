@@ -32,9 +32,9 @@ interface TaskResponse {
 }
 ```
 
-## OutputResponse
+## Output
 
-The output response is the structured JSON data resulting from processing the file. It follows the schema defined in the [Structured Extraction](/structured_extraction.mdx) and [Chunks](/chunks.mdx) sections. Below is an example of the output response:
+The output response is a dictionary containing two keys: `chunks` and `extracted_json`. The `chunks` key contains the structured segments data as defined in the [Chunks](/chunks.mdx) section, while the `extracted_json` key contains any structured data extracted from the document as defined in the [Structured Extraction](/structured_extraction.mdx) section. Below is an example of the output response:
 
 ```json
 {
