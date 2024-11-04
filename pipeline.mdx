@@ -8,6 +8,8 @@
 
 - **OCR (Optical Character Recognition)**: Utilizes [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) to accurately extract text from images and structured tables.
 
+- **Structured Extraction**: Leverages Chunkr's structured extraction capabilities to convert unstructured document content into structured data formats according to a defined JSON schema. Refer to the [structured extraction documentation](/structured_extraction) for more details.
+
   - **Output**: Structured data containing chunk lengths and detailed segment information, including bounding boxes, extracted text, and associated metadata.
 
   _Note:_ The segments within bounding boxes are relative to each other, maintaining a hierarchical relationship between segments and their OCR data.

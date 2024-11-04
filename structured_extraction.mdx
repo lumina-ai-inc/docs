@@ -1,0 +1,137 @@
+---
+title: Structured Extraction
+description: "Extract structured data from documents"
+---
+
+Chunkr provides structured extraction capabilities to extract specific data fields from documents according to a defined JSON schema. This allows you to convert unstructured document content into structured data formats.
+
+## JSON Schema
+
+When creating a task, you can provide a JSON schema that defines the structure of data you want to extract. Here is an example of how to set up a structured extraction task:
+
+```bash
+curl -v -X POST "http://localhost:8000/api/v1/task" \
+ -H "Authorization: lu_PGWfbJ7D9Pg_6NSu8wjeERFX7J2UqbQksFE6qxH95HP76" \
+ -F "file=@/Users/pyscripts/input/test.pdf" \
+ -F "model=Fast" \
+ -F "target_chunk_length=512" \
+ -F "ocr_strategy=Auto" \
+ -F 'json_schema={
+"title": "Basket",
+"type": "object",
+"properties": [
+{
+"name": "black holes observed",
+"title": "Black Holes Observed",
+"type": "list",
+"description": "A list of black holes observed",
+"default": null
+},
+{
+"name": "implications of data",
+"title": "Implications of Data",
+"type": "string",
+"description": "The implications of the observed data",
+"default": null
+}
+]
+};type=application/json'
+```
+
+### JSON Schema Structure
+
+The `json_schema` defines the structure of the data to be extracted. It consists of a `title`, `type`, and a list of `properties`. Each property represents a specific field to extract from the document.
+
+#### Rust Struct Representation
+
+Below are the Rust structs that model the JSON schema:
+
+```rust
+#[derive(Debug, Serialize, Deserialize, Clone, ToSql, FromSql, ToSchema)]
+pub struct JsonSchema {
+    pub title: String,
+    #[serde(rename = "type")]
+    pub schema_type: String,
+    pub properties: Vec<Property>,
+}
+
+
+
+#[derive(Debug, Serialize, Deserialize, Clone, ToSql, FromSql, ToSchema)]
+pub struct Property {
+    pub name: String,
+    pub title: Option<String>,
+    #[serde(rename = "type")]
+    pub prop_type: String,
+    pub description: Option<String>,
+    pub default: Option<String>,
+}
+```
+
+#### Property Fields Explanation
+
+- **name**: The identifier for the field in the extracted data.
+- **title**: A human-readable title for the field.
+- **type**: The data type of the field (e.g., `string`, `list`).
+- **description**: A description of what the field represents.
+- **default**: The default value for the field if no data is extracted.
+
+### Interpreting the Response
+
+Once the task is completed, the response will include the extracted data in a structured format. Here is an example of the output:
+
+{
+"configuration": {
+"model": "Fast",
+"ocr_strategy": "Auto",
+"target_chunk_length": 512
+},
+"created_at": "2023-04-15T10:30:00Z",
+"expires_at": "2023-04-22T10:30:00Z",
+"file_name": "document.pdf",
+"finished_at": "2023-04-15T10:31:30Z",
+"input_file_url": "https://storage.chunkr.ai/input/document.pdf",
+"message": "Task completed successfully",
+"output": {
+"chunk_length": 1,
+"segments": [
+{
+"bbox": {},
+"content": "",
+"html": "",
+"image": "",
+"markdown": "",
+"ocr": [],
+"page_height": 842.0,
+"page_number": 1,
+"page_width": 595.0,
+"segment_id": "81729b96-086b-49ce-8112-de8e109bfc3c",
+"segment_type": "Text"
+}
+],
+},
+"page_count": 5,
+"status": "Succeeded",
+"task_id": "65237fe1-d6f1-456b-9238-408b97a1536d",
+"task_url": "https://api.chunkr.ai/api/v1/task/65237fe1-d6f1-456b-9238-408b97a1536d"
+},
+"extracted_json": {
+"title": "Clinical Trial Results",
+"schema_type": "object",
+"extracted_fields": [
+{
+"name": "black holes observed",
+"field_type": "list",
+"value": []
+},
+{
+"name": "implications of data",
+"field_type": "string",
+"value": ""
+}
+]
+}
+
+```
+
+```

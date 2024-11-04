@@ -1,3 +1,4 @@
+// Start of Selection
 This guide provides a streamlined approach to using the Chunkr API for document processing and analysis.
 The way you use the API is by creating a task for each document you want to process, and then polling the task until it is completed.
 
@@ -18,8 +19,30 @@ The way you use the API is by creating a task for each document you want to proc
         -F "file=@/path/to/your/file" \
         -F "model=HighQuality" \
         -F "target_chunk_length=512" \
-        -F "ocr_strategy=Auto"
+        -F "ocr_strategy=Auto" \
+        -F 'json_schema={
+        "title": "Basket",
+        "type": "object",
+        "properties": [
+        {
+            "name": "black holes observed",
+            "title": "Black Holes Observed",
+            "type": "list",
+            "description": "A list of black holes observed",
+            "default": null
+        },
+        {
+            "name": "implications of data",
+            "title": "Implications of Data",
+            "type": "string",
+            "description": "The implications of the observed data",
+            "default": null
+        }
+        ]
+        };type=application/json'
    ```
+
+   **Note**: The `json_schema` parameter is optional. When provided, it should be a list of properties for [structured extraction](/structured_extraction.mdx). If you do not require structured data extraction, you can omit this field.
 
    This command will return the task object containing the `task_id` needed for polling the task.
 
@@ -36,58 +59,58 @@ The way you use the API is by creating a task for each document you want to proc
 
 4. **Interpreting the Response**
 
-   Here is an example of what the output might look like, for a full list of fields and explanation of the output, refer to the [task response](/task-response) page.
+   Here is an example of what the output might look like. For a full list of fields and explanations of the output, refer to the [task response](/task-response) page.
 
-    ```json
-    {
-    "configuration": {
-        "model": "Fast",
-        "ocr_strategy": "Auto",
-        "target_chunk_length": 512
-    },
-    "created_at": "2023-04-15T10:30:00Z",
-    "expires_at": "2023-04-22T10:30:00Z",
-    "file_name": "document.pdf",
-    "finished_at": "2023-04-15T10:31:30Z",
-    "input_file_url": "https://storage.chunkr.ai/input/document.pdf",
-    "message": "Task completed successfully",
-    "output": {
-        "chunk_length": 1,
-        "segments": [
-        {
-            "bbox": {
-                "left": 10.0,
-                "top": 70.0,
-                "width": 110.0,
-                "height": 20.0
-            },
-            "content": "This is a sample text segment.",
-            "html": "<p>This is a sample text segment.</p>",
-            "image": null,
-            "markdown": "This is a sample text segment.",
-            "ocr": [
-            {
-                "bbox": {
-                    "left": 2.5,
-                    "top": 10.0,
-                    "width": 107.5,
-                    "height": 10.0
-                },
-                "confidence": 0.97,
-                "text": "This is a sample text segment."
-            }
-            ],
-            "page_height": 842.0,
-            "page_number": 1,
-            "page_width": 595.0,
-            "segment_id": "81729b96-086b-49ce-8112-de8e109bfc3c",
-            "segment_type": "Text"
-        }
-        ]
-    },
-    "page_count": 5,
-    "status": "Succeeded",
-    "task_id": "65237fe1-d6f1-456b-9238-408b97a1536d",
-    "task_url": "https://api.chunkr.ai/api/v1/task/65237fe1-d6f1-456b-9238-408b97a1536d"
-    }
-    ```
+   ```json
+   {
+     "configuration": {
+       "model": "Fast",
+       "ocr_strategy": "Auto",
+       "target_chunk_length": 512
+     },
+     "created_at": "2023-04-15T10:30:00Z",
+     "expires_at": "2023-04-22T10:30:00Z",
+     "file_name": "document.pdf",
+     "finished_at": "2023-04-15T10:31:30Z",
+     "input_file_url": "https://storage.chunkr.ai/input/document.pdf",
+     "message": "Task completed successfully",
+     "output": {
+       "chunk_length": 1,
+       "segments": [
+         {
+           "bbox": {
+             "left": 10.0,
+             "top": 70.0,
+             "width": 110.0,
+             "height": 20.0
+           },
+           "content": "This is a sample text segment.",
+           "html": "<p>This is a sample text segment.</p>",
+           "image": null,
+           "markdown": "This is a sample text segment.",
+           "ocr": [
+             {
+               "bbox": {
+                 "left": 2.5,
+                 "top": 10.0,
+                 "width": 107.5,
+                 "height": 10.0
+               },
+               "confidence": 0.97,
+               "text": "This is a sample text segment."
+             }
+           ],
+           "page_height": 842.0,
+           "page_number": 1,
+           "page_width": 595.0,
+           "segment_id": "81729b96-086b-49ce-8112-de8e109bfc3c",
+           "segment_type": "Text"
+         }
+       ]
+     },
+     "page_count": 5,
+     "status": "Succeeded",
+     "task_id": "65237fe1-d6f1-456b-9238-408b97a1536d",
+     "task_url": "https://api.chunkr.ai/api/v1/task/65237fe1-d6f1-456b-9238-408b97a1536d"
+   }
+   ```
