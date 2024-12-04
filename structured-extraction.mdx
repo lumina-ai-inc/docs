@@ -11,7 +11,7 @@ When creating a task, you can provide a JSON schema that defines the structure o
 
 ```bash
 curl -v -X POST "http://localhost:8000/api/v1/task" \
- -H "Authorization: lu_PGWfbJ7D9Pg_6NSu8wjeERFX7J2UqbQksFE6qxH95HP76" \
+ -H "Authorization: <your_api_key>" \
  -F "file=@/Users/pyscripts/input/test.pdf" \
  -F "model=Fast" \
  -F "target_chunk_length=512" \
@@ -21,10 +21,10 @@ curl -v -X POST "http://localhost:8000/api/v1/task" \
 "type": "object",
 "properties": [
 {
-"name": "black holes observed",
-"title": "Black Holes Observed",
-"type": "list",
-"description": "A list of black holes observed",
+"name": "patient cohort information",
+"title": "Patient Cohort Information",
+"type": "string",
+"description": "A summary of patient cohort information",
 "default": null
 },
 {
@@ -100,29 +100,29 @@ Once the task is completed, the response will include the extracted data in a st
                 "page_height": 842.0,
                 "page_number": 1,
                 "page_width": 595.0,
-                "segment_id": "81729b96-086b-49ce-8112-de8e109bfc3c",
+                "segment_id": "<segment_id>",
                 "segment_type": "Text"
             }
         ]
     },
     "page_count": 5,
     "status": "Succeeded",
-    "task_id": "65237fe1-d6f1-456b-9238-408b97a1536d",
-    "task_url": "https://api.chunkr.ai/api/v1/task/65237fe1-d6f1-456b-9238-408b97a1536d"
+    "task_id": "<task_id>",
+    "task_url": "https://api.chunkr.ai/api/v1/task/<task_id>"
 },
 "extracted_json": {
     "title": "Clinical Trial Results",
     "schema_type": "object",
     "extracted_fields": [
         {
-            "name": "black holes observed",
-            "field_type": "list",
-            "value": []
+            "name": "patient cohort information",
+            "field_type": "string",
+            "value": "The patient cohort consisted of 30-50 year old males with a history of hypertension and diabetes."
         },
         {
             "name": "implications of data",
             "field_type": "string",
-            "value": ""
+            "value": "The effect of citrus bergamot on heart rate was observed to be statistically significant in the clinical trial performed."
         }
     ]
 }
