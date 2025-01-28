@@ -105,6 +105,13 @@
       ]
     },
     {
+      "group": "Self Hosting",
+      "pages": [
+        "docs/self-hosting/docker-compose",
+        "docs/self-hosting/kubernetes"
+      ]
+    },
+    {
       "group": "SDK",
       "pages": [
         "sdk/install"
