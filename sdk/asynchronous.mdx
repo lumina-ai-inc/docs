@@ -1,0 +1,56 @@
+---
+title: Using Chunkr AI Asynchronously
+sidebarTitle: Asynchronous
+---
+
+Chunkr AI's SDK supports both synchronous and asynchronous usage patterns. 
+The same client class `Chunkr` can be used for both patterns, making it flexible for different application needs.
+All methods exists in both synchronous and asynchronous versions.
+
+## Synchronous Usage
+
+For simple scripts or applications that don't require asynchronous operations, you can use the synchronous pattern:
+
+```python
+from chunkr_ai import Chunkr
+
+# Initialize client
+chunkr = Chunkr()
+
+try:
+    # Upload a file and wait for processing
+    task = chunkr.upload("document.pdf")
+    print(task.task_id)
+
+    # Create task without waiting - you will get back a task object without chunks
+    task = chunkr.create_task("document.pdf")
+    result = task.poll()  # Check status when needed - this will return a task object with chunks
+finally:
+    # Clean up when done
+    chunkr.close()
+```
+
+## Asynchronous Usage
+
+For applications that benefit from asynchronous operations (like web servers or background tasks), you can use the async pattern:
+
+```python
+from chunkr_ai import Chunkr
+import asyncio
+
+async def process_document():
+    # Initialize client
+    chunkr = Chunkr()
+
+    try:
+        # Upload a file and wait for processing
+        task = await chunkr.upload("document.pdf")
+        print(task.task_id)
+
+        # Create task without waiting - you will get back a task object without chunks
+        task = await chunkr.create_task("document.pdf")
+        result = await task.poll()  # Check status when needed - this will return a task object with chunks
+    finally:
+        # Clean up when done
+        chunkr.close()
+

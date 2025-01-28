@@ -1,0 +1,91 @@
+---
+title: Creating Tasks
+description: Learn how to upload files and create processing tasks with Chunkr AI
+---
+
+The Chunkr AI SDK provides two main methods for uploading files:
+- `upload()`: Upload and wait for complete processing
+- `create_task()`: Upload and get an immediate task response
+
+## Complete Processing with `upload()`
+
+The `upload()` method handles the entire process - it uploads your file and waits for processing to complete:
+
+```python
+from chunkr_ai import Chunkr
+chunkr = Chunkr()
+
+# Upload and wait for complete processing
+task = chunkr.upload("path/to/your/file.pdf")
+
+# All processing is done - you can access results immediately
+print(task.task_id)
+print(task.status) # Will be "completed"
+print(task.output) # Contains processed results
+```
+
+## Instant Response with `create_task()`
+
+If you want to start processing but don't want to wait for completion, use `create_task()`:
+
+```python
+# Create task without waiting
+task = chunkr.create_task("path/to/your/file.pdf")
+
+# Task is created but processing may not be complete
+print(task.task_id)
+print(task.status)  # Might be "Starting"
+print(task.output)  # Might be None if processing isn't finished
+```
+
+## Checking Task Status with `poll()`
+
+When using `create_task()`, you can check the status later using `poll()`:
+
+```python
+# Create task immediately
+task = chunkr.create_task("path/to/your/file.pdf")
+
+# ... do other work ...
+
+# Check status when needed
+result = task.poll()
+print(result.status)
+print(result.output)  # Now contains processed results if status is "Succeeded"
+```
+
+For async applications, remember to use `await`:
+
+```python
+# Create task immediately
+task = await chunkr.create_task("path/to/your/file.pdf")
+
+# ... do other work ...
+
+# Check status when needed
+result = await task.poll()
+```
+
+## Supported File Types
+
+We support PDFs, Office files (Word, Excel, PowerPoint), and images. You can upload them in several ways:
+
+```python
+# From a file path
+task = chunkr.upload("path/to/your/file.pdf")
+
+# From an opened file
+with open("path/to/your/file.pdf", "rb") as f:
+    task = chunkr.upload(f)
+
+# From a URL
+task = chunkr.upload("https://example.com/document.pdf")
+
+# From a base64 string (must include MIME type header)
+task = chunkr.upload("data:application/pdf;base64,JVBERi0...")
+
+# From a PIL Image
+from PIL import Image
+img = Image.open("path/to/your/photo.jpg")
+task = chunkr.upload(img)
+```

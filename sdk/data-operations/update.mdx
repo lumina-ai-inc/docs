@@ -1,0 +1,80 @@
+---
+title: Updating Tasks
+description: Learn how to update existing tasks in Chunkr AI
+---
+
+Chunkr AI allows you to update the configuration of existing tasks. You can update a task either by its ID or using a task object.
+
+## Updating by Task ID
+
+Use the `update()` method with a task ID when you have the ID stored:
+
+```python
+from chunkr_ai import Chunkr, Configuration
+chunkr = Chunkr()
+
+# Update task with new configuration
+new_config = Configuration(
+    # your configuration options here
+)
+
+# Update and wait for processing
+task = chunkr.update("task_123", new_config)
+```
+
+## Updating from Task Object
+
+If you have a task object (from a previous `get_task()` or `create_task()`), you can update it directly:
+
+```python
+# Get existing task
+task = chunkr.get_task("task_123")
+
+# Update configuration
+new_config = Configuration(
+    # your configuration options here
+)
+
+# Update and wait
+task = task.update(new_config)
+```
+
+## Immediate vs. Waited Updates
+
+Like task creation, you have two options for updates:
+
+### Wait for Processing
+
+The standard `update()` method waits for processing to complete:
+
+```python
+# Updates and waits for completion
+task = chunkr.update("task_123", new_config)
+print(task.status) # Will be "Succeeded"
+```
+
+### Immediate Response
+
+Use `update_task()` for an immediate response without waiting:
+
+```python
+# Updates and returns immediately
+task = chunkr.update_task("task_123", new_config)
+print(task.status) # Might be "Starting"
+
+# Get status later
+result = task.poll()
+```
+
+## Async Usage
+
+For async applications, use `await` with the update methods:
+
+```python
+# Update and wait
+task = await chunkr.update("task_123", new_config)
+
+# Update without waiting
+task = await chunkr.update_task("task_123", new_config)
+result = await task.poll() # Check status later
+```

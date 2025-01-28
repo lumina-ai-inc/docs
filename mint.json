@@ -112,9 +112,27 @@
       ]
     },
     {
-      "group": "SDK",
+      "group": "Getting Started",
       "pages": [
-        "sdk/install"
+        "sdk/installation",
+        "sdk/asynchronous"
+      ]
+    },
+    {
+      "group": "Data Operations",
+      "pages": [
+        "sdk/data-operations/create",
+        "sdk/data-operations/get",
+        "sdk/data-operations/update",
+        "sdk/data-operations/delete",
+        "sdk/data-operations/cancel"
+      ]
+    },
+    {
+      "group": "Utilities",
+      "pages": [
+        "sdk/configuration",
+        "sdk/export"
       ]
     }
   ],

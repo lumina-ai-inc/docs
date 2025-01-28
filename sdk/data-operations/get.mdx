@@ -1,0 +1,56 @@
+---
+title: Getting Tasks
+description: Learn how to retrieve and read task information from Chunkr AI
+---
+
+You can retrieve information about a task at any time using the `get_task()` method
+This is useful for checking the status of previously created tasks or accessing their results.
+
+## Basic Usage
+
+
+```python
+from chunkr_ai import Chunkr
+chunkr = Chunkr()
+
+# Get task by ID
+task = chunkr.get_task("task_123")
+
+# Access task information
+print(task.status)
+print(task.output)
+```
+
+## Customizing the Response
+
+The `get_task()` method accepts two optional parameters to customize the response:
+
+```python
+# Exclude chunks from output
+task = chunkr.get_task("task_123", include_chunks=False) 
+
+# Get task with base64-encoded URLs instead of presigned URLs
+task = chunkr.get_task("task_123", base64_urls=True)
+```
+
+## Response Options
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `include_chunks` | `True` | When `True`, includes all processed chunks in the response. Set to `False` to receive a lighter response without chunk data. |
+| `base64_urls` | `False` | When `True`, returns URLs as base64-encoded strings. When `False`, returns presigned URLs for direct access. |
+
+## Async Usage
+
+For async applications, remember to use `await`:
+
+```python
+# Get task asynchronously
+task = await chunkr.get_task("task_123")
+```
+
+## Best Practices
+
+- Store task IDs when creating tasks if you need to retrieve them later
+- Use `include_chunks=False` when you only need task metadata
+- Consider using base64 URLs (`base64_urls=True`) when you need to cache or store the URLs locally
