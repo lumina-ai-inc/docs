@@ -1,0 +1,196 @@
+---
+title: Usage Patterns
+description: Optimize Chunkr configuration for your use case
+---
+
+Chunkr AI is designed to be configurable, so there probably exists a configuration that will work for your use case.
+Here are some examples to get you started.
+
+## Highest quality
+
+The highest quality output is achived by using layout analysis and then generating html and markdown using a VLM on every segment type.
+This will take longer to process, but will yield the highest quality output. 
+By dividing the file into segments, we can get higher quality results from the VLM and also parallelize the processing.
+
+<CodeGroup> 
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import Configuration, SegmentProcessing, GenerationConfig, GenerationStrategy
+
+chunkr = Chunkr()
+
+config = Configuration(
+    segment_processing=SegmentProcessing(
+        Caption=GenerationConfig(
+              html=GenerationStrategy.LLM,
+              markdown=GenerationStrategy.LLM,
+          ),
+          Footnote=GenerationConfig(
+              html=GenerationStrategy.LLM,
+              markdown=GenerationStrategy.LLM,
+          ),
+          ListItem=GenerationConfig(
+              html=GenerationStrategy.LLM,
+              markdown=GenerationStrategy.LLM,
+          ),
+          Page=GenerationConfig(
+              html=GenerationStrategy.LLM,
+              markdown=GenerationStrategy.LLM,
+          ),
+          PageFooter=GenerationConfig(
+              html=GenerationStrategy.LLM,
+              markdown=GenerationStrategy.LLM,
+          ),
+          PageHeader=GenerationConfig(
+              html=GenerationStrategy.LLM,
+              markdown=GenerationStrategy.LLM,
+          ),
+          Picture=GenerationConfig(
+              html=GenerationStrategy.LLM,
+              markdown=GenerationStrategy.LLM,
+          ),
+          SectionHeader=GenerationConfig(
+              html=GenerationStrategy.LLM,
+              markdown=GenerationStrategy.LLM,
+          ),
+          Text=GenerationConfig(
+              html=GenerationStrategy.LLM,
+              markdown=GenerationStrategy.LLM,
+          ),
+          Title=GenerationConfig(
+              html=GenerationStrategy.LLM,
+              markdown=GenerationStrategy.LLM,
+          )
+    )
+)
+
+chunkr.upload("path/to/file.pdf", config)
+```
+
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task \
+  -H "Authorization: YOUR_API_KEY" \
+  -F file=@path/to/file.pdf \
+  -F 'segment_processing={
+      "Caption": {
+        "html": "LLM",
+        "markdown": "LLM"
+      },
+      "Footnote": {
+        "html": "LLM",
+        "markdown": "LLM"
+      },
+      "ListItem": {
+        "html": "LLM",
+        "markdown": "LLM"
+      },
+      "Page": {
+        "html": "LLM",
+        "markdown": "LLM"
+      },
+      "PageFooter": {
+        "html": "LLM",
+        "markdown": "LLM"
+      },
+      "PageHeader": {
+        "html": "LLM",
+        "markdown": "LLM"
+      },
+      "Picture": {
+        "html": "LLM",
+        "markdown": "LLM"
+      },
+      "SectionHeader": {
+        "html": "LLM",
+        "markdown": "LLM"
+      },
+      "Text": {
+        "html": "LLM",
+        "markdown": "LLM"
+      },
+      "Title": {
+        "html": "LLM",
+        "markdown": "LLM"
+      }
+    };type=application/json'
+```
+</CodeGroup>
+
+## Fastest
+
+The fastest output is achived by skipping layout analysis and using no VLMs at all.
+That means that the output will just be the text content of the file. 
+
+<CodeGroup> 
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import Configuration, SegmentProcessing, GenerationConfig, GenerationStrategy, SegmentationStrategy, CroppingStrategy
+
+chunkr = Chunkr()
+
+config = Configuration(
+    segment_processing=SegmentProcessing(
+        Formula=GenerationConfig(
+              html=GenerationStrategy.AUTO,
+              markdown=GenerationStrategy.AUTO,
+        ),
+        Table=GenerationConfig(
+              html=GenerationStrategy.AUTO,
+              markdown=GenerationStrategy.AUTO,
+        ),
+        Picture=GenerationConfig(
+            crop_image=CroppingStrategy.AUTO
+        ),
+    ),
+    segmentation_strategy=SegmentationStrategy.PAGE
+)
+
+chunkr.upload("path/to/file.pdf", config)
+```
+
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task \
+  -H "Authorization: YOUR_API_KEY" \
+  -F file=@path/to/file.pdf \
+  -F 'segment_processing={
+        "Formula": {
+            "html": "Auto",
+            "markdown": "Auto"
+        },
+        "Table": {
+            "html": "Auto",
+            "markdown": "Auto"
+        },
+        "Picture": {
+            "crop_image": "Auto"
+        }
+    };type=application/json' \
+  -F 'segmentation_strategy="\"Page\"";type=application/json'
+```
+</CodeGroup>
+
+## Word Level Bounding Boxes
+
+If you want to get word level bounding boxes for all text in the file. 
+This will take longer to process but will have consistent results.
+
+<CodeGroup> 
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import Configuration, OcrStrategy
+
+chunkr = Chunkr()
+
+config = Configuration(
+   ocr_strategy=OcrStrategy.ALL
+)
+
+chunkr.upload("path/to/file.pdf", config)
+```
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task \
+  -H "Authorization: YOUR_API_KEY" \
+  -F file=@path/to/file.pdf \
+  -F 'ocr_strategy="\"All\"";type=application/json'
+```
+</CodeGroup>

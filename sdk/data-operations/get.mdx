@@ -8,8 +8,9 @@ This is useful for checking the status of previously created tasks or accessing 
 
 ## Basic Usage
 
+<CodeGroup> 
 
-```python
+```python Python
 from chunkr_ai import Chunkr
 chunkr = Chunkr()
 
@@ -20,18 +21,22 @@ task = chunkr.get_task("task_123")
 print(task.status)
 print(task.output)
 ```
+</CodeGroup>
 
 ## Customizing the Response
 
 The `get_task()` method accepts two optional parameters to customize the response:
 
-```python
+<CodeGroup> 
+
+```python Python
 # Exclude chunks from output
 task = chunkr.get_task("task_123", include_chunks=False) 
 
 # Get task with base64-encoded URLs instead of presigned URLs
 task = chunkr.get_task("task_123", base64_urls=True)
 ```
+</CodeGroup>
 
 ## Response Options
 
@@ -43,11 +48,14 @@ task = chunkr.get_task("task_123", base64_urls=True)
 ## Async Usage
 
 For async applications, remember to use `await`:
+        
+<CodeGroup> 
 
-```python
+```python Python
 # Get task asynchronously
 task = await chunkr.get_task("task_123")
 ```
+</CodeGroup>
 
 ## Best Practices
 

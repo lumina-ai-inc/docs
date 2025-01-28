@@ -11,49 +11,61 @@ Chunkr AI allows you to export task results in multiple formats. You can get the
 
 This will collate the `html` from every `segment` in all `chunks`, and create a single HTML file.
 
-```python
+<CodeGroup> 
+
+```python Python
 # Get HTML content as string
 html = task.html()
 
 # Or save directly to file
 html = task.html(output_file="output/result.html")
 ```
+</CodeGroup>
 
 ### Markdown Export
 
 This will collate the `markdown` from every `segment` in all `chunks`, and create a single markdown file.
 
-```python
+<CodeGroup> 
+
+```python Python
 # Get markdown content as string
 md = task.markdown()
 
 # Or save directly to file
 md = task.markdown(output_file="output/result.md")
 ```
+</CodeGroup>
 
 ### Text Export
 
 This will collate the `content` from every `segment` in all `chunks`, and create a single text file.
 
-```python
+<CodeGroup> 
+
+```python Python
 # Get plain text content as string
 text = task.content()
 
 # Or save directly to file
 text = task.content(output_file="output/result.txt")
 ```
+</CodeGroup>    
 
 ### JSON Export
 
 This will return the complete task data.
 
-```python
+<CodeGroup> 
+
+```python Python
 # Get complete task data as dictionary
 json = task.json()
 
 # Or save directly to file
 json = task.json(output_file="output/result.json")
 ```
+</CodeGroup>
 
 ## File Output
 
@@ -63,8 +75,11 @@ When using the `output_file` parameter:
 - Existing files will be overwritten
 
 Example with custom path:
+    
+<CodeGroup> 
 
-```python
+```python Python
 # Create nested directory structure and save file
 task.html(output_file="exports/2024/january/result.html")
 ```
+</CodeGroup>

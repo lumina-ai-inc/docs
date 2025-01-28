@@ -105,6 +105,13 @@
       ]
     },
     {
+      "group": "Use Cases",
+      "pages": [
+        "docs/use-cases/bulk-upload",
+        "docs/use-cases/usage-patterns"
+      ]
+    },
+    {
       "group": "Self Hosting",
       "pages": [
         "docs/self-hosting/docker-compose",

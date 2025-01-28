@@ -11,7 +11,9 @@ The Chunkr AI SDK provides two main methods for uploading files:
 
 The `upload()` method handles the entire process - it uploads your file and waits for processing to complete:
 
-```python
+<CodeGroup> 
+
+```python Python
 from chunkr_ai import Chunkr
 chunkr = Chunkr()
 
@@ -24,11 +26,15 @@ print(task.status) # Will be "completed"
 print(task.output) # Contains processed results
 ```
 
+</CodeGroup>
+
 ## Instant Response with `create_task()`
 
 If you want to start processing but don't want to wait for completion, use `create_task()`:
 
-```python
+<CodeGroup> 
+
+```python Python
 # Create task without waiting
 task = chunkr.create_task("path/to/your/file.pdf")
 
@@ -38,11 +44,15 @@ print(task.status)  # Might be "Starting"
 print(task.output)  # Might be None if processing isn't finished
 ```
 
+</CodeGroup>
+
 ## Checking Task Status with `poll()`
 
 When using `create_task()`, you can check the status later using `poll()`:
 
-```python
+<CodeGroup> 
+
+```python Python
 # Create task immediately
 task = chunkr.create_task("path/to/your/file.pdf")
 
@@ -54,9 +64,13 @@ print(result.status)
 print(result.output)  # Now contains processed results if status is "Succeeded"
 ```
 
+</CodeGroup>
+
 For async applications, remember to use `await`:
 
-```python
+<CodeGroup> 
+
+```python Python
 # Create task immediately
 task = await chunkr.create_task("path/to/your/file.pdf")
 
@@ -66,11 +80,15 @@ task = await chunkr.create_task("path/to/your/file.pdf")
 result = await task.poll()
 ```
 
+</CodeGroup>
+
 ## Supported File Types
 
 We support PDFs, Office files (Word, Excel, PowerPoint), and images. You can upload them in several ways:
 
-```python
+<CodeGroup> 
+
+```python Python
 # From a file path
 task = chunkr.upload("path/to/your/file.pdf")
 
@@ -89,3 +107,4 @@ from PIL import Image
 img = Image.open("path/to/your/photo.jpg")
 task = chunkr.upload(img)
 ```
+</CodeGroup>

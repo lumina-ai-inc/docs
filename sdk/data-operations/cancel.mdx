@@ -10,7 +10,9 @@ You can cancel tasks either by their ID or using a task object.
 
 Use the `cancel_task()` method when you have the task ID:
 
-```python
+<CodeGroup> 
+
+```python Python
 from chunkr_ai import Chunkr
 chunkr = Chunkr()
 
@@ -18,11 +20,15 @@ chunkr = Chunkr()
 chunkr.cancel_task("task_123")
 ```
 
+</CodeGroup>
+
 ## Canceling from Task Object
 
 If you have a task object, you can cancel it directly using the `cancel()` method. This method will also return the updated task status:
 
-```python
+<CodeGroup> 
+
+```python Python
 # Get existing task
 task = chunkr.get_task("task_123")
 
@@ -31,11 +37,15 @@ updated_task = task.cancel()
 print(updated_task.status) # Will show canceled status
 ```
 
+</CodeGroup>
+
 ## Async Usage
 
 For async applications, use `await`:
 
-```python
+<CodeGroup> 
+
+```python Python
 # Cancel by ID
 await chunkr.cancel_task("task_123")
 
@@ -43,3 +53,4 @@ await chunkr.cancel_task("task_123")
 task = await chunkr.get_task("task_123")
 updated_task = await task.cancel()
 ```
+</CodeGroup>
