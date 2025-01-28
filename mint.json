@@ -10,6 +10,9 @@
   },
   "theme": "venus",
   "layout": "topnav",
+  "codeBlock": {
+    "mode": "auto"
+  },
   "background": {
     "style": "gradient"
   },
@@ -46,11 +49,11 @@
   "tabs": [
     {
       "name": "Documentation",
-      "url": "docs/get-started"
+      "url": "docs/"
     },
     {
       "name": "SDK",
-      "url": "docs/sdk"
+      "url": "sdk/"
     },
     {
       "name": "API References",
@@ -85,9 +88,25 @@
       ]
     },
     {
+      "group": "Features",
+      "pages": [
+        "docs/features/overview",
+        {
+          "group": "Layout Analysis",
+          "pages": [
+            "docs/features/layout-analysis/what",
+            "docs/features/layout-analysis/segmentation_strategy"
+          ]
+        },
+        "docs/features/segment-processing",
+        "docs/features/ocr",
+        "docs/features/chunking"
+      ]
+    },
+    {
       "group": "SDK",
       "pages": [
-        "docs/sdk/install"
+        "sdk/install"
       ]
     }
   ],

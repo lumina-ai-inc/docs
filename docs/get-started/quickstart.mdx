@@ -5,3 +5,93 @@ description: "Learn how to get started with Chunkr AI API"
 icon: "book"
 iconType: "solid"
 ---
+
+Chunkr AI is an API service to convert complex documents into LLM/RAG-ready data. We support a wide range of document types, including PDFs, Office files (Word, Excel, PowerPoint), and images.
+
+## Getting Started
+
+To get started with Chunkr AI, follow these simple steps to set up your account and integrate our API into your application.
+
+### Step 1: Sign Up and Create an API Key
+
+1. Visit [Chunkr AI](https://chunkr.ai)
+2. Click on "Login" and create your account
+3. Once logged in, navigate to "API Keys" in the dashboard
+
+### Step 2: Install our client SDK
+
+<CodeGroup> 
+```python Python
+pip install chunkr-ai
+```
+</CodeGroup>
+
+### Step 3: Upload your document
+
+<CodeGroup> 
+```python Python
+from chunkr_ai import Chunkr
+
+# Initialize the Chunkr client with your API key - get this from https://chunkr.ai
+chunkr = Chunkr(api_key="your_api_key")
+
+# Upload a document via url or local file path
+url = "https://chunkr-web.s3.us-east-1.amazonaws.com/landing_page/input/science.pdf"
+task = chunkr.upload(url) 
+```
+</CodeGroup>
+    
+### Step 4: Export the results
+Chunkr AI will return a `TaskResponse` object. This object contains the results of the document conversion. You can export the results in various formats.
+
+<CodeGroup> 
+```python Python
+# Export HTML of document
+task.html(output_file="output.html")
+
+# Export markdown of document
+task.markdown(output_file="output.md")
+
+# Export text of document
+task.content(output_file="output.txt")
+
+# Export result as JSON
+task.json(output_file="output.json")
+```
+</CodeGroup>
+
+### Step 5: Explore the output
+
+The output of the task can be used to build your RAG pipeline. 
+Checkout the [API Reference](/api-references/task/create-task#response-output-chunks) for more details.
+
+<CodeGroup> 
+```python Python
+# The output of the task is a list of chunks
+chunks = task.output.chunks
+
+# Each chunk is a list of segments
+for chunk in chunks:
+    for segment in chunk.segments:
+        print(segment.segment_type)
+```
+</CodeGroup>
+
+## Authentication Options
+
+You can authenticate with the Chunkr AI API in two ways:
+
+1. **Direct API Key** - Pass your API key directly when initializing the client
+2. **Environment Variable** - Set `CHUNKR_API_KEY` in your `.env` file
+
+<CodeGroup> 
+```python Python
+from chunkr_ai import Chunkr
+
+# Option 1: Initialize with API key directly
+chunkr = Chunkr(api_key="your_api_key")
+
+# Option 2: Initialize without api_key parameter - will use CHUNKR_API_KEY from environment
+chunkr = Chunkr()
+```
+</CodeGroup>
