@@ -2,3 +2,47 @@
 title: Intelligent chunking
 description: "Chunking"
 ---
+
+Chunking is the process of splitting a document into smaller segments. 
+These chunks can be used for semantic search, and better LLM performance.
+
+By leveraging layout analysis, we create intelligent chunks that preserve document structure and context. Our algorithm:
+- Respects natural document boundaries (paragraphs, sections)
+- Maintains semantic relationships between segments
+- Optimizes chunk size for LLM processing
+
+You can review the implementation in our [GitHub repository](https://github.com/lumina-ai-inc/chunkr/blob/main/core/src/utils/services/chunking.rs#L113).
+
+<CodeGroup> 
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import (
+    ChunkProcessing,
+    Configuration
+)
+
+chunkr = Chunkr()
+
+chunkr.upload("path/to/file.pdf", Configuration(
+    chunk_processing=ChunkProcessing(
+        ignore_headers_and_footers=True, 
+        target_length=1024 
+    ),
+))
+```
+
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task \
+  -H "Authorization: YOUR_API_KEY" \
+  -F file=@path/to/file.pdf \
+  -F 'chunk_processing={
+      "ignore_headers_and_footers": false,
+      "target_length": 1024
+    };type=application/json'
+```
+</CodeGroup>
+
+## Defaults
+
+- `ignore_headers_and_footers`: True
+- `target_length`: 512

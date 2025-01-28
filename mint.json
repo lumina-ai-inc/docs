@@ -100,7 +100,8 @@
         },
         "docs/features/segment-processing",
         "docs/features/ocr",
-        "docs/features/chunking"
+        "docs/features/chunking",
+        "docs/features/pipeline"
       ]
     },
     {
