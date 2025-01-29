@@ -69,12 +69,12 @@
     },
     {
       "name": "Discord",
-      "url": "https://discord.gg/lumina",
+      "url": "https://discord.gg/XzKWFByKzW",
       "icon": "discord"
     },
     {
       "name": "Twitter",
-      "url": "https://x.com/lumina_ai_inc",
+      "url": "https://x.com/chunkrai",
       "icon": "x"
     }
   ],
@@ -145,8 +145,8 @@
   ],
   "footerSocials": {
     "github": "https://github.com/lumina-ai-inc/chunkr",
-    "discord": "https://discord.gg/lumina",
-    "x": "https://x.com/lumina_ai_inc"
+    "discord": "https://discord.gg/XzKWFByKzW",
+    "x": "https://x.com/chunkrai"
   },
   "feedback": {
     "thumbsRating": true,
