@@ -35,7 +35,7 @@ from chunkr_ai.models import (
 
 chunkr = Chunkr()
 
-chunkr.upload("path/to/file.pdf", Configuration(
+chunkr.upload("path/to/file", Configuration(
     pipeline=Pipeline.AZURE
 ))
 ```
@@ -43,7 +43,7 @@ chunkr.upload("path/to/file.pdf", Configuration(
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file.pdf \
+  -F file=@path/to/file \
   -F 'pipeline="\"Azure\"";type=application/json'
 ```
 </CodeGroup>
@@ -64,7 +64,7 @@ from chunkr_ai.models import (
 
 chunkr = Chunkr()
 
-chunkr.upload("path/to/file.pdf", Configuration(
+chunkr.upload("path/to/file", Configuration(
     segment_processing=SegmentProcessing(
         Table=GenerationConfig(
             html=GenerationStrategy.AUTO,
@@ -78,7 +78,7 @@ chunkr.upload("path/to/file.pdf", Configuration(
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file.pdf \
+  -F file=@path/to/file \
   -F 'segment_processing={
       "Table": {
         "html": "Auto",

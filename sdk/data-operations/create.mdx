@@ -18,7 +18,7 @@ from chunkr_ai import Chunkr
 chunkr = Chunkr()
 
 # Upload and wait for complete processing
-task = chunkr.upload("path/to/your/file.pdf")
+task = chunkr.upload("path/to/your/file")
 
 # All processing is done - you can access results immediately
 print(task.task_id)
@@ -36,7 +36,7 @@ If you want to start processing but don't want to wait for completion, use `crea
 
 ```python Python
 # Create task without waiting
-task = chunkr.create_task("path/to/your/file.pdf")
+task = chunkr.create_task("path/to/your/file")
 
 # Task is created but processing may not be complete
 print(task.task_id)
@@ -54,7 +54,7 @@ When using `create_task()`, you can check the status later using `poll()`:
 
 ```python Python
 # Create task immediately
-task = chunkr.create_task("path/to/your/file.pdf")
+task = chunkr.create_task("path/to/your/file")
 
 # ... do other work ...
 
@@ -72,7 +72,7 @@ For async applications, remember to use `await`:
 
 ```python Python
 # Create task immediately
-task = await chunkr.create_task("path/to/your/file.pdf")
+task = await chunkr.create_task("path/to/your/file")
 
 # ... do other work ...
 
@@ -90,10 +90,10 @@ We support PDFs, Office files (Word, Excel, PowerPoint), and images. You can upl
 
 ```python Python
 # From a file path
-task = chunkr.upload("path/to/your/file.pdf")
+task = chunkr.upload("path/to/your/file")
 
 # From an opened file
-with open("path/to/your/file.pdf", "rb") as f:
+with open("path/to/your/file", "rb") as f:
     task = chunkr.upload(f)
 
 # From a URL

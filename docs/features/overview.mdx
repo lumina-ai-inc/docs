@@ -25,7 +25,7 @@ from chunkr_ai.models import Configuration, GenerationConfig, GenerationStrategy
 
 chunkr = Chunkr()
 
-chunkr.upload("path/to/file.pdf", Configuration(
+chunkr.upload("path/to/file", Configuration(
     segment_processing=SegmentProcessing(
         page=GenerationConfig(
             html=GenerationStrategy.LLM, 
@@ -39,7 +39,7 @@ chunkr.upload("path/to/file.pdf", Configuration(
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file.pdf \
+  -F file=@path/to/file \
   -F 'segment_processing={"page": {"html": "llm", "markdown": "llm"}};type=application/json' \
   -F 'segmentation_strategy="\"Page\"";type=application/json'
 ```

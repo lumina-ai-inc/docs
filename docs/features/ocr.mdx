@@ -22,7 +22,7 @@ from chunkr_ai.models import Configuration, OcrStrategy
 
 chunkr = Chunkr()
 
-chunkr.upload("path/to/file.pdf", Configuration(
+chunkr.upload("path/to/file", Configuration(
     ocr_strategy=OcrStrategy.ALL # can also be OcrStrategy.AUTO
 ))
 ```
@@ -30,7 +30,7 @@ chunkr.upload("path/to/file.pdf", Configuration(
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file.pdf \
+  -F file=@path/to/file \
   -F 'ocr_strategy="\"All\"";type=application/json'
 ```
 </CodeGroup>

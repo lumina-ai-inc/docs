@@ -69,13 +69,13 @@ config = Configuration(
     )
 )
 
-chunkr.upload("path/to/file.pdf", config)
+chunkr.upload("path/to/file", config)
 ```
 
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file.pdf \
+  -F file=@path/to/file \
   -F 'segment_processing={
       "Caption": {
         "html": "LLM",
@@ -157,13 +157,13 @@ config = Configuration(
     segmentation_strategy=SegmentationStrategy.PAGE
 )
 
-chunkr.upload("path/to/file.pdf", config)
+chunkr.upload("path/to/file", config)
 ```
 
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file.pdf \
+  -F file=@path/to/file \
   -F 'segment_processing={
         "Formula": {
             "html": "Auto",
@@ -197,12 +197,12 @@ config = Configuration(
    ocr_strategy=OcrStrategy.ALL
 )
 
-chunkr.upload("path/to/file.pdf", config)
+chunkr.upload("path/to/file", config)
 ```
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file.pdf \
+  -F file=@path/to/file \
   -F 'ocr_strategy="\"All\"";type=application/json'
 ```
 </CodeGroup>

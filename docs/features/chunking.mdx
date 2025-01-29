@@ -23,7 +23,7 @@ from chunkr_ai.models import (
 
 chunkr = Chunkr()
 
-chunkr.upload("path/to/file.pdf", Configuration(
+chunkr.upload("path/to/file", Configuration(
     chunk_processing=ChunkProcessing(
         ignore_headers_and_footers=True, 
         target_length=1024 
@@ -34,7 +34,7 @@ chunkr.upload("path/to/file.pdf", Configuration(
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file.pdf \
+  -F file=@path/to/file \
   -F 'chunk_processing={
       "ignore_headers_and_footers": false,
       "target_length": 1024

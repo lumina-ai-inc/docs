@@ -17,7 +17,7 @@ from chunkr_ai.models import Configuration, SegmentationStrategy
 
 chunkr = Chunkr()
 
-chunkr.upload("path/to/file.pdf", Configuration(
+chunkr.upload("path/to/file", Configuration(
     segmentation_strategy=SegmentationStrategy.LAYOUT_ANALYSIS 
 ))
 ```
@@ -25,7 +25,7 @@ chunkr.upload("path/to/file.pdf", Configuration(
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file.pdf \
+  -F file=@path/to/file \
   -F 'segmentation_strategy="\"LayoutAnalysis\"";type=application/json'
 ```
 </CodeGroup>
