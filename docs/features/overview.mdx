@@ -1,0 +1,53 @@
+---
+title: Configuration
+sidebarTitle: Overview
+description: "Configure the API to your needs"
+---
+Different applications have different needs. Chunkr AI API is designed to be flexible and customizable to meet your specific requirements.
+
+We support the following configuration options:
+- `chunk_processing`: Controls the setting for the chunking and post-processing of each chunk.
+- `expires_in`: The number of seconds until task is deleted.
+- `high_resolution`: Whether to use high-resolution images for cropping and post-processing.
+- `ocr_strategy`: Controls the Optical Character Recognition (OCR) strategy.
+- `pipeline`: Options for layout analysis and OCR providers.
+- `segment_processing`: Controls the post-processing of each segment type. Allows you to generate HTML, markdown and run custom VLM prompts.
+- `segmentation_strategy`: Controls the segmentation strategy
+
+The configuration options can be combined to create a customized processing pipeline. When a `Task` is created, the configuration is done through the `Configuration` object.
+
+Here is an example of how to configure the API to use a VLM to generate HTML and markdown for each page:
+
+<CodeGroup> 
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import (
+    Configuration, 
+    GenerationConfig, 
+    GenerationStrategy, 
+    SegmentProcessing, 
+    SegmentationStrategy
+)
+
+chunkr = Chunkr()
+
+chunkr.upload("path/to/file", Configuration(
+    segment_processing=SegmentProcessing(
+        page=GenerationConfig(
+            html=GenerationStrategy.LLM, 
+            markdown=GenerationStrategy.LLM
+        )
+    ),
+    segmentation_strategy=SegmentationStrategy.PAGE,
+))
+```
+
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task \
+  -H "Authorization: YOUR_API_KEY" \
+  -F file=@path/to/file \
+  -F 'segment_processing={"page": {"html": "llm", "markdown": "llm"}};type=application/json' \
+  -F 'segmentation_strategy="\"Page\"";type=application/json'
+```
+</CodeGroup>
+

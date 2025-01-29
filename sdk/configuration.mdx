@@ -1,0 +1,184 @@
+---
+title: Configuration
+description: Learn how to configure tasks in Chunkr AI
+---
+
+Chunkr AI allows you to configure tasks with a `Configuration` object. All configurations can be used together.
+
+<CodeGroup> 
+
+```python Python
+from chunkr_ai.models import ChunkProcessing, Configuration, OcrStrategy
+
+config = Configuration(
+    chunk_processing=ChunkProcessing(target_length=1024),
+    expires_in=3600,
+    high_resolution=True,
+    ocr_strategy=OcrStrategy.AUTO,
+)
+
+task = chunkr.upload("path/to/your/file", config)
+```
+</CodeGroup>
+
+## Available Configuration Examples
+
+### Chunk Processing
+<CodeGroup> 
+
+```python Python
+from chunkr_ai.models import ChunkProcessing
+config = Configuration(
+    chunk_processing=ChunkProcessing(
+    ignore_headers_and_footers=True,
+    target_length=1024
+)
+)
+```
+</CodeGroup>
+
+### Expires In
+
+<CodeGroup> 
+```python Python
+config = Configuration(expires_in=3600)
+```
+</CodeGroup>
+
+### High Resolution
+
+<CodeGroup> 
+```python Python
+config = Configuration(high_resolution=True)
+```
+</CodeGroup>
+
+### OCR Strategy
+
+<CodeGroup> 
+```python Python
+config = Configuration(ocr_strategy=OcrStrategy.AUTO) # or OcrStrategy.ALL
+```
+</CodeGroup>
+
+### Segment Processing
+
+This example show cases all the options for segment processing. This is what the default configuration looks like, and is applied if nothing is specified.
+For your own configuration, you can customize the options you want to change and the rest will be applied by default.
+
+<CodeGroup> 
+```python Python
+from chunkr_ai.models import (
+    Configuration, 
+    CroppingStrategy, 
+    GenerationConfig, 
+    GenerationStrategy, 
+    SegmentProcessing
+  )
+  
+  config = Configuration(
+      segment_processing=SegmentProcessing(
+          Caption=GenerationConfig(
+              crop_image=CroppingStrategy.AUTO,
+              html=GenerationStrategy.AUTO,
+              markdown=GenerationStrategy.AUTO,
+              llm=None
+          ),
+          Formula=GenerationConfig(
+              crop_image=CroppingStrategy.AUTO,
+              html=GenerationStrategy.LLM,
+              markdown=GenerationStrategy.LLM,
+              llm=None
+          ),
+          Footnote=GenerationConfig(
+              crop_image=CroppingStrategy.AUTO,
+              html=GenerationStrategy.AUTO,
+              markdown=GenerationStrategy.AUTO,
+              llm=None
+          ),
+          ListItem=GenerationConfig(
+              crop_image=CroppingStrategy.AUTO,
+              html=GenerationStrategy.AUTO,
+              markdown=GenerationStrategy.AUTO,
+              llm=None
+          ),
+          Page=GenerationConfig(
+              crop_image=CroppingStrategy.AUTO,
+              html=GenerationStrategy.AUTO,
+              markdown=GenerationStrategy.AUTO,
+              llm=None
+          ),
+          PageFooter=GenerationConfig(
+              crop_image=CroppingStrategy.AUTO,
+              html=GenerationStrategy.AUTO,
+              markdown=GenerationStrategy.AUTO,
+              llm=None
+          ),
+          PageHeader=GenerationConfig(
+              crop_image=CroppingStrategy.AUTO,
+              html=GenerationStrategy.AUTO,
+              markdown=GenerationStrategy.AUTO,
+              llm=None
+          ),
+          Picture=GenerationConfig(
+              crop_image=CroppingStrategy.ALL, 
+              html=GenerationStrategy.AUTO,
+              markdown=GenerationStrategy.AUTO,
+              llm=None
+          ),
+          SectionHeader=GenerationConfig(
+              crop_image=CroppingStrategy.AUTO,
+              html=GenerationStrategy.AUTO,
+              markdown=GenerationStrategy.AUTO,
+              llm=None
+          ),
+          Table=GenerationConfig(
+              crop_image=CroppingStrategy.AUTO,
+              html=GenerationStrategy.LLM,
+              markdown=GenerationStrategy.LLM,
+              llm=None
+          ),
+          Text=GenerationConfig(
+              crop_image=CroppingStrategy.AUTO,
+              html=GenerationStrategy.AUTO,
+              markdown=GenerationStrategy.AUTO,
+              llm=None
+          ),
+          Title=GenerationConfig(
+              crop_image=CroppingStrategy.AUTO,
+              html=GenerationStrategy.AUTO,
+              markdown=GenerationStrategy.AUTO,
+              llm=None
+          )
+      )
+  )
+  ```
+</CodeGroup>
+
+You can customize any segment's generation strategy and add optional LLM prompts:
+
+<CodeGroup> 
+```python Python
+# Example with custom LLM prompt for tables
+  config = Configuration(
+      segment_processing=SegmentProcessing(
+          Table=GenerationConfig(
+              crop_image=CroppingStrategy.AUTO,
+              html=GenerationStrategy.LLM,
+              markdown=GenerationStrategy.LLM,
+              llm="Convert this table to a clear and concise format"
+          )
+      )
+  )
+```
+</CodeGroup>
+
+### Segmentation Strategy
+
+<CodeGroup> 
+```python Python
+config = Configuration(
+    segmentation_strategy=SegmentationStrategy.LAYOUT_ANALYSIS # or SegmentationStrategy.PAGE
+)
+```
+</CodeGroup>

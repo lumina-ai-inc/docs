@@ -1,0 +1,55 @@
+---
+title: Deleting Tasks
+description: Learn how to delete tasks in Chunkr AI
+---
+
+Chunkr AI provides methods to delete tasks when they're no longer needed. Any task that has status `Succeeded` or `Failed` can be deleted.
+You can delete tasks either by their ID or using a task object.
+
+## Deleting by Task ID
+
+Use the `delete_task()` method when you have the task ID:
+
+<CodeGroup> 
+
+```python Python
+from chunkr_ai import Chunkr
+chunkr = Chunkr()
+
+# Delete task by ID
+chunkr.delete_task("task_123")
+```
+
+</CodeGroup>
+
+## Deleting from Task Object
+
+If you have a task object, you can delete it directly using the `delete()` method:
+
+<CodeGroup> 
+
+```python Python
+# Get existing task
+task = chunkr.get_task("task_123")
+
+# Delete the task
+task.delete()
+```
+
+</CodeGroup>
+
+## Async Usage
+
+For async applications, remember to use `await`:
+
+<CodeGroup> 
+
+```python Python
+# Delete by ID
+await chunkr.delete_task("task_123")
+
+# Or delete from task object
+task = await chunkr.get_task("task_123")
+await task.delete()
+```
+</CodeGroup>

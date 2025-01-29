@@ -1,0 +1,57 @@
+---
+title: Optical Character Recognition (OCR)
+sidebarTitle: OCR
+description: "Extract text from images"
+---
+
+Optical Character Recognition (OCR) is a technology that converts different types of documents, 
+such as scanned paper documents, PDF files, or images, into editable and searchable data. 
+
+## OCR Strategy
+
+Chunkr AI API always returns OCR results. You can configure the OCR strategy using the `ocr_strategy` parameter.
+
+We have two strategies:
+- `All`: Processes all pages with our OCR model.
+- `Auto` (Default): Intelligently applies OCR only to pages with missing or low-quality text. When a text layer is present, the bounding boxes from that layer are used instead of running OCR.
+
+<CodeGroup> 
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import Configuration, OcrStrategy
+
+chunkr = Chunkr()
+
+chunkr.upload("path/to/file", Configuration(
+    ocr_strategy=OcrStrategy.ALL # can also be OcrStrategy.AUTO
+))
+```
+
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task \
+  -H "Authorization: YOUR_API_KEY" \
+  -F file=@path/to/file \
+  -F 'ocr_strategy="\"All\"";type=application/json'
+```
+</CodeGroup>
+
+The `Auto` strategy provides the best balance between accuracy and performance for most use cases. 
+Use the `All` strategy when you need to ensure consistent text extraction across all pages or when you suspect the existing text layer might be unreliable.
+
+## OCR + Layout Analysis
+
+OCR and Layout Analysis together are a powerful combination. 
+It allows us to get word level bounding boxes and text while also understanding the layout of the document. 
+
+You can use that to make experiences like:
+- Highlighting exact numbers in a table
+- Highlighting text in images
+- Embedding the text from pictures for semantic search
+
+## Other common use cases
+- Digitizing old books and documents
+- Processing invoices and receipts
+- Automating form data entry
+- Reading license plates
+- Converting handwritten notes to digital text
+- Extracting text from screenshots and images

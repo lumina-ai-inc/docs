@@ -15,7 +15,7 @@
                 },
                 {
                     "date": 1727324887933,
-                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,6 +11,6 @@\n       -H \"Authorization: ${YOUR_API_KEY}\" \\\n       -F \"file=@/path/to/your/file.pdf\" \\\n       -F \"model=Fast\" \\\n       -F \"target_chunk_length=512\" \\\n-      -F \"ocr_strategy=Auto\"\n-    ```\n+  -F \"ocr_strategy=Auto\"\n+```\n"
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,6 +11,6 @@\n       -H \"Authorization: ${YOUR_API_KEY}\" \\\n       -F \"file=@/path/to/your/file\" \\\n       -F \"model=Fast\" \\\n       -F \"target_chunk_length=512\" \\\n-      -F \"ocr_strategy=Auto\"\n-    ```\n+  -F \"ocr_strategy=Auto\"\n+```\n"
                 },
                 {
                     "date": 1727325033522,

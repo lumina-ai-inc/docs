@@ -1,0 +1,56 @@
+---
+title: Canceling Tasks
+description: Learn how to cancel queued tasks in Chunkr AI
+---
+
+Chunkr AI allows you to cancel tasks that are in queede but haven't started processing. Any task that has status `Starting` can be canceled.
+You can cancel tasks either by their ID or using a task object.
+
+## Canceling by Task ID
+
+Use the `cancel_task()` method when you have the task ID:
+
+<CodeGroup> 
+
+```python Python
+from chunkr_ai import Chunkr
+chunkr = Chunkr()
+
+# Cancel task by ID
+chunkr.cancel_task("task_123")
+```
+
+</CodeGroup>
+
+## Canceling from Task Object
+
+If you have a task object, you can cancel it directly using the `cancel()` method. This method will also return the updated task status:
+
+<CodeGroup> 
+
+```python Python
+# Get existing task
+task = chunkr.get_task("task_123")
+
+# Cancel the task and get updated status
+updated_task = task.cancel()
+print(updated_task.status) # Will show canceled status
+```
+
+</CodeGroup>
+
+## Async Usage
+
+For async applications, use `await`:
+
+<CodeGroup> 
+
+```python Python
+# Cancel by ID
+await chunkr.cancel_task("task_123")
+
+# Or cancel from task object
+task = await chunkr.get_task("task_123")
+updated_task = await task.cancel()
+```
+</CodeGroup>

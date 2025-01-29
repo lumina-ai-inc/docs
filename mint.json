@@ -5,7 +5,17 @@
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
   },
+  "sidebar": {
+    "items": "container"
+  },
   "theme": "venus",
+  "layout": "topnav",
+  "codeBlock": {
+    "mode": "auto"
+  },
+  "background": {
+    "style": "gradient"
+  },
   "favicon": "/favicon.svg",
   "colors": {
     "primary": "#8D8D86",
@@ -16,13 +26,16 @@
       "to": "#8D8D86"
     }
   },
-  "anchors": [
-    {
-      "name": "API Reference",
-      "url": "api-reference",
-      "openapi": "https://api.chunkr.ai/docs/openapi.json"
+  "api": {
+    "auth": {
+      "method": "key"
+    },
+    "request": {
+      "example": {
+        "languages": []
+      }
     }
-  ],
+  },
   "topbarLinks": [
     {
       "name": "Support",
@@ -33,37 +46,111 @@
     "name": "Try Chunkr",
     "url": "https://www.chunkr.ai"
   },
+  "tabs": [
+    {
+      "name": "Documentation",
+      "url": "docs/"
+    },
+    {
+      "name": "SDK",
+      "url": "sdk/"
+    },
+    {
+      "name": "API References",
+      "url": "api-references",
+      "openapi": "https://staging-api.chunkr.ai/docs/openapi.json"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/lumina-ai-inc/chunkr",
+      "icon": "github"
+    },
+    {
+      "name": "Discord",
+      "url": "https://discord.gg/XzKWFByKzW",
+      "icon": "discord"
+    },
+    {
+      "name": "Twitter",
+      "url": "https://x.com/chunkrai",
+      "icon": "x"
+    }
+  ],
   "navigation": [
     {
       "group": "Get Started",
       "pages": [
-        "introduction",
-        "quickstart",
-        "task-response"
+        "docs/get-started/overview",
+        "docs/get-started/quickstart",
+        "docs/get-started/changelog"
       ]
     },
     {
-      "group": "Task Configuration",
+      "group": "Features",
       "pages": [
-        "models",
-        "chunking",
-        "ocr-strategy",
-        "structured-extraction"
+        "docs/features/overview",
+        {
+          "group": "Layout Analysis",
+          "pages": [
+            "docs/features/layout-analysis/what",
+            "docs/features/layout-analysis/segmentation_strategy"
+          ]
+        },
+        "docs/features/segment-processing",
+        "docs/features/ocr",
+        "docs/features/chunking",
+        "docs/features/pipeline"
       ]
     },
     {
-      "group": "Output",
+      "group": "Use Cases",
       "pages": [
-        "chunks",
-        "segment",
-        "bounding-box",
-        "ocr"
+        "docs/use-cases/bulk-upload",
+        "docs/use-cases/usage-patterns"
+      ]
+    },
+    {
+      "group": "Self Hosting",
+      "pages": [
+        "docs/self-hosting/docker-compose",
+        "docs/self-hosting/kubernetes"
+      ]
+    },
+    {
+      "group": "Getting Started",
+      "pages": [
+        "sdk/installation",
+        "sdk/asynchronous"
+      ]
+    },
+    {
+      "group": "Data Operations",
+      "pages": [
+        "sdk/data-operations/create",
+        "sdk/data-operations/get",
+        "sdk/data-operations/update",
+        "sdk/data-operations/delete",
+        "sdk/data-operations/cancel"
+      ]
+    },
+    {
+      "group": "Utilities",
+      "pages": [
+        "sdk/configuration",
+        "sdk/export"
       ]
     }
   ],
   "footerSocials": {
-    "x": "https://x.com/lumina_ai_inc",
     "github": "https://github.com/lumina-ai-inc/chunkr",
-    "linkedin": "https://www.linkedin.com/company/lumina-ai-inc"
+    "discord": "https://discord.gg/XzKWFByKzW",
+    "x": "https://x.com/chunkrai"
+  },
+  "feedback": {
+    "thumbsRating": true,
+    "suggestEdit": true,
+    "raiseIssue": true
   }
 }

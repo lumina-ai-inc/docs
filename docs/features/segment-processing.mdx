@@ -1,0 +1,139 @@
+---
+title: Segment Processing
+description: "Post-processing of segments"
+---
+Chunkr provides various post-processing capabilities.
+Once segments have been extracted, you can use our defaults or configure how each segment type is processed.
+
+### Processing Methods
+- **Vision Language Models (VLM)**: Leverage AI models to generate HTML/Markdown content and run custom prompts
+- **Heuristic-based Processing**: Apply rule-based algorithms for consistent HTML/Markdown generation
+
+### Additional Features
+- **Cropping**: Get back the cropped images
+
+These processing options allow you to build highly specific pipelines. 
+Our default processing works for most documents, and RAG use cases.
+
+## Defaults
+
+By default, Chunkr applies the following processing strategies for each segment type. 
+You can override these defaults by specifying custom configuration in your `SegmentProcessing` settings.
+HTML and Markdown are always returned.
+
+<CodeGroup>
+```python Tables and Formulas
+# Table and Formula by default are processed using LLM. 
+# Formulas are returned as LaTeX.
+
+default_llm_config = GenerationConfig(
+    html=GenerationStrategy.LLM,
+    markdown=GenerationStrategy.LLM,
+    crop_image=CroppingStrategy.AUTO
+)
+
+default_config = Configuration(
+    segment_processing=SegmentProcessing(
+        Table=default_llm_config,
+        Formula=default_llm_config,
+    )
+)
+```
+
+```python Pictures
+# Pictures are cropped by default.
+# Returns img tags with presigned URL or base64 src
+
+default_picture_config = GenerationConfig(
+    html=GenerationStrategy.AUTO,
+    markdown=GenerationStrategy.AUTO,
+    crop_image=CroppingStrategy.ALL
+)
+
+default_config = Configuration(
+    segment_processing=SegmentProcessing(
+        Picture=default_picture_config
+    )
+)
+```
+
+```python Other Elements
+# All other element's HTML and Markdown are processed using heuristics.
+
+default_text_config = GenerationConfig(
+    html=GenerationStrategy.AUTO,
+    markdown=GenerationStrategy.AUTO,
+    crop_image=CroppingStrategy.AUTO
+)
+
+default_config = Configuration(
+    segment_processing=SegmentProcessing(
+        Title=default_text_config,
+        SectionHeader=default_text_config,
+        Text=default_text_config,
+        ListItem=default_text_config,
+        Caption=default_text_config,
+        Footnote=default_text_config,
+        PageHeader=default_text_config,
+        PageFooter=default_text_config,
+        Page=default_text_config,
+    )
+)
+```
+</CodeGroup>
+
+## Example
+
+Here is a quick example of how to use Chunkr to process a document with different segment processing configurations.
+This configuration will:
+- Summarize the key trends of all `Table` segments
+- Crop all `SectionHeader` segments to the bounding box
+- Generate HTML using heurstics and Markdown using a VLM for all `Text` segments
+
+<CodeGroup> 
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import (
+    Configuration, 
+    CroppingStrategy, 
+    GenerationConfig, 
+    GenerationStrategy, 
+    SegmentProcessing
+)
+
+chunkr = Chunkr()
+
+chunkr.upload("path/to/file", Configuration(
+    segment_processing=SegmentProcessing(
+        Table=GenerationConfig(
+            llm="Summarize the key trends in this table"
+        ),
+        SectionHeader=GenerationConfig(
+            crop_image=CroppingStrategy.ALL
+        ),
+        Text=GenerationConfig(
+            html=GenerationStrategy.AUTO, 
+            markdown=GenerationStrategy.LLM
+        ),
+    ),
+))
+```
+
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task \
+  -H "Authorization: YOUR_API_KEY" \
+  -F file=@path/to/file \
+  -F 'segment_processing={
+      "Table": {
+        "llm": "Summarize the key trends in this table"
+      },
+      "SectionHeader": {
+        "crop_image": "All"
+      },
+      "Text": {
+        "html": "Auto",
+        "markdown": "LLM"
+      }
+    };type=application/json'
+```
+</CodeGroup>
