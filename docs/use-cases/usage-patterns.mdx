@@ -17,14 +17,15 @@ By dividing the file into segments, we can get higher quality results from the V
 from chunkr_ai import Chunkr
 from chunkr_ai.models import (
     Configuration, 
-    SegmentProcessing, 
     GenerationConfig, 
-    GenerationStrategy
+    GenerationStrategy,
+    SegmentProcessing
 )
 
 chunkr = Chunkr()
 
 config = Configuration(
+    high_resolution=True, # Use high resolution for all segments
     segment_processing=SegmentProcessing(
         Caption=GenerationConfig(
               html=GenerationStrategy.LLM,
@@ -76,6 +77,7 @@ chunkr.upload("path/to/file", config)
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
   -F file=@path/to/file \
+  -F 'high_resolution=true;type=application/json' 
   -F 'segment_processing={
       "Caption": {
         "html": "LLM",
