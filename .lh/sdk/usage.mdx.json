@@ -1,0 +1,34 @@
+{
+    "sourceFile": "sdk/usage.mdx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 4,
+            "patches": [
+                {
+                    "date": 1738301195439,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1738301210354,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -23,9 +23,9 @@\n     # Upload a file and wait for processing\n     task = chunkr.upload(\"document.pdf\")\n     print(task.task_id)\n \n-    # Create task without waiting - you will get back a task object without chunks\n+    # Alternatively, create task without waiting - you will get back a task object without chunks\n     task = chunkr.create_task(\"document.pdf\")\n     result = task.poll()  # Check status when needed - this will return a task object with chunks\n finally:\n     # Clean up when done\n@@ -51,9 +51,9 @@\n         # Upload a file and wait for processing\n         task = await chunkr.upload(\"document.pdf\")\n         print(task.task_id)\n \n-        # Create task without waiting - you will get back a task object without chunks\n+        # Alternatively, create task without waiting - you will get back a task object without chunks\n         task = await chunkr.create_task(\"document.pdf\")\n         result = await task.poll()  # Check status when needed - this will return a task object with chunks\n     finally:\n         # Clean up when done\n"
+                },
+                {
+                    "date": 1738302272353,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n ---\n title: Using Chunkr AI SDK\n-sidebarTitle: Asynchronous\n+sidebarTitle: Usage\n ---\n \n Chunkr AI's SDK supports both synchronous and asynchronous usage patterns. \n The same client class `Chunkr` can be used for both patterns, making it flexible for different application needs.\n"
+                },
+                {
+                    "date": 1738302358857,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -53,9 +53,9 @@\n         print(task.task_id)\n \n         # Alternatively, create task without waiting - you will get back a task object without chunks\n         task = await chunkr.create_task(\"document.pdf\")\n-        result = await task.poll()  # Poll the task to get the result - this will return a task object with chunks\n+        result = await task.poll()  # Poll the task wh- this will return a task object with chunks\n     finally:\n         # Clean up when done\n         chunkr.close()\n ```\n"
+                },
+                {
+                    "date": 1738302399332,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -28,9 +28,9 @@\n     task = chunkr.create_task(\"document.pdf\")\n \n     # Poll the task when ready - this will wait for the task to complete and return a task object with chunks\n     task.poll()  \n-    print(task.chunks)\n+    print(task.outop)\n finally:\n     # Clean up when done\n     chunkr.close()\n ```\n"
+                }
+            ],
+            "date": 1738301195439,
+            "name": "Commit-0",
+            "content": "---\ntitle: Using Chunkr AI SDK\nsidebarTitle: Asynchronous\n---\n\nChunkr AI's SDK supports both synchronous and asynchronous usage patterns. \nThe same client class `Chunkr` can be used for both patterns, making it flexible for different application needs.\nAll methods exists in both synchronous and asynchronous versions.\n\n## Synchronous Usage\n\nFor simple scripts or applications that don't require asynchronous operations, you can use the synchronous pattern:\n\n<CodeGroup> \n\n```python Python\nfrom chunkr_ai import Chunkr\n\n# Initialize client\nchunkr = Chunkr()\n\ntry:\n    # Upload a file and wait for processing\n    task = chunkr.upload(\"document.pdf\")\n    print(task.task_id)\n\n    # Create task without waiting - you will get back a task object without chunks\n    task = chunkr.create_task(\"document.pdf\")\n    result = task.poll()  # Check status when needed - this will return a task object with chunks\nfinally:\n    # Clean up when done\n    chunkr.close()\n```\n</CodeGroup>\n\n## Asynchronous Usage\n\nFor applications that benefit from asynchronous operations (like web servers or background tasks), you can use the async pattern:\n\n<CodeGroup> \n\n```python Python\nfrom chunkr_ai import Chunkr\nimport asyncio\n\nasync def process_document():\n    # Initialize client\n    chunkr = Chunkr()\n\n    try:\n        # Upload a file and wait for processing\n        task = await chunkr.upload(\"document.pdf\")\n        print(task.task_id)\n\n        # Create task without waiting - you will get back a task object without chunks\n        task = await chunkr.create_task(\"document.pdf\")\n        result = await task.poll()  # Check status when needed - this will return a task object with chunks\n    finally:\n        # Clean up when done\n        chunkr.close()\n```\n</CodeGroup>\n"
+        }
+    ]
+}

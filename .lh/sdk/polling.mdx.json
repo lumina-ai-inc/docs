@@ -1,0 +1,42 @@
+{
+    "sourceFile": "sdk/polling.mdx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 6,
+            "patches": [
+                {
+                    "date": 1738302471091,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1738302691270,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,11 +2,11 @@\n title: Polling the `TaskResponse`\n sidebarTitle: Polling\n ---\n \n-Chunkr AI's SDK supports both synchronous and asynchronous usage patterns. \n-The same client class `Chunkr` can be used for both patterns, making it flexible for different application needs.\n-All methods exists in both synchronous and asynchronous versions.\n+The basis of the Chunkr AI is creating a task and then polling it until it is complete. This is done using the `poll()` method.\n+This abstraction gets the task at regular intervals until the status is not `Starting` or `Processing`. \n+It is best practice to check the status of the task after polling as it can be `Succeeded`, `Failed` or `Cancelled`.\n \n ## Synchronous Usage\n \n For simple scripts or applications that don't require asynchronous operations, you can use the synchronous pattern:\n"
+                },
+                {
+                    "date": 1738302791557,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n title: Polling the `TaskResponse`\n sidebarTitle: Polling\n ---\n \n-The basis of the Chunkr AI is creating a task and then polling it until it is complete. This is done using the `poll()` method.\n+The basis of the Chunkr AI API is creating a task and then polling it until it is complete. This is done using the `poll()` method.\n This abstraction gets the task at regular intervals until the status is not `Starting` or `Processing`. \n It is best practice to check the status of the task after polling as it can be `Succeeded`, `Failed` or `Cancelled`.\n \n ## Synchronous Usage\n"
+                },
+                {
+                    "date": 1738302826323,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,12 +2,15 @@\n title: Polling the `TaskResponse`\n sidebarTitle: Polling\n ---\n \n-The basis of the Chunkr AI API is creating a task and then polling it until it is complete. This is done using the `poll()` method.\n-This abstraction gets the task at regular intervals until the status is not `Starting` or `Processing`. \n-It is best practice to check the status of the task after polling as it can be `Succeeded`, `Failed` or `Cancelled`.\n+The Chunkr AI API follows a task-based pattern where you create a task and monitor its progress through polling. The `poll()` method handles this by automatically checking the task's status at regular intervals until it transitions out of the `Starting` or `Processing` states.\n \n+After polling completes, it's important to verify the final task status, which will be one of:\n+- `Succeeded`: Task completed successfully\n+- `Failed`: Task encountered an error\n+- `Cancelled`: Task was manually cancelled\n+\n ## Synchronous Usage\n \n For simple scripts or applications that don't require asynchronous operations, you can use the synchronous pattern:\n \n"
+                },
+                {
+                    "date": 1738302841713,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,10 @@\n title: Polling the `TaskResponse`\n sidebarTitle: Polling\n ---\n \n-The Chunkr AI API follows a task-based pattern where you create a task and monitor its progress through polling. The `poll()` method handles this by automatically checking the task's status at regular intervals until it transitions out of the `Starting` or `Processing` states.\n+The Chunkr AI API follows a task-based pattern where you create a task and monitor its progress through polling. \n+The `poll()` method handles this by automatically checking the task's status at regular intervals until it transitions out of the `Starting` or `Processing` states.\n \n After polling completes, it's important to verify the final task status, which will be one of:\n - `Succeeded`: Task completed successfully\n - `Failed`: Task encountered an error\n"
+                },
+                {
+                    "date": 1738302873087,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,8 +25,9 @@\n \n try:\n     # Create or get a task\n     task = chunkr.create_task(\"document.pdf\")\n+    \n \n     # Poll the task when ready - this will wait for the task to complete and return a task object with chunks\n     task.poll()  \n     print(task.output.chunks)\n"
+                },
+                {
+                    "date": 1738303017287,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,9 +12,9 @@\n - `Cancelled`: Task was manually cancelled\n \n ## Synchronous Usage\n \n-When you have a `TaskResponse` object, you can poll it. Look at creating and getting a task for more information.\n+When you have a `TaskResponse` object, you can poll it. Look at [creating] and getting a task for more information.\n \n <CodeGroup> \n \n ```python Python\n"
+                }
+            ],
+            "date": 1738302471091,
+            "name": "Commit-0",
+            "content": "---\ntitle: Polling the `TaskResponse`\nsidebarTitle: Polling\n---\n\nChunkr AI's SDK supports both synchronous and asynchronous usage patterns. \nThe same client class `Chunkr` can be used for both patterns, making it flexible for different application needs.\nAll methods exists in both synchronous and asynchronous versions.\n\n## Synchronous Usage\n\nFor simple scripts or applications that don't require asynchronous operations, you can use the synchronous pattern:\n\n<CodeGroup> \n\n```python Python\nfrom chunkr_ai import Chunkr\n\n# Initialize client\nchunkr = Chunkr()\n\ntry:\n    # Upload a file and wait for processing\n    task = chunkr.upload(\"document.pdf\")\n    print(task.task_id)\n\n    # Alternatively, create task without waiting - you will get back a task object without chunks\n    task = chunkr.create_task(\"document.pdf\")\n\n    # Poll the task when ready - this will wait for the task to complete and return a task object with chunks\n    task.poll()  \n    print(task.output.chunks)\nfinally:\n    # Clean up when done\n    chunkr.close()\n```\n</CodeGroup>\n\n## Asynchronous Usage\n\nFor applications that benefit from asynchronous operations (like web servers or background tasks), you can use the async pattern:\n\n<CodeGroup> \n\n```python Python\nfrom chunkr_ai import Chunkr\nimport asyncio\n\nasync def process_document():\n    # Initialize client\n    chunkr = Chunkr()\n\n    try:\n        # Upload a file and wait for processing\n        task = await chunkr.upload(\"document.pdf\")\n        print(task.task_id)\n\n        # Alternatively, create task without waiting - you will get back a task object without chunks\n        task = await chunkr.create_task(\"document.pdf\")\n\n        # Poll the task when ready - this will wait for the task to complete and return a task object with chunks\n        await task.poll()  \n        print(task.output.chunks)\n    finally:\n        # Clean up when done\n        chunkr.close()\n```\n</CodeGroup>\n"
+        }
+    ]
+}

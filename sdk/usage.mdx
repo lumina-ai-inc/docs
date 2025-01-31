@@ -1,6 +1,6 @@
 ---
-title: Using Chunkr AI Asynchronously
-sidebarTitle: Asynchronous
+title: Using Chunkr AI SDK
+sidebarTitle: Usage
 ---
 
 Chunkr AI's SDK supports both synchronous and asynchronous usage patterns. 
@@ -24,9 +24,12 @@ try:
     task = chunkr.upload("document.pdf")
     print(task.task_id)
 
-    # Create task without waiting - you will get back a task object without chunks
+    # Alternatively, create task without waiting - you will get back a task object without chunks
     task = chunkr.create_task("document.pdf")
-    result = task.poll()  # Check status when needed - this will return a task object with chunks
+
+    # Poll the task when ready - this will wait for the task to complete and return a task object with chunks
+    task.poll()  
+    print(task.output.chunks)
 finally:
     # Clean up when done
     chunkr.close()
@@ -52,9 +55,12 @@ async def process_document():
         task = await chunkr.upload("document.pdf")
         print(task.task_id)
 
-        # Create task without waiting - you will get back a task object without chunks
+        # Alternatively, create task without waiting - you will get back a task object without chunks
         task = await chunkr.create_task("document.pdf")
-        result = await task.poll()  # Check status when needed - this will return a task object with chunks
+
+        # Poll the task when ready - this will wait for the task to complete and return a task object with chunks
+        await task.poll()  
+        print(task.output.chunks)
     finally:
         # Clean up when done
         chunkr.close()

@@ -1,0 +1,18 @@
+{
+    "sourceFile": "sdk/data-operations/delete.mdx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1738302509241,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1738302509241,
+            "name": "Commit-0",
+            "content": "---\ntitle: Deleting Tasks\ndescription: Learn how to delete tasks in Chunkr AI\n---\n\nChunkr AI provides methods to delete tasks when they're no longer needed. Any task that has status `Succeeded` or `Failed` can be deleted.\nYou can delete tasks either by their ID or using a task object.\n\n## Deleting by Task ID\n\nUse the `delete_task()` method when you have the task ID:\n\n<CodeGroup> \n\n```python Python\nfrom chunkr_ai import Chunkr\nchunkr = Chunkr()\n\n# Delete task by ID\nchunkr.delete_task(\"task_123\")\n```\n\n</CodeGroup>\n\n## Deleting from TaskResponse Object\n\nIf you have a task object, you can delete it directly using the `delete()` method:\n\n<CodeGroup> \n\n```python Python\n# Get existing task\ntask = chunkr.get_task(\"task_123\")\n\n# Delete the task\ntask.delete()\n```\n\n</CodeGroup>\n\n## Async Usage\n\nFor async applications, remember to use `await`:\n\n<CodeGroup> \n\n```python Python\n# Delete by ID\nawait chunkr.delete_task(\"task_123\")\n\n# Or delete from task object\ntask = await chunkr.get_task(\"task_123\")\nawait task.delete()\n```\n</CodeGroup>"
+        }
+    ]
+}
