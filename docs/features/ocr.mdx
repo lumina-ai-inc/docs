@@ -12,8 +12,8 @@ such as scanned paper documents, PDF files, or images, into editable and searcha
 Chunkr AI API always returns OCR results. You can configure the OCR strategy using the `ocr_strategy` parameter.
 
 We have two strategies:
-- `All`: Processes all pages with our OCR model.
-- `Auto` (Default): Intelligently applies OCR only to pages with missing or low-quality text. When a text layer is present, the bounding boxes from that layer are used instead of running OCR.
+- `All` (Default): Processes all pages with our OCR model.
+- `Auto`: Intelligently applies OCR only to pages with missing or low-quality text. When a text layer is present, the bounding boxes from that layer are used instead of running OCR.
 
 <CodeGroup> 
 ```python Python
