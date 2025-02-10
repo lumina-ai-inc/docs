@@ -13,7 +13,7 @@ The way you use the API is by creating a task for each document you want to proc
    Use the following curl command to create a new task:
 
    ```bash
-    curl -X POST https://api.chunkr.ai/api/v1/task \
+    curl -X POST https://legacy-api.chunkr.ai/api/v1/task \
         -H "Content-Type: multipart/form-data" \
         -H "Authorization: ${YOUR_API_KEY}" \
         -F "file=@/path/to/your/file" \
@@ -51,7 +51,7 @@ The way you use the API is by creating a task for each document you want to proc
    Use the following curl command to check the status of your task:
 
    ```bash
-   curl -X GET https://api.chunkr.ai/api/v1/task/${TASK_ID} \
+   curl -X GET https://legacy-api.chunkr.ai/api/v1/task/${TASK_ID} \
      -H "Authorization: ${YOUR_API_KEY}"
    ```
 
@@ -111,6 +111,6 @@ The way you use the API is by creating a task for each document you want to proc
      "page_count": 5,
      "status": "Succeeded",
      "task_id": "65237fe1-d6f1-456b-9238-408b97a1536d",
-     "task_url": "https://api.chunkr.ai/api/v1/task/65237fe1-d6f1-456b-9238-408b97a1536d"
+     "task_url": "https://legacy-api.chunkr.ai/api/v1/task/65237fe1-d6f1-456b-9238-408b97a1536d"
    }
    ```
