@@ -30,11 +30,6 @@
     "auth": {
       "method": "key"
     },
-    "request": {
-      "example": {
-        "languages": []
-      }
-    },
     "playground": {
       "disableProxy": true
     }
