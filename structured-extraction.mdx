@@ -10,7 +10,7 @@ Chunkr provides structured extraction capabilities to extract specific data fiel
 When creating a task, you can provide a JSON schema that defines the structure of data you want to extract. Here is an example of how to set up a structured extraction task:
 
 ```bash
-curl -v -X POST "http://localhost:8000/api/v1/task" \
+curl -v -X POST "https://legacy-api.chunkr.ai/api/v1/task" \
  -H "Authorization: <your_api_key>" \
  -F "file=@/Users/pyscripts/input/test.pdf" \
  -F "model=Fast" \
@@ -108,7 +108,7 @@ Once the task is completed, the response will include the extracted data in a st
     "page_count": 5,
     "status": "Succeeded",
     "task_id": "<task_id>",
-    "task_url": "https://api.chunkr.ai/api/v1/task/<task_id>"
+    "task_url": "https://legacy-api.chunkr.ai/api/v1/task/<task_id>"
 },
 "extracted_json": {
     "title": "Clinical Trial Results",
