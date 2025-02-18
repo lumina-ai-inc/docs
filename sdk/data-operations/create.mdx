@@ -99,8 +99,8 @@ with open("path/to/your/file", "rb") as f:
 # From a URL
 task = chunkr.upload("https://example.com/document.pdf")
 
-# From a base64 string (must include MIME type header)
-task = chunkr.upload("data:application/pdf;base64,JVBERi0...")
+# From a base64 string
+task = chunkr.upload("JVBERi0...")
 
 # From a PIL Image
 from PIL import Image
@@ -108,3 +108,9 @@ img = Image.open("path/to/your/photo.jpg")
 task = chunkr.upload(img)
 ```
 </CodeGroup>
+
+> Note: When sending base64 strings, include only the raw base64-encoded data.
+> Do not include MIME type headers like `data:application/pdf;base64,`.
+> For example:
+> - ❌ `data:application/pdf;base64,JVBERi0...`
+> - ✅ `JVBERi0...`
