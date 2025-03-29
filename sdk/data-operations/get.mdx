@@ -62,3 +62,21 @@ task = await chunkr.get_task("task_123")
 - Store task IDs when creating tasks if you need to retrieve them later
 - Use `include_chunks=False` when you only need task metadata
 - Consider using base64 URLs (`base64_urls=True`) when you need to cache or store the URLs locally
+
+<CodeGroup> 
+```python Python
+# Get task with base64-encoded URLs
+task = chunkr.get_task("task_123", base64_urls=True)
+
+# Get task without chunks
+task = chunkr.get_task("task_123", include_chunks=False)
+```
+
+```bash cURL
+# Get task with base64-encoded URLs
+curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?base64_urls=true" -H "Authorization: YOUR_API_KEY"
+
+# Get task without chunks
+curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?include_chunks=false" -H "Authorization: YOUR_API_KEY"
+```
+</CodeGroup>
