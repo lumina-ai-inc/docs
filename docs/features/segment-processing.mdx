@@ -117,7 +117,7 @@ The `GenerationStrategy` enum determines how Chunkr processes and generates outp
 
 You can configure this strategy separately for HTML and Markdown output formats using the `html` and `markdown` fields in the configuration.
 
-This is how you can access the `html` and `markdown field in the `segment` object:
+This is how you can access the `html` and `markdown` field in the segment object:
 
 ```python
 for chunk in task.output.chunks:
@@ -135,7 +135,7 @@ The `CroppingStrategy` enum controls how Chunkr handles image cropping for segme
 - `CroppingStrategy.AUTO`: Lets Chunkr decide when cropping is necessary based on the segment type and post-processing requirements. 
 For example, if an LLM is required to generate HTML from tables then they will be cropped.
 
-This is how you can access the `cropped_image` field in the `segment` object:
+This is how you can access the `image` field in the `segment` object:
 
 ```python
 for chunk in task.output.chunks:
@@ -170,14 +170,22 @@ for chunk in task.output.chunks:
     print(chunk.embed)
 ```
 
->**Note**: This is the only configuration option that effects the `chunkr` object rather than `segment` object.
+>**Note**: This is the only configuration option that affects the `chunk` object rather than the `segment` object.
+>
+>When you set the `embed_sources` field:
+>- You determine what content from segments will be included in the `embed` field of chunks
+>- The order of sources in the array controls which content appears first in the `embed` field
+>- This does not change the order of segments within chunks - reading order is always preserved
+>
+>For example, if you set `embed_sources=[EmbedSource.LLM, EmbedSource.MARKDOWN]` for Tables, the LLM-generated content will appear before the markdown content in the `embed` field of any chunk containing a Table segment.
 
 ## Example
 
 Here is a quick example of how to use Chunkr to process a document with different segment processing configurations.
 This configuration will:
 - Summarize the key trends of all `Table` segments and populate the `llm` field with the LLM content in the segment
-- Add the LLM content for `Table` to the `embed` field of the chunk, with the LLM content appearing first
+- The `embed` field for chunks that container a `Table` segment will contain both the LLM content and the markdown for the table,
+with the LLM content appearing first.
 - Crop all `SectionHeader` segments to the bounding box.
 - All other segments will use their default processing.
 
