@@ -74,6 +74,11 @@ chunks = task.output.chunks
 for chunk in chunks:
     for segment in chunk.segments:
         print(segment.segment_type)
+
+# You can also access the `embed` field in the chunk 
+# for content to be used in RAG pipelines
+for chunk in chunks:
+    print(chunk.embed)
 ```
 </CodeGroup>
 
@@ -105,3 +110,26 @@ chunkr = Chunkr(api_key="your_api_key")
 chunkr = Chunkr()
 ```
 </CodeGroup>
+
+## Self Hosted
+
+If you're using a self-hosted deployment of Chunkr AI, you can configure the API URL when initializing the client:
+
+<CodeGroup> 
+```python Python
+from chunkr_ai import Chunkr
+
+# Option 1: With direct API key
+chunkr = Chunkr(
+    api_key="your_api_key",
+    base_url="https://your-self-hosted-chunkr.com"
+)
+
+# Option 2: Using environment variables
+# Set CHUNKR_API_KEY and CHUNKR_URL in your .env file
+chunkr = Chunkr()
+```
+</CodeGroup>
+
+When using environment variables for self-hosted deployments, set both `CHUNKR_API_KEY` and `CHUNKR_URL` in your `.env` file.
+
