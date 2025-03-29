@@ -1,2 +1,4 @@
 openapi.json
 .lh
+node_modules
+request.sh

@@ -18,13 +18,15 @@
             "pages": [
               "docs/get-started/overview",
               "docs/get-started/quickstart",
-              "docs/get-started/changelog"
+              "docs/get-started/changelog",
+              "docs/get-started/llm"
             ]
           },
           {
             "group": "Features",
             "pages": [
               "docs/features/overview",
+              "docs/features/chunking",
               {
                 "group": "Layout Analysis",
                 "pages": [
@@ -32,17 +34,15 @@
                   "docs/features/layout-analysis/segmentation_strategy"
                 ]
               },
-              "docs/features/segment-processing",
               "docs/features/ocr",
-              "docs/features/chunking",
+              "docs/features/segment-processing",
               "docs/features/pipeline"
             ]
           },
           {
             "group": "Use Cases",
             "pages": [
-              "docs/use-cases/bulk-upload",
-              "docs/use-cases/usage-patterns"
+              "docs/use-cases/bulk-upload"
             ]
           },
           {

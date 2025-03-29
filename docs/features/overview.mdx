@@ -16,7 +16,7 @@ We support the following configuration options:
 
 The configuration options can be combined to create a customized processing pipeline. When a `Task` is created, the configuration is done through the `Configuration` object.
 
-Here is an example of how to configure the API to use a VLM to generate HTML and markdown for each page:
+Here is an example of how to configure the API to run a custom VLM prompt on each picture in a document:
 
 <CodeGroup> 
 ```python Python
@@ -33,21 +33,27 @@ chunkr = Chunkr()
 
 chunkr.upload("path/to/file", Configuration(
     segment_processing=SegmentProcessing(
-        page=GenerationConfig(
-            html=GenerationStrategy.LLM, 
-            markdown=GenerationStrategy.LLM
+        picture=GenerationConfig(
+            llm="Does this picture have a cat in it? Answer must be true or false."
         )
     ),
-    segmentation_strategy=SegmentationStrategy.PAGE,
 ))
 ```
 
 ```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task \
-  -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file \
-  -F 'segment_processing={"page": {"html": "llm", "markdown": "llm"}};type=application/json' \
-  -F 'segmentation_strategy="\"Page\"";type=application/json'
+curl --request POST \
+  --url https://api.chunkr.ai/api/v1/task/parse \
+  --header 'Authorization: YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "file": "base64_or_url_to_file",
+    "file_name": "document.pdf",
+    "segment_processing": {
+      "picture": {
+        "llm": "Does this picture have a cat in it? Answer must be true or false."
+      }
+    }
+  }'
 ```
 </CodeGroup>
 

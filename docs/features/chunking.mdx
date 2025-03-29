@@ -1,5 +1,5 @@
 ---
-title: Intelligent chunking
+title: Chunking
 description: "Chunking"
 ---
 
@@ -11,7 +11,9 @@ By leveraging layout analysis, we create intelligent chunks that preserve docume
 - Maintains semantic relationships between segments
 - Optimizes chunk size for LLM processing
 
-You can review the implementation in our [GitHub repository](https://github.com/lumina-ai-inc/chunkr/blob/main/core/src/utils/services/chunking.rs#L113).
+You can review the implementation of our chunking algorithm in our [GitHub repository](https://github.com/lumina-ai-inc/chunkr/blob/main/core/src/utils/services/chunking.rs#L113).
+
+Here is an example that will chunk the document into 512 words per chunks. These values are also the defaults, so you don't need to specify them.
 
 <CodeGroup> 
 ```python Python
@@ -19,6 +21,7 @@ from chunkr_ai import Chunkr
 from chunkr_ai.models import (
     ChunkProcessing,
     Configuration
+    Tokenizer,
 )
 
 chunkr = Chunkr()
@@ -26,23 +29,206 @@ chunkr = Chunkr()
 chunkr.upload("path/to/file", Configuration(
     chunk_processing=ChunkProcessing(
         ignore_headers_and_footers=True, 
-        target_length=1024 
+        target_length=512,
+        tokenizer=Tokenizer.WORD
     ),
 ))
 ```
 
 ```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task \
-  -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file \
-  -F 'chunk_processing={
+curl --request POST \
+  --url https://api.chunkr.ai/api/v1/task/parse \
+  --header 'Authorization: YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "file": "base64_encoded_file_content",
+    "file_name": "document.pdf",
+    "chunk_processing": {
       "ignore_headers_and_footers": false,
-      "target_length": 1024
-    };type=application/json'
+      "target_length": 512,
+      "tokenizer": {
+        "Enum": "Word"
+      }
+    }
+  }'
 ```
 </CodeGroup>
 
-## Defaults
+### Defaults
 
 - `ignore_headers_and_footers`: True
 - `target_length`: 512
+- `tokenizer`: `Word`
+
+## Tokenizer
+
+Chunkr supports a large number of tokenizers. You can use our predefined ones or specify any tokenizer from huggingface.
+
+### Predefined Tokenizers
+
+The predefined tokenizers are enum values and can be used as follows:
+
+<CodeGroup> 
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import (
+    ChunkProcessing,
+    Configuration
+    Tokenizer,
+)
+
+chunkr = Chunkr()
+
+chunkr.upload("path/to/file", Configuration(
+    chunk_processing=ChunkProcessing(
+            tokenizer=Tokenizer.CL100K_BASE
+    ),
+))
+```
+
+```bash cURL
+curl --request POST \
+  --url https://api.chunkr.ai/api/v1/task/parse \
+  --header 'Authorization: YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "file": "base64_encoded_file_content",
+    "file_name": "document.pdf",
+    "chunk_processing": {
+      "tokenizer": {
+        "Enum": "Cl100kBase"
+      }
+    }
+  }'
+```
+</CodeGroup>
+
+Available options: 
+- `Word`: Split by words
+- `Cl100kBase`: For OpenAI models (e.g. GPT-3.5, GPT-4, text-embedding-ada-002)
+- `XlmRobertaBase`: For RoBERTa-based multilingual models
+- `BertBaseUncased`: BERT base uncased tokenizer
+
+You can also define the tokenizer enum as a string in the python SDK. Here is an example where the string will be converted to the enum value.
+
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import (
+    ChunkProcessing,
+    Configuration
+    Tokenizer,
+)
+
+chunkr = Chunkr()
+
+chunkr.upload("path/to/file", Configuration(
+    chunk_processing=ChunkProcessing(
+            tokenizer="Word"
+    ),
+))
+```
+
+### Hugging Face Tokenizers
+
+Use any Hugging Face tokenizer by providing its model ID as a string (e.g. "facebook/bart-large", "Qwen/Qwen-tokenizer", etc.)
+
+<CodeGroup> 
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import (
+    ChunkProcessing,
+    Configuration
+    Tokenizer,
+)
+
+chunkr = Chunkr()
+
+chunkr.upload("path/to/file", Configuration(
+    chunk_processing=ChunkProcessing(
+            tokenizer="Qwen/Qwen-tokenizer"
+    ),
+))
+```
+
+```bash cURL
+curl --request POST \
+  --url https://api.chunkr.ai/api/v1/task/parse \
+  --header 'Authorization: YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "file": "base64_encoded_file_content",
+    "file_name": "document.pdf",
+    "chunk_processing": {
+      "tokenizer": {
+        "String": "Qwen/Qwen-tokenizer"
+      }
+    }
+  }'
+```
+</CodeGroup>
+
+## Calculating Chunk Lengths With Embed Sources
+
+When calculating chunk lengths and performing tokenization, we use the text from the `embed` field in each chunk object. This field contains the text that will be compared against the target length.
+You can configure what text goes into the `embed` field by setting the `embed_sources` parameter in your segment processing configuration. This parameter is specified under `segment_processing.{segment_type}` in your configuration.
+You can see more information about the `embed_sources` parameter in the [Segment Processing](/features/segment-processing) section.
+
+Here's an example of customizing the `embed` field content for Picture segments. By configuring `embed_sources`, you can include both the LLM-generated output and Chunkr's markdown output in the `embed` field for Pictures, while other segment types will continue using just the default Markdown content.
+Additionally, we can use `CL100K_BASE` tokenizer to configure this for OpenAI models.
+
+This means for this configuration, when calculating chunk lengths:
+- Picture segments: Length will be based on both the LLM summary and Markdown content
+- All other segments: Length will be based only on the Markdown content
+- The tokenizer will be `CL100K_BASE`
+
+<CodeGroup> 
+```python Python    
+from chunkr_ai import Chunkr
+from chunkr_ai.models import (
+    ChunkProcessing,
+    Configuration,
+    SegmentProcessing,
+    Tokenizer,
+)
+
+chunkr = Chunkr()
+
+chunkr.upload("path/to/file", Configuration(
+    chunk_processing=ChunkProcessing(
+        tokenizer=Tokenizer.CL100K_BASE
+    ),
+    segment_processing=SegmentProcessing(
+        Picture=SegmentProcessingPicture(
+            llm="Summarize the key information presented",
+            embed_sources=[EmbedSource.MARKDOWN, EmbedSource.LLM]
+        )
+    )
+))
+```
+
+```bash cURL
+curl --request POST \
+  --url https://api.chunkr.ai/api/v1/task/parse \
+  --header 'Authorization: YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "file": "base64_encoded_file_content",
+    "file_name": "document.pdf",
+    "chunk_processing": {
+      "tokenizer": {
+        "Enum": "Cl100kBase"
+      }
+    },
+    "segment_processing": {
+      "Picture": {
+        "llm": "Summarize the key information presented",
+        "embed_sources": ["Markdown", "LLM"]
+        }
+    }
+  }'
+```
+
+</CodeGroup>
+
+By combining the `embed_sources` parameter with the `tokenizer` parameter, you can customize the chunk lengths and tokenization for different segment types. 
+This allows you to have very powerful chunking configurations for your documents.

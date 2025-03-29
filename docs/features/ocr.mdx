@@ -23,15 +23,20 @@ from chunkr_ai.models import Configuration, OcrStrategy
 chunkr = Chunkr()
 
 chunkr.upload("path/to/file", Configuration(
-    ocr_strategy=OcrStrategy.ALL # can also be OcrStrategy.AUTO
+    ocr_strategy=OcrStrategy.AUTO # can also be OcrStrategy.ALL
 ))
 ```
 
 ```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task \
-  -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file \
-  -F 'ocr_strategy="\"All\"";type=application/json'
+curl --request POST \
+  --url https://api.chunkr.ai/api/v1/task/parse \
+  --header 'Authorization: YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "file": "base64_encoded_file_content",
+    "file_name": "document.pdf",
+    "ocr_strategy": "Auto"
+  }'
 ```
 </CodeGroup>
 

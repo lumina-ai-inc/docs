@@ -23,10 +23,15 @@ chunkr.upload("path/to/file", Configuration(
 ```
 
 ```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task \
-  -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file \
-  -F 'segmentation_strategy="\"LayoutAnalysis\"";type=application/json'
+curl --request POST \
+  --url https://api.chunkr.ai/api/v1/task/parse \
+  --header 'Authorization: YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "file": "base64_encoded_file_content",
+    "file_name": "document.pdf",
+    "segmentation_strategy": "LayoutAnalysis"
+  }'
 ```
 </CodeGroup>
 
