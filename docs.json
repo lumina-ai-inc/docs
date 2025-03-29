@@ -1,0 +1,156 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "palm",
+  "name": "Chunkr",
+  "colors": {
+    "primary": "#8D8D86",
+    "light": "#FFFFFF",
+    "dark": "#000000"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "docs/get-started/overview",
+              "docs/get-started/quickstart",
+              "docs/get-started/changelog"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "docs/features/overview",
+              {
+                "group": "Layout Analysis",
+                "pages": [
+                  "docs/features/layout-analysis/what",
+                  "docs/features/layout-analysis/segmentation_strategy"
+                ]
+              },
+              "docs/features/segment-processing",
+              "docs/features/ocr",
+              "docs/features/chunking",
+              "docs/features/pipeline"
+            ]
+          },
+          {
+            "group": "Use Cases",
+            "pages": [
+              "docs/use-cases/bulk-upload",
+              "docs/use-cases/usage-patterns"
+            ]
+          },
+          {
+            "group": "Self Hosting",
+            "pages": [
+              "docs/self-hosting/docker-compose",
+              "docs/self-hosting/kubernetes"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "SDK",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "sdk/installation",
+              "sdk/usage"
+            ]
+          },
+          {
+            "group": "Data Operations",
+            "pages": [
+              "sdk/data-operations/create",
+              "sdk/data-operations/get",
+              "sdk/data-operations/update",
+              "sdk/data-operations/delete",
+              "sdk/data-operations/cancel"
+            ]
+          },
+          {
+            "group": "Utilities",
+            "pages": [
+              "sdk/configuration",
+              "sdk/polling",
+              "sdk/export"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API References",
+        "openapi": {
+          "source": "https://api.chunkr.ai/docs/openapi.json",
+          "directory": "api-references"
+        }
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "GitHub",
+          "href": "https://github.com/lumina-ai-inc/chunkr",
+          "icon": "github"
+        },
+        {
+          "anchor": "Discord",
+          "href": "https://discord.gg/XzKWFByKzW",
+          "icon": "discord"
+        },
+        {
+          "anchor": "Twitter",
+          "href": "https://x.com/chunkrai",
+          "icon": "x"
+        }
+      ]
+    }
+  },
+  "styling": {
+    "codeblocks": "system"
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "api": {
+    "playground": {
+      "display": "interactive",
+      "proxy": false
+    },
+    "mdx": {
+      "auth": {
+        "method": "key"
+      }
+    }
+  },
+  "background": {
+    "decoration": "gradient"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:ishaan@lumina.sh"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Try Chunkr",
+      "href": "https://www.chunkr.ai"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/lumina-ai-inc/chunkr",
+      "discord": "https://discord.gg/XzKWFByKzW",
+      "x": "https://x.com/chunkrai"
+    }
+  }
+}

@@ -108,9 +108,3 @@ img = Image.open("path/to/your/photo.jpg")
 task = chunkr.upload(img)
 ```
 </CodeGroup>
-
-> Note: When sending base64 strings, include only the raw base64-encoded data.
-> Do not include MIME type headers like `data:application/pdf;base64,`.
-> For example:
-> - ❌ `data:application/pdf;base64,JVBERi0...`
-> - ✅ `JVBERi0...`
