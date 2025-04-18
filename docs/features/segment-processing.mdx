@@ -218,9 +218,11 @@ chunkr.upload("path/to/file", Configuration(
 
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
-  -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file \
-  -F 'segment_processing={
+  --header "Authorization: YOUR_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "file": "base64_or_url_to_file",
+    "segment_processing": {
       "Table": {
         "llm": "Summarize the key trends in this table"
       },
@@ -231,6 +233,7 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
         "html": "Auto",
         "markdown": "LLM"
       }
-    };type=application/json'
+    }
+  }'
 ```
 </CodeGroup>
