@@ -34,10 +34,11 @@
                   "docs/features/layout-analysis/segmentation_strategy"
                 ]
               },
-              "docs/features/llm-processing",
               "docs/features/ocr",
+              "docs/features/llm-processing",
               "docs/features/segment-processing",
-              "docs/features/pipeline"
+              "docs/features/pipeline",
+              "docs/features/error-handling"
             ]
           },
           {

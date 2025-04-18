@@ -1,0 +1,125 @@
+---
+title: Error Handling
+sidebarTitle: Error Handling
+description: "Handle errors in Chunkr AI API"
+---
+
+Chunkr AI API provides a configurable approach to error handling during document processing. 
+You can control how the system responds to errors that occur during various processing stages.
+
+## Error Handling Strategy
+
+The `ErrorHandlingStrategy` configuration allows you to specify how the system should respond when errors occur during document processing.
+
+```python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import Configuration, ErrorHandlingStrategy
+
+# Create config with Continue error handling
+config = Configuration(
+    error_handling=ErrorHandlingStrategy.CONTINUE
+)
+
+# Upload document with this configuration
+chunkr = Chunkr()
+response = await chunkr.upload("path/to/file", config)
+```
+
+### Available Strategies
+
+| Strategy | Description |
+|----------|-------------|
+| `ErrorHandlingStrategy.FAIL` | Default behavior. Processing stops immediately when any error occurs. The task will fail and return status `FAILED`. |
+| `ErrorHandlingStrategy.CONTINUE` | Processing continues despite non-critical errors. The system will make reasonable attempts to recover and continue with the remaining content. |
+
+## How Continue Mode Works
+
+When you set `error_handling=ErrorHandlingStrategy.CONTINUE`, the system will attempt to gracefully handle various types of errors:
+
+### LLM Processing Errors
+
+If a segment encounters an LLM error:
+- The system will skip that specific segment instead of failing the entire task
+- Processing continues with the remaining segments
+
+If there is a fallback model configured, the system will use it to process the segment first, if that fails then error handling will continue.
+See here in [LLM Processing](/docs/features/llm-processing) how to configure a fallback model.
+
+### Layout Analysis Errors
+
+When using `Continue` mode during layout analysis:
+- If a page encounters layout detection problems, it defaults to segment type "Page"
+- This ensures the content is still accessible even if optimal segmentation fails
+- The page's content will be processed as a single segment
+
+### OCR Strategy Fallbacks
+
+In `Continue` mode with OCR processing:
+- If OCR extraction encounters errors, it falls back to using the document's text layer
+- This behaves similarly to `OcrStrategy.AUTO` mode
+- Ensures text content is still available even when OCR processing fails
+
+## Example Usage
+
+<CodeGroup>
+```python Basic Example
+from chunkr_ai import Chunkr
+from chunkr_ai.models import Configuration, ErrorHandlingStrategy
+
+chunkr = Chunkr()
+
+# Use Continue strategy for robust processing
+config = Configuration(
+    error_handling=ErrorHandlingStrategy.CONTINUE
+)
+
+response = await chunkr.upload("path/to/document.pdf", config)
+# Processing will continue despite non-critical errors
+```
+
+```python Combined with Other Settings
+from chunkr_ai import Chunkr
+from chunkr_ai.models import (
+    Configuration, 
+    ErrorHandlingStrategy,
+    LlmProcessing,
+    FallbackStrategy
+)
+
+chunkr = Chunkr()
+
+# Comprehensive configuration with error handling
+config = Configuration(
+    error_handling=ErrorHandlingStrategy.CONTINUE,
+    llm_processing=LlmProcessing(
+        model_id="gemini-pro-2.5",
+        fallback_strategy=FallbackStrategy.model("claude-3.7-sonnet"),
+        max_completion_tokens=4096
+    )
+)
+
+response = await chunkr.upload("path/to/document.pdf", config)
+# Will continue processing even if some LLM calls fail
+```
+
+```bash cURL
+curl -X POST \
+    --url https://api.chunkr.ai/api/v1/task/parse \
+    --header "Authorization: YOUR_API_KEY" \
+    --header "Content-Type: application/json" \
+    --data '{
+        "file": "base64_or_url_to_file",
+        "error_handling": "CONTINUE",
+        "llm_processing": {
+            "fallback_strategy": {"model": "gemini-flash-2.0"},
+            "model_id": "claude-3.7-sonnet"
+        }
+    }'
+```
+</CodeGroup>
+
+## When to Use Continue Mode
+
+Consider using `ErrorHandlingStrategy.CONTINUE` when partial results are better than completely failed processing.
+
+For critical applications where accuracy is paramount, you may prefer the default `ErrorHandlingStrategy.FAIL` to ensure you're alerted to any processing issues.
