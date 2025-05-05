@@ -9,7 +9,7 @@ Here are some examples to get you started.
 ## Highest quality
 
 The highest quality output is achieved by using layout analysis and then generating html and markdown using a VLM on every segment type.
-This will take longer to process, but will yield the highest quality output. 
+This will take longer to process, but will yield the highest quality output.
 By dividing the file into segments, we can get higher quality results from the VLM and also parallelize the processing.
 
 <CodeGroup> 
@@ -25,59 +25,60 @@ from chunkr_ai.models import (
 chunkr = Chunkr()
 
 config = Configuration(
-    high_resolution=True, # Use high resolution for all segments
-    segment_processing=SegmentProcessing(
-        Caption=GenerationConfig(
-              html=GenerationStrategy.LLM,
-              markdown=GenerationStrategy.LLM,
-          ),
-          Footnote=GenerationConfig(
-              html=GenerationStrategy.LLM,
-              markdown=GenerationStrategy.LLM,
-          ),
-          ListItem=GenerationConfig(
-              html=GenerationStrategy.LLM,
-              markdown=GenerationStrategy.LLM,
-          ),
-          Page=GenerationConfig(
-              html=GenerationStrategy.LLM,
-              markdown=GenerationStrategy.LLM,
-          ),
-          PageFooter=GenerationConfig(
-              html=GenerationStrategy.LLM,
-              markdown=GenerationStrategy.LLM,
-          ),
-          PageHeader=GenerationConfig(
-              html=GenerationStrategy.LLM,
-              markdown=GenerationStrategy.LLM,
-          ),
-          Picture=GenerationConfig(
-              html=GenerationStrategy.LLM,
-              markdown=GenerationStrategy.LLM,
-          ),
-          SectionHeader=GenerationConfig(
-              html=GenerationStrategy.LLM,
-              markdown=GenerationStrategy.LLM,
-          ),
-          Text=GenerationConfig(
-              html=GenerationStrategy.LLM,
-              markdown=GenerationStrategy.LLM,
-          ),
-          Title=GenerationConfig(
-              html=GenerationStrategy.LLM,
-              markdown=GenerationStrategy.LLM,
-          )
-    )
+high_resolution=True, # Use high resolution for all segments
+segment_processing=SegmentProcessing(
+Caption=GenerationConfig(
+html=GenerationStrategy.LLM,
+markdown=GenerationStrategy.LLM,
+),
+Footnote=GenerationConfig(
+html=GenerationStrategy.LLM,
+markdown=GenerationStrategy.LLM,
+),
+ListItem=GenerationConfig(
+html=GenerationStrategy.LLM,
+markdown=GenerationStrategy.LLM,
+),
+Page=GenerationConfig(
+html=GenerationStrategy.LLM,
+markdown=GenerationStrategy.LLM,
+),
+PageFooter=GenerationConfig(
+html=GenerationStrategy.LLM,
+markdown=GenerationStrategy.LLM,
+),
+PageHeader=GenerationConfig(
+html=GenerationStrategy.LLM,
+markdown=GenerationStrategy.LLM,
+),
+Picture=GenerationConfig(
+html=GenerationStrategy.LLM,
+markdown=GenerationStrategy.LLM,
+),
+SectionHeader=GenerationConfig(
+html=GenerationStrategy.LLM,
+markdown=GenerationStrategy.LLM,
+),
+Text=GenerationConfig(
+html=GenerationStrategy.LLM,
+markdown=GenerationStrategy.LLM,
+),
+Title=GenerationConfig(
+html=GenerationStrategy.LLM,
+markdown=GenerationStrategy.LLM,
+)
+)
 )
 
 chunkr.upload("path/to/file", config)
-```
+
+````
 
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
   -F file=@path/to/file \
-  -F 'high_resolution=true;type=application/json' 
+  -F 'high_resolution=true;type=application/json'
   -F 'segment_processing={
       "Caption": {
         "html": "LLM",
@@ -120,13 +121,14 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
         "markdown": "LLM"
       }
     };type=application/json'
-```
+````
+
 </CodeGroup>
 
 ## Fastest
 
 The fastest output is achieved by skipping layout analysis and using no VLMs at all.
-That means that the output will just be the text content of the file. 
+That means that the output will just be the text content of the file.
 
 <CodeGroup> 
 ```python Python
@@ -143,24 +145,25 @@ from chunkr_ai.models import (
 chunkr = Chunkr()
 
 config = Configuration(
-    segment_processing=SegmentProcessing(
-        Formula=GenerationConfig(
-              html=GenerationStrategy.AUTO,
-              markdown=GenerationStrategy.AUTO,
-        ),
-        Table=GenerationConfig(
-              html=GenerationStrategy.AUTO,
-              markdown=GenerationStrategy.AUTO,
-        ),
-        Picture=GenerationConfig(
-            crop_image=CroppingStrategy.AUTO
-        ),
-    ),
-    segmentation_strategy=SegmentationStrategy.PAGE
+segment_processing=SegmentProcessing(
+Formula=GenerationConfig(
+html=GenerationStrategy.AUTO,
+markdown=GenerationStrategy.AUTO,
+),
+Table=GenerationConfig(
+html=GenerationStrategy.AUTO,
+markdown=GenerationStrategy.AUTO,
+),
+Picture=GenerationConfig(
+crop_image=CroppingStrategy.AUTO
+),
+),
+segmentation_strategy=SegmentationStrategy.PAGE
 )
 
 chunkr.upload("path/to/file", config)
-```
+
+````
 
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
@@ -180,12 +183,13 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
         }
     };type=application/json' \
   -F 'segmentation_strategy="\"Page\"";type=application/json'
-```
+````
+
 </CodeGroup>
 
 ## Word Level Bounding Boxes
 
-If you want to get word level bounding boxes for all text in the file. 
+If you want to get word level bounding boxes for all text in the file.
 This will take longer to process but will have consistent results.
 
 <CodeGroup> 
@@ -196,15 +200,84 @@ from chunkr_ai.models import Configuration, OcrStrategy
 chunkr = Chunkr()
 
 config = Configuration(
-   ocr_strategy=OcrStrategy.ALL
+ocr_strategy=OcrStrategy.ALL
 )
 
 chunkr.upload("path/to/file", config)
-```
+
+````
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
   -F file=@path/to/file \
   -F 'ocr_strategy="\"All\"";type=application/json'
-```
+````
+
+</CodeGroup>
+
+## Complex Documents with Extended Context
+
+For documents with complex layouts where elements need surrounding context (such as tables with separate legends, charts with explanatory text, or images that need page context), enable extended context processing:
+
+<CodeGroup> 
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import (
+    Configuration, 
+    GenerationConfig, 
+    GenerationStrategy,
+    SegmentProcessing
+)
+
+chunkr = Chunkr()
+
+config = Configuration(
+high_resolution=True,
+segment_processing=SegmentProcessing(
+Table=GenerationConfig(
+html=GenerationStrategy.LLM,
+markdown=GenerationStrategy.LLM,
+use_extended_context=True
+),
+Picture=GenerationConfig(
+html=GenerationStrategy.LLM,
+markdown=GenerationStrategy.LLM,
+use_extended_context=True
+),
+Formula=GenerationConfig(
+html=GenerationStrategy.LLM,
+markdown=GenerationStrategy.LLM,
+use_extended_context=True
+)
+)
+)
+
+chunkr.upload("path/to/file", config)
+
+````
+
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task \
+  -H "Authorization: YOUR_API_KEY" \
+  -F file=@path/to/file \
+  -F 'high_resolution=true;type=application/json' \
+  -F 'segment_processing={
+      "Table": {
+        "html": "LLM",
+        "markdown": "LLM",
+        "use_extended_context": true,
+      },
+      "Picture": {
+        "html": "LLM",
+        "markdown": "LLM",
+        "use_extended_context": true,
+      },
+      "Formula": {
+        "html": "LLM",
+        "markdown": "LLM",
+        "use_extended_context": true,
+      }
+    };type=application/json'
+````
+
 </CodeGroup>
