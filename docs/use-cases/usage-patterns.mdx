@@ -12,12 +12,11 @@ The highest quality output is achieved by using layout analysis and then generat
 This will take longer to process, but will yield the highest quality output.
 By dividing the file into segments, we can get higher quality results from the VLM and also parallelize the processing.
 
-<CodeGroup> 
 ```python Python
 from chunkr_ai import Chunkr
 from chunkr_ai.models import (
-    Configuration, 
-    GenerationConfig, 
+    Configuration,
+    GenerationConfig,
     GenerationStrategy,
     SegmentProcessing
 )
@@ -72,7 +71,7 @@ markdown=GenerationStrategy.LLM,
 
 chunkr.upload("path/to/file", config)
 
-````
+```
 
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
@@ -121,24 +120,21 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
         "markdown": "LLM"
       }
     };type=application/json'
-````
-
-</CodeGroup>
+```
 
 ## Fastest
 
 The fastest output is achieved by skipping layout analysis and using no VLMs at all.
 That means that the output will just be the text content of the file.
 
-<CodeGroup> 
 ```python Python
 from chunkr_ai import Chunkr
 from chunkr_ai.models import (
-    Configuration, 
-    SegmentProcessing, 
-    GenerationConfig, 
-    GenerationStrategy, 
-    SegmentationStrategy, 
+    Configuration,
+    SegmentProcessing,
+    GenerationConfig,
+    GenerationStrategy,
+    SegmentationStrategy,
     CroppingStrategy
 )
 
@@ -163,7 +159,7 @@ segmentation_strategy=SegmentationStrategy.PAGE
 
 chunkr.upload("path/to/file", config)
 
-````
+```
 
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
@@ -183,16 +179,13 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
         }
     };type=application/json' \
   -F 'segmentation_strategy="\"Page\"";type=application/json'
-````
-
-</CodeGroup>
+```
 
 ## Word Level Bounding Boxes
 
 If you want to get word level bounding boxes for all text in the file.
 This will take longer to process but will have consistent results.
 
-<CodeGroup> 
 ```python Python
 from chunkr_ai import Chunkr
 from chunkr_ai.models import Configuration, OcrStrategy
@@ -205,26 +198,24 @@ ocr_strategy=OcrStrategy.ALL
 
 chunkr.upload("path/to/file", config)
 
-````
+```
+
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
   -F file=@path/to/file \
   -F 'ocr_strategy="\"All\"";type=application/json'
-````
-
-</CodeGroup>
+```
 
 ## Complex Documents with Extended Context
 
 For documents with complex layouts where elements need surrounding context (such as tables with separate legends, charts with explanatory text, or images that need page context), enable extended context processing:
 
-<CodeGroup> 
 ```python Python
 from chunkr_ai import Chunkr
 from chunkr_ai.models import (
-    Configuration, 
-    GenerationConfig, 
+    Configuration,
+    GenerationConfig,
     GenerationStrategy,
     SegmentProcessing
 )
@@ -254,7 +245,7 @@ use_extended_context=True
 
 chunkr.upload("path/to/file", config)
 
-````
+```
 
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
@@ -278,6 +269,8 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
         "use_extended_context": true,
       }
     };type=application/json'
-````
+```
 
-</CodeGroup>
+```
+
+```
