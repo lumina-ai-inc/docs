@@ -53,12 +53,12 @@ markdown=GenerationStrategy.LLM,
 Picture=GenerationConfig(
 html=GenerationStrategy.LLM,
 markdown=GenerationStrategy.LLM,
-use_extended_context=True,
+extended_context=True,
 ),
 Table=GenerationConfig(
 html=GenerationStrategy.LLM,
 markdown=GenerationStrategy.LLM,
-use_extended_context=True,
+extended_context=True,
 ),
 SectionHeader=GenerationConfig(
 html=GenerationStrategy.LLM,
@@ -234,17 +234,17 @@ segment_processing=SegmentProcessing(
 Table=GenerationConfig(
 html=GenerationStrategy.LLM,
 markdown=GenerationStrategy.LLM,
-use_extended_context=True
+extended_context=True
 ),
 Picture=GenerationConfig(
 html=GenerationStrategy.LLM,
 markdown=GenerationStrategy.LLM,
-use_extended_context=True
+extended_context=True
 ),
 Formula=GenerationConfig(
 html=GenerationStrategy.LLM,
 markdown=GenerationStrategy.LLM,
-use_extended_context=True
+extended_context=True
 )
 )
 )
@@ -262,17 +262,17 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
       "Table": {
         "html": "LLM",
         "markdown": "LLM",
-        "use_extended_context": true,
+        "extended_context": true,
       },
       "Picture": {
         "html": "LLM",
         "markdown": "LLM",
-        "use_extended_context": true,
+        "extended_context": true,
       },
       "Formula": {
         "html": "LLM",
         "markdown": "LLM",
-        "use_extended_context": true,
+        "extended_context": true,
       }
     };type=application/json'
 ```

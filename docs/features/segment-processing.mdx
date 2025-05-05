@@ -35,7 +35,7 @@ GenerationConfig(
     crop_image=CroppingStrategy.AUTO,
     llm=None,
     embed_sources=[EmbedSource.MARKDOWN],
-    use_extended_context=False,
+    extended_context=False,
 )
 ```
 
@@ -55,7 +55,7 @@ markdown=GenerationStrategy.LLM,
 crop_image=CroppingStrategy.AUTO,
 llm=None,
 embed_sources=[EmbedSource.MARKDOWN],
-use_extended_context=False
+extended_context=False
 )
 
 default_config = Configuration(
@@ -75,7 +75,7 @@ default_picture_config = GenerationConfig(
     crop_image=CroppingStrategy.ALL,
     llm=None,
     embed_sources=[EmbedSource.MARKDOWN],
-    use_extended_context=False
+    extended_context=False
 )
 
 default_config = Configuration(
@@ -155,7 +155,7 @@ for chunk in task.output.chunks:
 
 The `llm` field is used to pass a prompt to the LLM. This prompt is independent of the `GenerationStrategy` and will be applied to all segment types that have the `llm` field set.
 
-If you need extended context for LLM processing, you must explicitly enable it by setting `use_extended_context=True` in your `GenerationConfig`. Extended context requires a page image to be available at runtime.
+If you need extended context for LLM processing, you must explicitly enable it by setting `extended_context=True` in your `GenerationConfig`. Extended context requires a page image to be available at runtime.
 
 Extended context is particularly useful for:
 
@@ -224,13 +224,13 @@ segment_processing=SegmentProcessing(
 Table=GenerationConfig(
 llm="Summarize the key trends in this table including any context from legends or surrounding text",
 embed_source=[EmbedSource.LLM, EmbedSource.MARKDOWN],
-use_extended_context=True
+extended_context=True
 ),
 Picture=GenerationConfig(
 html=GenerationStrategy.LLM,
 markdown=GenerationStrategy.LLM,
 crop_image=CroppingStrategy.ALL,
-use_extended_context=True,
+extended_context=True,
 ),
 SectionHeader=GenerationConfig(
 crop_image=CroppingStrategy.ALL
@@ -249,13 +249,13 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
     "segment_processing": {
       "Table": {
         "llm": "Summarize the key trends in this table including any context from legends or surrounding text",
-        "use_extended_context": true
+        "extended_context": true
       },
       "Picture": {
         "html": "LLM",
         "markdown": "LLM",
         "crop_image": "All",
-        "use_extended_context": true,
+        "extended_context": true,
       },
       "SectionHeader": {
         "crop_image": "All"
