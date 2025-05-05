@@ -71,8 +71,7 @@ markdown=GenerationStrategy.LLM,
 )
 
 chunkr.upload("path/to/file", config)
-
-````
+```
 
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
@@ -121,7 +120,7 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
         "markdown": "LLM"
       }
     };type=application/json'
-````
+```
 
 </CodeGroup>
 
@@ -163,7 +162,7 @@ segmentation_strategy=SegmentationStrategy.PAGE
 
 chunkr.upload("path/to/file", config)
 
-````
+```
 
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
@@ -183,7 +182,7 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
         }
     };type=application/json' \
   -F 'segmentation_strategy="\"Page\"";type=application/json'
-````
+```
 
 </CodeGroup>
 
@@ -205,13 +204,13 @@ ocr_strategy=OcrStrategy.ALL
 
 chunkr.upload("path/to/file", config)
 
-````
+```
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
   -H "Authorization: YOUR_API_KEY" \
   -F file=@path/to/file \
   -F 'ocr_strategy="\"All\"";type=application/json'
-````
+```
 
 </CodeGroup>
 
@@ -254,7 +253,7 @@ use_extended_context=True
 
 chunkr.upload("path/to/file", config)
 
-````
+```
 
 ```bash cURL
 curl -X POST https://api.chunkr.ai/api/v1/task \
@@ -278,6 +277,6 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
         "use_extended_context": true,
       }
     };type=application/json'
-````
+```
 
 </CodeGroup>
