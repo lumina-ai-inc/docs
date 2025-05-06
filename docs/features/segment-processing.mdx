@@ -45,24 +45,25 @@ By default, Chunkr applies the following processing strategies for each segment 
 You can override these defaults by specifying custom configuration in your `SegmentProcessing` settings.
 HTML, Markdown, and content are always returned. Extended context is off by default for all outputs (HTML, Markdown, LLM), and there are no `html_page_extended` or `md_page_extended` fields.
 
+<CodeGroup>
 ```python Page, Tables and Formulas
 # Page, Table and Formula by default are processed using LLM.
 # Formulas are returned as LaTeX.
 
 default_llm_config = GenerationConfig(
-html=GenerationStrategy.LLM,
-markdown=GenerationStrategy.LLM,
-crop_image=CroppingStrategy.AUTO,
-llm=None,
-embed_sources=[EmbedSource.MARKDOWN],
-extended_context=False
+    html=GenerationStrategy.LLM,
+    markdown=GenerationStrategy.LLM,
+    crop_image=CroppingStrategy.AUTO,
+    llm=None,
+    embed_sources=[EmbedSource.MARKDOWN],
+    extended_context=False
 )
 
 default_config = Configuration(
-segment_processing=SegmentProcessing(
-Table=default_llm_config,
-Formula=default_llm_config,
-)
+    segment_processing=SegmentProcessing(
+        Table=default_llm_config,
+        Formula=default_llm_config,
+    )
 )
 ```
 
@@ -109,7 +110,6 @@ default_config = Configuration(
     )
 )
 ```
-
 </CodeGroup>
 
 ### GenerationStrategy
@@ -139,8 +139,6 @@ The `CroppingStrategy` enum controls how Chunkr handles image cropping for segme
 
 - `CroppingStrategy.AUTO`: Lets Chunkr decide when cropping is necessary based on the segment type and post-processing requirements.
   For example, if an LLM is required to generate HTML from tables then they will be cropped.
-
-This is how you can access the `image` field in the `segment` object:
 
 ```python
 for chunk in task.output.chunks:
@@ -177,9 +175,7 @@ The embed sources is an array of sources. The index of the source will be used t
 For example, if you have `[EmbedSource.MARKDOWN, EmbedSource.HTML]`, the Markdown content will appear first in the `embed` field.
 By default, the `embed` field will only contain the Markdown content.
 
-This is how you can access the `embed` field in the `chunk` object:
-
-```python
+```python Python
 for chunk in task.output.chunks:
     print(chunk.embed)
 ```
@@ -194,6 +190,61 @@ for chunk in task.output.chunks:
 >
 > For example, if you set `embed_sources=[EmbedSource.LLM, EmbedSource.MARKDOWN]` for Tables, the LLM-generated content will appear before the markdown content in the `embed` field of any chunk containing a Table segment.
 
+### Extended Context
+
+The `extended_context` flag controls whether Chunkr provides the full page context when processing a segment. When set to `True`, Chunkr will use the entire page image as context when processing the segment with an LLM.
+
+Extended context is OFF by default for all segment types and output formats (HTML, Markdown, LLM). To leverage extended context, you must explicitly set `extended_context=True` within the `GenerationConfig` for the desired segment type(s).
+
+Extended context is particularly beneficial for:
+
+- **Tables/Charts with External Legends**: When a legend or explanatory text is located elsewhere on the page but is crucial for interpreting the table/chart.
+- **Images Requiring Surrounding Context**: For images where understanding the surrounding text or other visual elements is necessary for accurate description or analysis.
+- **Formulas/Diagrams**: When the meaning depends on adjacent text or figures.
+
+<CodeGroup>
+```python Python
+from chunkr_ai.models import Configuration, GenerationConfig, GenerationStrategy, SegmentProcessing
+
+config = Configuration(
+    segment_processing=SegmentProcessing(
+        Table=GenerationConfig(
+            html=GenerationStrategy.LLM,
+            markdown=GenerationStrategy.LLM,
+            extended_context=True,  # Enable extended context
+        ),
+        Picture=GenerationConfig(
+            html=GenerationStrategy.LLM,
+            markdown=GenerationStrategy.LLM,
+            extended_context=True,  # Enable extended context
+        )
+        # ... other segment configs
+    )
+)
+```
+
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task \
+  --header "Authorization: YOUR_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "file": "base64_or_url_to_file",
+    "segment_processing": {
+      "Table": {
+        "html": "LLM",
+        "markdown": "LLM",
+        "extended_context": true
+      },
+      "Picture": {
+        "html": "LLM",
+        "markdown": "LLM",
+        "extended_context": true
+      }
+    }
+  }'
+```
+</CodeGroup>
+
 ## Example
 
 Here is a quick example of how to use Chunkr to process a document with different segment processing configurations.
@@ -206,6 +257,7 @@ This configuration will:
 - Crop all `SectionHeader` segments to the bounding box.
 - All other segments will use their default processing.
 
+<CodeGroup>
 ```python Python
 from chunkr_ai import Chunkr
 from chunkr_ai.models import (
@@ -220,24 +272,23 @@ from chunkr_ai.models import (
 chunkr = Chunkr()
 
 chunkr.upload("path/to/file", Configuration(
-segment_processing=SegmentProcessing(
-Table=GenerationConfig(
-llm="Summarize the key trends in this table including any context from legends or surrounding text",
-embed_source=[EmbedSource.LLM, EmbedSource.MARKDOWN],
-extended_context=True
-),
-Picture=GenerationConfig(
-html=GenerationStrategy.LLM,
-markdown=GenerationStrategy.LLM,
-crop_image=CroppingStrategy.ALL,
-extended_context=True,
-),
-SectionHeader=GenerationConfig(
-crop_image=CroppingStrategy.ALL
-),
-),
+    segment_processing=SegmentProcessing(
+        Table=GenerationConfig(
+            llm="Summarize the key trends in this table including any context from legends or surrounding text",
+            embed_sources=[EmbedSource.LLM, EmbedSource.MARKDOWN],
+            extended_context=True
+        ),
+        Picture=GenerationConfig(
+            html=GenerationStrategy.LLM,
+            markdown=GenerationStrategy.LLM,
+            crop_image=CroppingStrategy.ALL,
+            extended_context=True,
+        ),
+        SectionHeader=GenerationConfig(
+            crop_image=CroppingStrategy.ALL
+        ),
+    ),
 ))
-
 ```
 
 ```bash cURL
@@ -267,3 +318,4 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
     }
   }'
 ```
+</CodeGroup>

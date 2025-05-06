@@ -10,6 +10,7 @@ Here are some examples to get you started.
 
 For documents with complex layouts where elements need surrounding context (such as tables with separate legends, charts with explanatory text, or images that need page context), enable extended context processing:
 
+<CodeGroup>
 ```python Python
 from chunkr_ai import Chunkr
 from chunkr_ai.models import (
@@ -22,24 +23,24 @@ from chunkr_ai.models import (
 chunkr = Chunkr()
 
 config = Configuration(
-high_resolution=True,
-segment_processing=SegmentProcessing(
-Table=GenerationConfig(
-html=GenerationStrategy.LLM,
-markdown=GenerationStrategy.LLM,
-extended_context=True
-),
-Picture=GenerationConfig(
-html=GenerationStrategy.LLM,
-markdown=GenerationStrategy.LLM,
-extended_context=True
-),
-Formula=GenerationConfig(
-html=GenerationStrategy.LLM,
-markdown=GenerationStrategy.LLM,
-extended_context=True
-)
-)
+    high_resolution=True,
+    segment_processing=SegmentProcessing(
+        Table=GenerationConfig(
+            html=GenerationStrategy.LLM,
+            markdown=GenerationStrategy.LLM,
+            extended_context=True
+        ),
+        Picture=GenerationConfig(
+            html=GenerationStrategy.LLM,
+            markdown=GenerationStrategy.LLM,
+            extended_context=True
+        ),
+        Formula=GenerationConfig(
+            html=GenerationStrategy.LLM,
+            markdown=GenerationStrategy.LLM,
+            extended_context=True
+        )
+    )
 )
 
 chunkr.upload("path/to/file", config)
@@ -69,7 +70,30 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
       }
     };type=application/json'
 ```
+</CodeGroup>
 
+## Pre-signed URLs and Base64 Alternatives
+
+When retrieving tasks, Chunkr generates pre-signed URLs for accessing:
+- Images
+- Input File
+- PDF File
+
+These URLs expire after 10 minutes. 
+For longer persistence or storage, you can request base64-encoded URLs instead:
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+
+chunkr = Chunkr()
+
+# Get task with base64-encoded URLs instead of pre-signed URLs
+task = chunkr.get_task("task_123", base64_urls=True)
 ```
 
+```bash cURL
+curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?base64_urls=true" \
+  -H "Authorization: YOUR_API_KEY"
 ```
+</CodeGroup>
