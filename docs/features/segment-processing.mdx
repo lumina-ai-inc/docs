@@ -68,11 +68,10 @@ default_config = Configuration(
 ```
 
 ```python Pictures
-# Pictures by default are processed using LLM and are cropped by default.
-
+# Pictures by default are processed using Auto and are cropped by default.
 default_picture_config = GenerationConfig(
-    html=GenerationStrategy.LLM,
-    markdown=GenerationStrategy.LLM,
+    html=GenerationStrategy.AUTO,
+    markdown=GenerationStrategy.AUTO,
     crop_image=CroppingStrategy.ALL,
     llm=None,
     embed_sources=[EmbedSource.MARKDOWN],
