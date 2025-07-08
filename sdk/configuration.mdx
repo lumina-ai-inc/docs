@@ -73,81 +73,82 @@ from chunkr_ai.models import (
     CroppingStrategy, 
     GenerationConfig, 
     GenerationStrategy, 
-    SegmentProcessing
+    SegmentProcessing,
+    SegmentFormat
   )
   
   config = Configuration(
       segment_processing=SegmentProcessing(
           Caption=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
-              html=GenerationStrategy.AUTO,
-              markdown=GenerationStrategy.AUTO,
+              format=SegmentFormat.MARKDOWN,
+              strategy=GenerationStrategy.AUTO,
               llm=None
           ),
           Formula=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
-              html=GenerationStrategy.LLM,
-              markdown=GenerationStrategy.LLM,
+              format=SegmentFormat.MARKDOWN,
+              strategy=GenerationStrategy.LLM,
               llm=None
           ),
           Footnote=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
-              html=GenerationStrategy.AUTO,
-              markdown=GenerationStrategy.AUTO,
+              format=SegmentFormat.MARKDOWN,
+              strategy=GenerationStrategy.AUTO,
               llm=None
           ),
           ListItem=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
-              html=GenerationStrategy.AUTO,
-              markdown=GenerationStrategy.AUTO,
+              format=SegmentFormat.MARKDOWN,
+              strategy=GenerationStrategy.AUTO,
               llm=None
           ),
           Page=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
-              html=GenerationStrategy.AUTO,
-              markdown=GenerationStrategy.AUTO,
+              format=SegmentFormat.MARKDOWN,
+              strategy=GenerationStrategy.AUTO,
               llm=None
           ),
           PageFooter=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
-              html=GenerationStrategy.AUTO,
-              markdown=GenerationStrategy.AUTO,
+              format=SegmentFormat.MARKDOWN,
+              strategy=GenerationStrategy.AUTO,
               llm=None
           ),
           PageHeader=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
-              html=GenerationStrategy.AUTO,
-              markdown=GenerationStrategy.AUTO,
+              format=SegmentFormat.MARKDOWN,
+              strategy=GenerationStrategy.AUTO,
               llm=None
           ),
           Picture=GenerationConfig(
               crop_image=CroppingStrategy.ALL, 
-              html=GenerationStrategy.AUTO,
-              markdown=GenerationStrategy.AUTO,
+              format=SegmentFormat.MARKDOWN,
+              strategy=GenerationStrategy.AUTO,
               llm=None
           ),
           SectionHeader=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
-              html=GenerationStrategy.AUTO,
-              markdown=GenerationStrategy.AUTO,
+              format=SegmentFormat.MARKDOWN,
+              strategy=GenerationStrategy.AUTO,
               llm=None
           ),
           Table=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
-              html=GenerationStrategy.LLM,
-              markdown=GenerationStrategy.LLM,
+              format=SegmentFormat.HTML,
+              strategy=GenerationStrategy.LLM,
               llm=None
           ),
           Text=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
-              html=GenerationStrategy.AUTO,
-              markdown=GenerationStrategy.AUTO,
+              format=SegmentFormat.MARKDOWN,
+              strategy=GenerationStrategy.AUTO,
               llm=None
           ),
           Title=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
-              html=GenerationStrategy.AUTO,
-              markdown=GenerationStrategy.AUTO,
+              format=SegmentFormat.MARKDOWN,
+              strategy=GenerationStrategy.AUTO,
               llm=None
           )
       )
@@ -164,8 +165,8 @@ You can customize any segment's generation strategy and add optional LLM prompts
       segment_processing=SegmentProcessing(
           Table=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
-              html=GenerationStrategy.LLM,
-              markdown=GenerationStrategy.LLM,
+              format=SegmentFormat.HTML,
+              strategy=GenerationStrategy.LLM,
               llm="Convert this table to a clear and concise format"
           )
       )

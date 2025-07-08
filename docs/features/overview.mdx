@@ -26,7 +26,8 @@ from chunkr_ai.models import (
     GenerationConfig, 
     GenerationStrategy, 
     SegmentProcessing, 
-    SegmentationStrategy
+    SegmentationStrategy,
+    SegmentFormat
 )
 
 chunkr = Chunkr()
@@ -34,6 +35,8 @@ chunkr = Chunkr()
 chunkr.upload("path/to/file", Configuration(
     segment_processing=SegmentProcessing(
         picture=GenerationConfig(
+            format=SegmentFormat.MARKDOWN,
+            strategy=GenerationStrategy.LLM,
             llm="Does this picture have a cat in it? Answer must be true or false."
         )
     ),
@@ -50,6 +53,8 @@ curl --request POST \
     "file_name": "document.pdf",
     "segment_processing": {
       "picture": {
+        "format": "Markdown",
+        "strategy": "LLM",
         "llm": "Does this picture have a cat in it? Answer must be true or false."
       }
     }
