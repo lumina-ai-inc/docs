@@ -17,7 +17,8 @@ from chunkr_ai.models import (
     Configuration,
     GenerationConfig,
     GenerationStrategy,
-    SegmentProcessing
+    SegmentProcessing,
+    SegmentFormat
 )
 
 chunkr = Chunkr()
@@ -26,18 +27,18 @@ config = Configuration(
     high_resolution=True,
     segment_processing=SegmentProcessing(
         Table=GenerationConfig(
-            html=GenerationStrategy.LLM,
-            markdown=GenerationStrategy.LLM,
+            format=SegmentFormat.MARKDOWN,
+            strategy=GenerationStrategy.LLM,
             extended_context=True
         ),
         Picture=GenerationConfig(
-            html=GenerationStrategy.LLM,
-            markdown=GenerationStrategy.LLM,
+            format=SegmentFormat.HTML,
+            strategy=GenerationStrategy.LLM,
             extended_context=True
         ),
         Formula=GenerationConfig(
-            html=GenerationStrategy.LLM,
-            markdown=GenerationStrategy.LLM,
+            format=SegmentFormat.MARKDOWN,
+            strategy=GenerationStrategy.LLM,
             extended_context=True
         )
     )
@@ -54,19 +55,19 @@ curl -X POST https://api.chunkr.ai/api/v1/task \
   -F 'high_resolution=true;type=application/json' \
   -F 'segment_processing={
       "Table": {
-        "html": "LLM",
-        "markdown": "LLM",
-        "extended_context": true,
+        "format": "Markdown",
+        "strategy": "LLM",
+        "extended_context": true
       },
       "Picture": {
-        "html": "LLM",
-        "markdown": "LLM",
-        "extended_context": true,
+        "format": "Html",
+        "strategy": "LLM",
+        "extended_context": true
       },
       "Formula": {
-        "html": "LLM",
-        "markdown": "LLM",
-        "extended_context": true,
+        "format": "Markdown",
+        "strategy": "LLM",
+        "extended_context": true
       }
     };type=application/json'
 ```
