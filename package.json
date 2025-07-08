@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@mintlify/mcp": "^1.1.34"
+    "@mintlify/mcp": "^1.1.34",
+    "mintlify": "^4.2.4"
   }
 }
