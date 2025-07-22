@@ -42,6 +42,15 @@
             ]
           },
           {
+            "group": "Excel Parser",
+            "pages": [
+              "docs/excel-parser/overview",
+              "docs/excel-parser/understanding-the-output",
+              "docs/excel-parser/configuration"
+            ],
+            "tag": "NEW"
+          },
+          {
             "group": "Use Cases",
             "pages": [
               "docs/use-cases/usage-patterns",
