@@ -46,7 +46,8 @@
             "pages": [
               "docs/excel-parser/overview",
               "docs/excel-parser/understanding-the-output",
-              "docs/excel-parser/configuration"
+              "docs/excel-parser/configuration",
+              "docs/excel-parser/agent"
             ],
             "tag": "NEW"
           },
