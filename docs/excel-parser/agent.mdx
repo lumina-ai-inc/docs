@@ -13,7 +13,7 @@ An Excel agent combines Chunkr's parsing power with an interactive viewer and LL
 graph LR
     H[Excel File] --> I[Chunkr]
     I --> A
-    I --> J[Embeddings]
+    A --> J[Embeddings]
     J --> B
     
     subgraph "Tools"
@@ -39,8 +39,10 @@ graph LR
     F --> G
     G --> F
     
-    E -.->|Modifies parsed data| A
+    E -.->|Requests changes| D
+    D -.->|Modifies parsed data| A
     D -.->|Syncs data changes| F
+    D -.->|Updates embeddings| B
     
     style H fill:#e1f5fe
     style I fill:#f3e5f5
@@ -61,13 +63,14 @@ graph LR
 
 ### 2. **LLM Integration**
 - **Read Operations**: LLM analyzes specific cell ranges for patterns and insights
-- **Write Operations**: LLM modifies cell values and formulas in the parsed data structure
-- **No Re-parsing**: LLM directly updates the existing parsed data, Chunkr doesn't re-parse
+- **Write Operations**: LLM requests data changes through the sync code
+- **No Re-parsing**: Changes are made to existing parsed data, Chunkr doesn't re-parse
 
-### 3. **Automatic Synchronization**
-- Sync code monitors when the LLM modifies the parsed data
-- Viewer automatically updates to reflect these data changes
-- Real-time reflection of LLM modifications in the interface
+### 3. **Sync Code Coordination**
+- Sync code is the central coordinator for all data modifications
+- LLM sends change requests to sync code rather than modifying data directly
+- Sync code updates parsed data, viewer, and vector DB embeddings simultaneously
+- Ensures all components stay synchronized with a single source of truth
 
 ### 4. **Search & Discovery**
 - Chunkr parsed output gets converted into embeddings for semantic understanding
