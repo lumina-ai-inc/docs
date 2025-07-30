@@ -1,0 +1,136 @@
+---
+title: Task Management (CRUD)
+sidebarTitle: CRUD Operations
+description: "Create, read, update, delete, and cancel tasks in Chunkr to manage your data processing lifecycle."
+---
+
+## Creating Tasks
+
+You can create a task by uploading a file from multiple sources. The SDK provides two primary methods for task creation:
+
+*   `upload()`: Uploads a file and waits for the entire processing job to complete.
+*   `create_task()`: Submits the file for processing and returns a task ID immediately, allowing for asynchronous polling.
+
+### Complete Processing with `upload()`
+
+Use `upload()` for simplicity when you want to wait for the results.
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+chunkr = Chunkr()
+
+# Upload and wait for complete processing
+task = chunkr.upload("path/to/your/file.pdf")
+
+# All processing is done - you can access results immediately
+print(task.status) # Will be "Succeeded"
+print(task.output) # Contains processed results
+```
+</CodeGroup>
+
+### Instant Response with `create_task()`
+
+Use `create_task()` in asynchronous applications where you don't want to block execution.
+
+<CodeGroup>
+```python Python
+# Create task without waiting
+task = chunkr.create_task("path/to/your/file.pdf")
+
+# Task is created but processing may not be complete
+print(task.task_id)
+print(task.status)  # Might be "Starting"
+```
+</CodeGroup>
+
+You can check on the task's progress later using `poll()`.
+
+<CodeGroup>
+```python Python
+# ... do other work ...
+
+# Check status when needed
+result = task.poll()
+print(result.status)
+print(result.output)  # Now contains processed results if status is "Succeeded"
+```
+</CodeGroup>
+
+### Supported Input Sources
+
+Our SDK automatically detects the input type from various sources:
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+from PIL import Image
+import base64
+
+chunkr = Chunkr()
+
+# From a file path
+task = chunkr.upload("path/to/your/file.pdf")
+
+# From an opened file
+with open("path/to/your/file.pdf", "rb") as f:
+    task = chunkr.upload(f)
+
+# From a URL
+task = chunkr.upload("https://example.com/document.pdf")
+
+# From a base64 string
+with open("path/to/your/document.pdf", "rb") as f:
+    base64_string = base64.b64encode(f.read()).decode("utf-8")
+task = chunkr.upload(base64_string, file_name="document.pdf")
+
+# From a PIL Image
+img = Image.open("path/to/your/photo.jpg")
+task = chunkr.upload(img)
+```
+</CodeGroup>
+
+
+## Reading Tasks
+
+Retrieve information for any task using its `task_id`. This is useful for checking the status or accessing results of previously created tasks.
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+chunkr = Chunkr()
+
+# Get task by ID
+task = chunkr.get_task("task_123")
+
+# Access task information
+print(task.status)
+print(task.output)
+```
+</CodeGroup>
+
+### Customizing the Response
+
+You can tailor the response to include or exclude certain data.
+
+| Parameter        | Default | Description                                                                                                                  |
+| ---------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `include_chunks` | `True`  | When `True`, includes all processed chunks. Set to `False` for a lighter response with only task metadata. |
+| `base64_urls`    | `False` | When `True`, returns asset URLs as base64-encoded strings instead of temporary pre-signed URLs. Ideal for offline use.                 |
+
+<CodeGroup>
+```python Python
+# Get task without chunk data
+task = chunkr.get_task("task_123", include_chunks=False) 
+
+# Get task with base64-encoded image URLs
+task = chunkr.get_task("task_123", base64_urls=True)
+```
+```bash cURL
+# Get task without chunks
+curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?include_chunks=false" -H "Authorization: YOUR_API_KEY"
+
+# Get task with base64-encoded URLs
+curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?base64_urls=true" -H "Authorization: YOUR_API_KEY"
+```
+</CodeGroup>

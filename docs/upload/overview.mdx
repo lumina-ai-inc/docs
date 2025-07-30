@@ -1,0 +1,68 @@
+---
+title: Upload Overview
+sidebarTitle: Overview
+description: "Using Chunkr's upload options and task based polling system"
+---
+
+The Chunkr API and SDKs offer flexible methods to upload files for processing. 
+
+## Key capabilities
+
+*   **Broad File Support**: Process a variety of file types like PDFs, Excel, PPTs, Doc.
+*   **Multiple Input Sources**: Provide files directly, from a URL, or as a base64-encoded string.
+*   **Configurable Outputs**: Configure the format of your results, like cropped image formats. 
+*   **Data Retention**: Set custom expiration times for automatic data deletion.
+
+
+## The Task System
+
+All file processing in Chunkr is handled through a task-based system. When you submit a file, a new task is created, and you receive a `task_id`. You then use this ID to "poll" (or repeatedly check) the task's status until it's complete.
+
+This asynchronous approach allows you to submit long-running jobs without tying up your application. Once the task status is `Succeeded`, the full processing results are available.
+
+<Mermaid>
+  ```mermaid
+  sequenceDiagram
+    participant You as "Your Application"
+    participant Chunkr
+    You->>Chunkr: 1. Upload File (Create Task)
+    Chunkr-->>You: Returns "task_id"
+    loop Poll for result
+        You->>Chunkr: 2. Get Task Status (using "task_id")
+        Chunkr-->>You: Status: "Processing"
+    end
+    You->>Chunkr: 3. Get Task Status (using "task_id")
+    Chunkr-->>You: Status: "Succeeded" + Results
+  ```
+</Mermaid>
+
+### Example: Upload and Poll
+
+Here’s how you can upload a file and poll for its results using our Python SDK.
+
+```python
+from chunkr_ai import Chunkr
+import time
+
+# Initialize the client
+chunkr = Chunkr()
+
+# 1. Create a task without waiting for completion
+task = chunkr.create_task("path/to/your/document.pdf")
+print(f"Task created with ID: {task.task_id}")
+
+# 2. Poll for the result
+# The poll method will automatically wait until the task is complete
+task.poll() 
+
+# 3. Access the results
+if task.status == "Succeeded":
+    print("Task completed successfully!")
+    # Now you can work with the output
+    print(f"Document has {len(task.output.chunks)} chunks.")
+else:
+    print(f"Task failed with status: {task.status}")
+
+chunkr.close()
+``` 
+

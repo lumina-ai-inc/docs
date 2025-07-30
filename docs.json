@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "palm",
+  "theme": "almond",
   "name": "Chunkr",
   "colors": {
     "primary": "#8D8D86",
@@ -18,25 +18,41 @@
             "pages": [
               "docs/get-started/overview",
               "docs/get-started/quickstart",
-              "docs/get-started/llm"
+              "docs/get-started/llm",
+              "docs/get-started/foundry"
             ]
           },
           {
-            "group": "Features",
+            "group": "Upload",
+            "icon": "upload",
+            "pages": [
+              "docs/upload/overview",
+              "docs/upload/file-types",
+              "docs/upload/CRUD",
+              "docs/upload/batch-upload"
+            ]
+          },
+          {
+            "group": "Parse",
+            "icon":"crop-simple",
             "pages": [
               "docs/features/overview",
-              "docs/features/chunking",
               {
-                "group": "Layout Analysis",
+                "group": "Configuration",
                 "pages": [
-                  "docs/features/layout-analysis/what",
-                  "docs/features/layout-analysis/segmentation_strategy"
+                  "docs/features/configuration/segment_processing",
+                  "docs/features/configuration/chunking"
                 ]
               },
-              "docs/features/ocr",
-              "docs/features/llm-processing",
-              "docs/features/segment-processing",
-              "docs/features/pipeline",
+              {
+                "group": "Outputs",
+                "pages": [
+                  "docs/features/outputs/json",
+                  "docs/features/outputs/csv",
+                  "docs/features/outputs/pdf"
+                ]
+              },
+              "docs/features/best-practices",
               "docs/features/error-handling"
             ]
           },
@@ -61,18 +77,37 @@
           },
           {
             "group": "Use Cases",
+            "icon": "rocket",
             "pages": [
-              "docs/use-cases/usage-patterns",
-              "docs/use-cases/bulk-upload"
+              "docs/use-cases/visual-citations",
+              "docs/use-cases/excel-agent"
             ]
           },
           {
-            "group": "Self Hosting",
+            "group": "Advanced",
+            "icon": "gear",
             "pages": [
-              "docs/self-hosting/docker-compose",
-              "docs/self-hosting/kubernetes"
+              "docs/advanced/overview",
+              {
+                "group": "Parse",
+                "pages": [
+                  "docs/advanced/parse/configuration",
+                  "docs/advanced/parse/outputs"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Security",
+            "icon": "shield-check",
+            "pages": [
+              "docs/security/overview",
+              "docs/security/data-retention",
+              "docs/security/certifications",
+              "docs/security/on-premise"
             ]
           }
+         
         ]
       },
       {
@@ -138,8 +173,12 @@
   },
   "logo": {
     "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "dark": "/logo/dark.svg",
+    "href": "https://www.chunkr.ai"
   },
+  "customJS": [
+    "/assets/js/custom.js"
+  ],
   "api": {
     "playground": {
       "display": "interactive",
@@ -152,7 +191,7 @@
     }
   },
   "background": {
-    "decoration": "gradient"
+    
   },
   "navbar": {
     "links": [
