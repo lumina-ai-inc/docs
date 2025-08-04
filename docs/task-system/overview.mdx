@@ -1,24 +1,20 @@
 ---
-title: Upload Overview
+title: Task System Overview
 sidebarTitle: Overview
-description: "Using Chunkr's upload options and task based polling system"
+description: "Understanding (TBD)"
 ---
 
-The Chunkr API and SDKs offer flexible methods to upload files for processing. 
+All file processing in Chunkr is handled through a task-based system. When you submit a file, a new task is created, and you receive a `task_id`. Use this ID to "poll" (or repeatedly check) the task's status until it's complete.
+
+This asynchronous approach allows you to submit long-running jobs without tying up your application. Once the task status is `Succeeded`, the full processing results are available.
+<br></br>
 
 ## Key capabilities
 
 *   **Broad File Support**: Process a variety of file types like PDFs, Excel, PPTs, Doc.
 *   **Multiple Input Sources**: Provide files directly, from a URL, or as a base64-encoded string.
-*   **Configurable Outputs**: Configure the format of your results, like cropped image formats. 
+*   **Full Task Control**: Manage jobs and customize results with our [CRUD operations](./CRUD.mdx).
 *   **Data Retention**: Set custom expiration times for automatic data deletion.
-
-
-## The Task System
-
-All file processing in Chunkr is handled through a task-based system. When you submit a file, a new task is created, and you receive a `task_id`. You then use this ID to "poll" (or repeatedly check) the task's status until it's complete.
-
-This asynchronous approach allows you to submit long-running jobs without tying up your application. Once the task status is `Succeeded`, the full processing results are available.
 
 <Mermaid>
   ```mermaid
@@ -61,7 +57,7 @@ if task.status == "Succeeded":
     # Now you can work with the output
     print(f"Document has {len(task.output.chunks)} chunks.")
 else:
-    print(f"Task failed with status: {task.status}")
+    print(f"Task failed with message: {task.message}")
 
 chunkr.close()
 ``` 
