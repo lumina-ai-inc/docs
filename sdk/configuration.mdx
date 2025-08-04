@@ -13,7 +13,6 @@ from chunkr_ai.models import ChunkProcessing, Configuration, OcrStrategy
 config = Configuration(
     chunk_processing=ChunkProcessing(target_length=1024),
     expires_in=3600,
-    high_resolution=True,
     ocr_strategy=OcrStrategy.AUTO,
 )
 
@@ -30,7 +29,6 @@ task = chunkr.upload("path/to/your/file", config)
 from chunkr_ai.models import ChunkProcessing
 config = Configuration(
     chunk_processing=ChunkProcessing(
-    ignore_headers_and_footers=True,
     target_length=1024
 )
 )
@@ -42,14 +40,6 @@ config = Configuration(
 <CodeGroup> 
 ```python Python
 config = Configuration(expires_in=3600)
-```
-</CodeGroup>
-
-### High Resolution
-
-<CodeGroup> 
-```python Python
-config = Configuration(high_resolution=True)
 ```
 </CodeGroup>
 
@@ -83,91 +73,91 @@ from chunkr_ai.models import (
               crop_image=CroppingStrategy.AUTO,
               format=SegmentFormat.MARKDOWN,
               strategy=GenerationStrategy.AUTO,
-              llm=None
+              description=False
           ),
           Formula=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
               format=SegmentFormat.MARKDOWN,
               strategy=GenerationStrategy.LLM,
-              llm=None
+              description=False
           ),
           Footnote=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
               format=SegmentFormat.MARKDOWN,
               strategy=GenerationStrategy.AUTO,
-              llm=None
+              description=False
           ),
           ListItem=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
               format=SegmentFormat.MARKDOWN,
               strategy=GenerationStrategy.AUTO,
-              llm=None
+              description=False
           ),
           Page=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
               format=SegmentFormat.MARKDOWN,
               strategy=GenerationStrategy.AUTO,
-              llm=None
+              description=False
           ),
           PageFooter=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
               format=SegmentFormat.MARKDOWN,
-              strategy=GenerationStrategy.AUTO,
-              llm=None
+              strategy=GenerationStrategy.IGNORE,
+              description=False
           ),
           PageHeader=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
               format=SegmentFormat.MARKDOWN,
-              strategy=GenerationStrategy.AUTO,
-              llm=None
+              strategy=GenerationStrategy.IGNORE,
+              description=False
           ),
           Picture=GenerationConfig(
               crop_image=CroppingStrategy.ALL, 
               format=SegmentFormat.MARKDOWN,
               strategy=GenerationStrategy.AUTO,
-              llm=None
+              description=False
           ),
           SectionHeader=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
               format=SegmentFormat.MARKDOWN,
               strategy=GenerationStrategy.AUTO,
-              llm=None
+              description=False
           ),
           Table=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
               format=SegmentFormat.HTML,
               strategy=GenerationStrategy.LLM,
-              llm=None
+              description=True
           ),
           Text=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
               format=SegmentFormat.MARKDOWN,
               strategy=GenerationStrategy.AUTO,
-              llm=None
+              description=False
           ),
           Title=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
               format=SegmentFormat.MARKDOWN,
               strategy=GenerationStrategy.AUTO,
-              llm=None
+              description=False
           )
       )
   )
   ```
 </CodeGroup>
 
-You can customize any segment's generation strategy and add optional LLM prompts:
+You can customize any segment's generation strategy and enable descriptions:
 
 <CodeGroup> 
 ```python Python
-# Example with custom LLM prompt for tables
+# Example with descriptions enabled for tables
   config = Configuration(
       segment_processing=SegmentProcessing(
           Table=GenerationConfig(
               crop_image=CroppingStrategy.AUTO,
               format=SegmentFormat.HTML,
               strategy=GenerationStrategy.LLM,
-              llm="Convert this table to a clear and concise format"
+              description=True
           )
       )
   )
