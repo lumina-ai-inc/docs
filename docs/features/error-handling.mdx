@@ -92,7 +92,7 @@ chunkr = Chunkr()
 config = Configuration(
     error_handling=ErrorHandlingStrategy.CONTINUE,
     llm_processing=LlmProcessing(
-        model_id="gemini-pro-2.5",
+        llm_model_id="gemini-pro-2.5",
         fallback_strategy=FallbackStrategy.model("claude-3.7-sonnet"),
         max_completion_tokens=4096
     )
@@ -112,7 +112,7 @@ curl -X POST \
         "error_handling": "CONTINUE",
         "llm_processing": {
             "fallback_strategy": {"model": "gemini-flash-2.0"},
-            "model_id": "claude-3.7-sonnet"
+            "llm_model_id": "claude-3.7-sonnet"
         }
     }'
 ```

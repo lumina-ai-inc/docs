@@ -11,7 +11,7 @@ This is how you can configure the LLMs:
 
 ```python
 llm_processing=LlmProcessing(
-    model_id="gemini-pro-2.5",
+    llm_model_id="gemini-pro-2.5",
     fallback_strategy=FallbackStrategy.model("gemini-flash-2.0"),
     max_completion_tokens=4096,
     temperature=0.0
@@ -24,7 +24,7 @@ The `LlmProcessing` configuration controls which language models are used for pr
 
 | Field | Type | Description | Default |
 |-------|------|-------------|---------|
-| `model_id` | String | The ID of the model to use for processing. If not provided, the system default model will be used. | [System default](#available-models) |
+| `llm_model_id` | String | The ID of the model to use for processing. If not provided, the system default model will be used. | [System default](#available-models) |
 | `fallback_strategy` | FallbackStrategy | Strategy to use if the primary model fails. | [System default](#available-models) |
 | `max_completion_tokens` | Integer | Maximum number of tokens to generate in the model response. | None |
 | `temperature` | Float | Controls randomness in model responses (0.0 = deterministic, higher = more random). | 0.0 |
@@ -55,7 +55,7 @@ chunkr = Chunkr()
 # Use Gemini Pro 2.5 with no fallback strategy
 config = Configuration(
     llm_processing=LlmProcessing(
-        model_id="gemini-pro-2.5",
+        llm_model_id="gemini-pro-2.5",
         fallback_strategy=FallbackStrategy.none(),
         temperature=0.0
     )
@@ -77,7 +77,7 @@ chunkr = Chunkr()
 # Use Claude 3.7 Sonnet with Gemini Flash 2.0 as fallback
 config = Configuration(
     llm_processing=LlmProcessing(
-        model_id="claude-3.7-sonnet",
+        llm_model_id="claude-3.7-sonnet",
         fallback_strategy=FallbackStrategy.model("gemini-flash-2.0"),
         max_completion_tokens=4096,
         temperature=0.2
@@ -97,7 +97,7 @@ curl -X POST \
         "llm_processing": {
             "fallback_strategy": {"model": "gemini-flash-2.0"},
             "max_completion_tokens": 4096,
-            "model_id": "gemini-flash-2.0",
+            "llm_model_id": "gemini-flash-2.0",
             "temperature": 0
         }
     }'
