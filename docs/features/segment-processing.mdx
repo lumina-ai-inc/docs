@@ -46,8 +46,8 @@ Generated content and OCR text are always returned. Extended context is off by d
 
 <CodeGroup>
 ```python Table
-# Tables by default are processed using LLM and generate HTML.
-# Formulas are returned as LaTeX.
+# Tables are processed using LLM, returned as HTML,
+# and return descriptions.
 
 default_table_config = GenerationConfig(
     format=SegmentFormat.HTML,
@@ -85,7 +85,8 @@ default_config = Configuration(
 
 ```python Page and Formula
 # Page and Formula are processed using LLM and returned as Markdown.
-# Formulas are converted to LaTeX in both HTML and Markdown.
+# Formula segment type and formula on a page are 
+# converted to LaTeX in both HTML and Markdown.
 
 default_llm_config = GenerationConfig(
     html=GenerationStrategy.LLM,
