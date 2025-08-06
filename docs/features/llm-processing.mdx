@@ -11,8 +11,8 @@ This is how you can configure the LLMs:
 
 ```python
 llm_processing=LlmProcessing(
-    llm_model_id="gemini-pro-2.5",
-    fallback_strategy=FallbackStrategy.model("gemini-flash-2.0"),
+    llm_model_id="chunkr-parse-1-thinking",
+    fallback_strategy=FallbackStrategy.model("chunkr-parse-1"),
     max_completion_tokens=4096,
     temperature=0.0
 )
@@ -278,6 +278,9 @@ The following models are currently available for use with Chunkr:
                     loadingEl.style.display = 'none';
                     tableEl.style.display = 'table';
                     
+                    // Sort models alphabetically by ID
+                    models.sort((a, b) => a.id.localeCompare(b.id));
+
                     // Populate table
                     models.forEach(model => {
                         const row = document.createElement('tr');
