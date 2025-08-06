@@ -5,7 +5,7 @@ sidebarTitle: "Configuration"
 Excel files support all the same configuration options as regular documents, but some behave differently due to Excel's native spreadsheet structure.
 
 <Note>
-**Quick Summary**: Most configuration options work identically to other file types. OCR, high resolution, and pipeline settings are ignored since Excel files use native processing.
+**Quick Summary**: Most configuration options work identically to other file types. OCR, and pipeline settings are ignored since Excel files use native processing.
 </Note>
 
 ## Configuration Options Overview
@@ -15,7 +15,7 @@ Excel configuration options fall into two categories:
 | Category | Options | Behavior |
 |----------|---------|----------|
 | **Work Normally** | Segmentation, Segment Processing, Chunking, LLM Processing, Error Handling, Expiration | Same as other file types with minor Excel-specific notes |
-| **Ignored** | OCR Strategy, High Resolution, Pipeline Provider | No effect on Excel processing |
+| **Ignored** | OCR Strategy, Pipeline Provider | No effect on Excel processing |
 
 ---
 
@@ -71,8 +71,7 @@ from chunkr_ai.models import (
 config = Configuration(
     segment_processing=SegmentProcessing(
         Table=GenerationConfig(
-            format=SegmentFormat.HTML,
-            llm="Extract key insights from this Excel table"
+            format=SegmentFormat.MARKDOWN, # get Tables as markdown
         )
     )
 )
@@ -88,7 +87,6 @@ curl -X POST https://api.chunkr.ai/api/v1/task/parse \
     "segment_processing": {
         "Table": {
             "format": "Html",
-            "llm": "Extract key insights from this Excel table"
         }
     }
   }'
@@ -97,7 +95,6 @@ curl -X POST https://api.chunkr.ai/api/v1/task/parse \
 
 **Excel-Specific Behavior:**
 - **Tables**: The `strategy` field (Auto/LLM) is ignored - tables are always extracted natively from Excel
-- **LLM Prompts**: You can still use custom `llm` prompts for table processing
 - **All Other Segments**: Picture, Text, Title, etc. work exactly as with other file types
 
 ### Chunk Processing
@@ -157,7 +154,7 @@ curl -X POST https://api.chunkr.ai/api/v1/task/parse \
     "file": "base64_or_url_to_file",
     "file_name": "spreadsheet.xlsx",
     "llm_processing": {
-        "model_id": "gemini-pro-2.5",
+        "llm_model_id": "gemini-pro-2.5",
         "temperature": 0.0
     }
   }'
@@ -236,14 +233,6 @@ These configuration options have no effect when processing Excel files because E
 </Warning>
 
 All OCR-related configurations (`All`, `Auto`) are ignored since Excel files provide native text extraction.
-
-### High Resolution Processing
-
-<Warning>
-**Ignored for Excel files** - Excel files use native resolution processing regardless of this setting.
-</Warning>
-
-The `high_resolution` setting has no effect since Excel files don't require image-based processing for text content.
 
 ### Pipeline Provider (Azure Feature)
 

@@ -12,9 +12,7 @@ By leveraging layout analysis, we create intelligent chunks that preserve docume
 - Maintains semantic relationships between segments
 - Optimizes chunk size for LLM processing
 
-You can review the implementation of our chunking algorithm in our [GitHub repository](https://github.com/lumina-ai-inc/chunkr/blob/main/core/src/utils/services/chunking.rs#L113).
-
-Here is an example that will chunk the document into 512 words per chunks. These values are also the defaults, so you don't need to specify them.
+Here is an example that will chunk the document into 4096 tokens per chunks for OpenAI models. These values are also the defaults, so you don't need to specify them.
 
 <CodeGroup> 
 ```python Python
@@ -29,12 +27,10 @@ chunkr = Chunkr()
 
 chunkr.upload("path/to/file", Configuration(
 chunk_processing=ChunkProcessing(
-ignore_headers_and_footers=True,
-target_length=512,
-tokenizer=Tokenizer.WORD
-),
+    target_length=Cl100kBase,
+    tokenizer=Tokenizer.CL100K_BASE
+  ),
 ))
-
 ````
 
 ```bash cURL
@@ -46,10 +42,9 @@ curl --request POST \
     "file": "base64_encoded_file_content",
     "file_name": "document.pdf",
     "chunk_processing": {
-      "ignore_headers_and_footers": false,
-      "target_length": 512,
+      "target_length": 4096,
       "tokenizer": {
-        "Enum": "Word"
+        "Enum": "Cl100kBase"
       }
     }
   }'
@@ -59,9 +54,8 @@ curl --request POST \
 
 ### Defaults
 
-- `ignore_headers_and_footers`: True
-- `target_length`: 512
-- `tokenizer`: `Word`
+- `target_length`: 4096
+- `tokenizer`: `Cl100kBase`
 
 ## Tokenizer
 
@@ -83,9 +77,9 @@ from chunkr_ai.models import (
 chunkr = Chunkr()
 
 chunkr.upload("path/to/file", Configuration(
-chunk_processing=ChunkProcessing(
-tokenizer=Tokenizer.CL100K_BASE
-),
+  chunk_processing=ChunkProcessing(
+    tokenizer=Tokenizer.WORD
+  ),
 ))
 
 ````
@@ -100,7 +94,7 @@ curl --request POST \
     "file_name": "document.pdf",
     "chunk_processing": {
       "tokenizer": {
-        "Enum": "Cl100kBase"
+        "Enum": "Word"
       }
     }
   }'
@@ -114,25 +108,6 @@ Available options:
 - `Cl100kBase`: For OpenAI models (e.g. GPT-3.5, GPT-4, text-embedding-ada-002)
 - `XlmRobertaBase`: For RoBERTa-based multilingual models
 - `BertBaseUncased`: BERT base uncased tokenizer
-
-You can also define the tokenizer enum as a string in the python SDK. Here is an example where the string will be converted to the enum value.
-
-```python Python
-from chunkr_ai import Chunkr
-from chunkr_ai.models import (
-    ChunkProcessing,
-    Configuration
-    Tokenizer,
-)
-
-chunkr = Chunkr()
-
-chunkr.upload("path/to/file", Configuration(
-    chunk_processing=ChunkProcessing(
-            tokenizer="Word"
-    ),
-))
-```
 
 ### Hugging Face Tokenizers
 
@@ -150,9 +125,9 @@ from chunkr_ai.models import (
 chunkr = Chunkr()
 
 chunkr.upload("path/to/file", Configuration(
-chunk_processing=ChunkProcessing(
-tokenizer="Qwen/Qwen-tokenizer"
-),
+  chunk_processing=ChunkProcessing(
+    tokenizer="Qwen/Qwen-tokenizer"
+  ),
 ))
 
 ````
@@ -175,49 +150,34 @@ curl --request POST \
 
 </CodeGroup>
 
-## Calculating Chunk Lengths With Embed Sources
+## Calculating Chunk Lengths With Embed Fields
 
-When calculating chunk lengths and performing tokenization, we use the text from the `embed` field in each chunk object. This field contains the text that will be compared against the target length.
-You can configure what text goes into the `embed` field by setting the `embed_sources` parameter in your segment processing configuration. This parameter is specified under `segment_processing.{segment_type}` in your configuration.
-You can see more information about the `embed_sources` parameter in the [Segment Processing](segment-processing) section.
+When calculating chunk lengths and performing tokenization, we use the text from the `embed` field in each chunk and segment object. This field contains the text that will be compared against the target length.
 
-Here's an example of customizing the `embed` field content for Picture segments. By configuring `embed_sources`, you can include both the LLM-generated output and the generated content in the `embed` field for Pictures, while other segment types will continue using just the default generated content.
-Additionally, we can use `CL100K_BASE` tokenizer to configure this for OpenAI models.
+The content of the `embed` field is automatically calculated based on whether a description is generated for segments:
+- If `description` is set to `true` for a segment type, the embed field will include both the `content` and the generated `description`
+- If `description` is set to `false` or not specified, the embed field will contain only the `content`
 
-This means for this configuration, when calculating chunk lengths:
 
-- Picture segments: Length will be based on both the LLM summary and generated content
-- All other segments: Length will be based only on the generated content
-- The tokenizer will be `CL100K_BASE`
+Here's an example of enabling descriptions for Picture segments, which will include both the content and description in the embed field when calculating lengths:
 
 <CodeGroup> 
 ```python Python    
 from chunkr_ai import Chunkr
 from chunkr_ai.models import (
-    ChunkProcessing,
     Configuration,
     SegmentProcessing,
     GenerationConfig,
-    GenerationStrategy,
-    SegmentFormat,
-    EmbedSource,
-    Tokenizer,
 )
 
 chunkr = Chunkr()
 
 chunkr.upload("path/to/file", Configuration(
-chunk_processing=ChunkProcessing(
-tokenizer=Tokenizer.CL100K_BASE
-),
-segment_processing=SegmentProcessing(
-Picture=GenerationConfig(
-format=SegmentFormat.MARKDOWN,
-strategy=GenerationStrategy.LLM,
-llm="Summarize the key information presented",
-embed_sources=[EmbedSource.CONTENT, EmbedSource.LLM]
-)
-)
+    segment_processing=SegmentProcessing(
+        Picture=GenerationConfig(
+            description=True
+        )
+    )
 ))
 
 ````
@@ -229,18 +189,9 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --data '{
     "file": "base64_encoded_file_content",
-    "file_name": "document.pdf",
-    "chunk_processing": {
-      "tokenizer": {
-        "Enum": "Cl100kBase"
-      }
-    },
     "segment_processing": {
       "Picture": {
-        "format": "Markdown",
-        "strategy": "LLM",
-        "llm": "Summarize the key information presented",
-        "embed_sources": ["Content", "LLM"]
+        "description": true
         }
     }
   }'
@@ -248,5 +199,62 @@ curl --request POST \
 
 </CodeGroup>
 
-By combining the `embed_sources` parameter with the `tokenizer` parameter, you can customize the chunk lengths and tokenization for different segment types.
-This allows you to have very powerful chunking configurations for your documents.
+This means for this configuration, when calculating chunk lengths:
+
+- Picture segments: Length will be based on both the content and generated description (since `description: true`)
+- Table segments: Length will be based on both the content and generated description (since `description: true` is the default)
+- All other segments: Length will be based only on the content (since `description` is not specified)
+- The tokenizer will be `CL100K_BASE` (default)
+
+The automatic embed field calculation ensures optimal chunking while preserving important descriptive information when available.
+
+## How Segments Become Chunks
+
+Understanding how individual segments are combined into chunks is crucial for optimizing your chunking strategy. Here's how the process works:
+
+### Segment to Chunk Flow
+
+1. **Individual segments** are created from document layout analysis
+2. Each segment gets its own `embed` field (content only, or content + description)
+3. Segments are **grouped together** based on the target chunk length
+4. All segment `embed` fields in a group are **concatenated** to form the chunk's `embed` field
+5. The `chunk_length` represents the tokenized length of this concatenated content
+
+This approach ensures that chunk lengths accurately reflect all the text content (including any generated descriptions) that will be used for semantic search and LLM processing.
+
+### Visual Example
+
+The following diagram illustrates how segments are combined into chunks, showing how embed fields are concatenated and lengths are calculated:
+
+```mermaid
+flowchart TD
+    A["Document"] --> B["Layout Analysis"]
+    B --> C1["Segment 1<br/>embed: 'Content A'<br/>segment_length: 50"]
+    B --> C2["Segment 2<br/>embed: 'Content B + Description B'<br/>segment_length: 80"]
+    B --> C3["Segment 3<br/>embed: 'Content C'<br/>segment_length: 40"]
+    B --> C4["Segment 4<br/>embed: 'Content D + Description D'<br/>segment_length: 90"]
+    
+    C1 --> D1["Chunk 1"]
+    C2 --> D1
+    C3 --> D2["Chunk 2"]
+    C4 --> D2
+    
+    D1 --> E1["Chunk 1<br/>embed: 'Content A' + 'Content B + Description B'<br/>chunk_length: 130"]
+    D2 --> E2["Chunk 2<br/>embed: 'Content C' + 'Content D + Description D'<br/>chunk_length: 130"]
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:2px
+    style C1 fill:#bfb,stroke:#333,stroke-width:2px
+    style C2 fill:#bfb,stroke:#333,stroke-width:2px
+    style C3 fill:#bfb,stroke:#333,stroke-width:2px
+    style C4 fill:#bfb,stroke:#333,stroke-width:2px
+    style E1 fill:#fbb,stroke:#333,stroke-width:2px
+    style E2 fill:#fbb,stroke:#333,stroke-width:2px
+```
+
+In this example:
+- **Segments 1 & 3** have only content in their embed fields (no description enabled)
+- **Segments 2 & 4** have content + description in their embed fields (description enabled)
+- **Chunk 1** combines Segments 1 & 2, concatenating their embed fields
+- **Chunk 2** combines Segments 3 & 4, concatenating their embed fields
+- The final chunk lengths (130 tokens each) reflect the total tokenized length of the concatenated embed content
