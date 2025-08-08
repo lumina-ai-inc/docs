@@ -1,0 +1,24 @@
+For a robust breakdown of all the outputs, see this [page](/docs/advanced/parse/outputs). Here is a summary wrt values not covered previously in this section:
+
+- **File-level metadata**
+  - `file_name`: Original filename of the uploaded document.
+  - `mime_type`: Detected MIME type (e.g., `application/pdf`).
+  - `page_count`: Total number of pages.
+  - `pdf_url`: Presigned URL to the full PDF file created by Chunkr.
+
+- **Page-level metadata**
+  - `image`: Base64/Presigned URL of the page/sheet image.
+  - `page_number`: Page index.
+  - `page_width`: Width of the page image.
+  - `page_height`: Height of the page image.
+  - `dpi`: Rendering DPI for the page image. Cropped images are scaled to this DPI.
+  - `ss_sheet_name`: Worksheet name (spreadsheets only).
+
+- **Segment-level fields**
+  - `ocr`: Word-level bounding boxes for all the OCR'd text. 
+  - `image`: Cropped image of the segment. 
+  - `text`: The concatenated word-level OCR text.
+  - `confidence`: Score for layout analysis confidence. 
+  - `segment_length`: Length of segment based on chunking config. 
+  - `ss_header_ocr`: Mimics the `ocr` field specifically for headers in a spreadsheet. Related to the sprteadsheets `pdf` version. 
+  - `ss_header_bbox`: Mimics the `bbox` field specifically for headers in a spreadsheet. Related to the sprteadsheets `pdf` version. 

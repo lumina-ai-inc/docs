@@ -5,8 +5,6 @@ description: Understanding the structured data returned by the Parse feature.
 
 import { Frame, CodeGroup, Note, Card, CardGroup } from '@mintlify/components';
 
-This guide breaks down the key components of the response, helping you leverage the full power of our parsing engine.
-
 ## High-Level Structure
 
 <Frame>
@@ -54,24 +52,22 @@ graph TD;
 The document is first broken down into `segments`, which represent individual semantic elements like a paragraph, table, or title. These segments are then grouped into `chunks` based on your chunking configuration.
 
 - **Segments**: The smallest building blocks. Each segment corresponds to a single, identified element from the source document.
-- **Chunks**: A logical grouping of one or more segments. Each chunk includes a `chunk_length` field indicating its token count. For RAG applications, chunks are the units of information that are typically embedded and retrieved.
+- **Chunks**: A logical grouping of one or more segments. Each chunk includes `chunk_length`, `content`, `embed`, and `segments[]`. For RAG applications, chunks are the units of information that are typically embedded and retrieved.
 
 The supported segment types are: `Caption`, `Footnote`, `Formula`, `ListItem`, `Page`, `PageFooter`, `PageHeader`, `Picture`, `SectionHeader`, `Table`, `Text`, and `Title`.
 
-By default, chunking is set to XXXX tokens and the token counter is CLK100Base (compatible with OpenAI embeddings). (TBD might move to advanced readout on this page). 
-
 ## Key Output Fields
 
-Each `segment` object contains rich information. Here are the most important fields to understand:
+Each `segment` object contains rich information. At the `chunk` level, corresponding fields are concatenated from all of the segments within that chunk. Here are the most important fields, explained from the perspective of a segment.
 
 ### 1. `content`
 
 The `content` field holds the primary, structured representation of the segment. Each segment is formatted based on it's type.
 
 - **Tables**: Converted to HTML to maintain complex col/row-span structure.
-- **Images**: Converted to a robust text description, with charts/graphs including a tabular representation.
+- **Images**: Converted to a robust markdown description, with charts/graphs including a tabular representation.
 - **Formulas**: Converted to LaTeX strings for perfect mathematical representation. They can even be embedded within an HTML table if a formula appears inside a cell.
-- **Text-type**: Text-heavy segment like title, section headers and text blocks are converted into markdown.
+- **Text-type**: Text-heavy segments like title, section headers and text blocks are converted into markdown.
 
 <CodeGroup>
 ```json Segment with HTML Table and LaTeX
@@ -82,29 +78,11 @@ The `content` field holds the primary, structured representation of the segment.
 ```
 </CodeGroup>
 
-The `content` field is also available at the chunk level, where it concatenates the `content` of every segment within that chunk.
-
-### 2. `description`
-
-This field contains an LLM-generated summary of the segment's content. It's especially powerful for `Table` segments. By default - tables are the only segment type it's activated for. 
-
-- **For Tables**: The description provides a natural language summary of the table's key insights, making it highly effective for semantic search and RAG.
-
-<CodeGroup>
-```json Segment with Description
-{
-  "segment_type": "Table",
-  "description": "The table shows a 15% increase in Q2 revenue for Widget A compared to Q1, while Widget B saw a 50% increase.",
-  "content": "<table>...</table>"
-}
-```
-</CodeGroup>
-
-### 3. `embed`
+### 2. `embed`
 
 The `embed` field provides the clean, RAG-optimized text that should be used for generating embeddings.
 
-- It includes the `content` and, if present, the `description`. This helps optimized the table segments without contaminating the content field.
+- It includes the `content` and, if present, the `description`. This helps optimize the table segments without contaminating the content field.
 - This is the field used for calculating token counts when chunking, ensuring chunks fit your target length.
 
 <CodeGroup>
@@ -118,7 +96,7 @@ The `embed` field provides the clean, RAG-optimized text that should be used for
 ```
 </CodeGroup>
 
-### 4. `bbox` (Bounding Box)
+### 3. `bbox` (Bounding Box)
 
 Every segment includes a precise bounding box (`bbox`) that pinpoints its exact location on the original page. This is essential for building applications that require citations or highlighting.
 
@@ -139,15 +117,27 @@ Every segment includes a precise bounding box (`bbox`) that pinpoints its exact 
 
 ## Spreadsheet-Specific Outputs (`ss_*`)
 
-<Frame>
-"Excel output example from viewer" 
+<Frame caption="A financial spreadsheet showing intelligent segmentation of tables and charts.">
+  <img src="https://mintlify.s3.us-west-1.amazonaws.com/lumina-53fcea44/assets/excel_parsing_example.png" />
 </Frame>
 
-When processing spreadsheet files (`.xlsx`, `.csv`), the output includes special `ss_*` prefixed fields that provide native Excel context along with all the previosuly mentioned outputs. 
+When processing spreadsheet files (`.xlsx`, `.xls`), the output includes additional `ss_*` prefixed fields that provide native Excel context. These fields exist alongside the standard `content`, `embed`, and `bbox` fields, enriching each segment with its precise location and native data from the original spreadsheet.
 
-- **`ss_range`**: The cell range in A1 notation (e.g., `A1:D10`).
-- **`ss_cells`**: A detailed array of each cell in the segment, including its formula, value, and styling.
-- **`ss_header_*`**: Fields related to the detected header of a table (`ss_header_range`, `ss_header_text`). This includes headers that can be distant from the table but are intelligently appended to maintain context. 
-- **`ss_sheet_name`**: The name of the worksheet the segment came from. Each object in the top-level `pages` array also contains this field.
+### Key Fields
+
+- **`ss_range`**: The cell range for the segment in A1 notation (e.g., `A1:D10`).
+- **`ss_cells`**: A detailed array of each cell in the segment, including its original formula, value, text and styling. Allows you to see both the raw formula (`=SUM(B2:B10)`) and its calculated result (`$55,000`).
+- **`ss_header_*`**: Fields identifying the detected header for a table (`ss_header_range`, `ss_header_text`). Headers are intelligently associated even if they are not directly adjacent to the table.
+
+These spreadsheet-native values unlock powerful capabilities:
+
+- **Create Interactive Experiences**: Use `ss_range` to build native citation experiences that let users click data and jump to the precise source cell in a viewer.
+
+- **Get Cleaner LLM Context**: Combine layout analysis with precise cell data to identify tables, associate headers, and filter out irrelevant cells. This provides cleaner, more meaningful context for LLM processing.
+
+- **Build Powerful Spreadsheet Agents**: Use the `ss_*` fields to build AI agents that can read, analyze, and even **write** back to spreadsheets. Understanding cell formulas and values enables agents to automate tasks like updating financial models, correcting entries, or adding new rows.
 
 ## Advanced Outputs
+
+Beyond the key fields, the Parse output is enriched with additional metadata at the file, page, and segment levels. This includes details like the original file and a PDF version of it, cropped images for segments, and word-level OCR results. For a comprehensive breakdown of every field, you can refer to our [API Reference](/api-references). 
+

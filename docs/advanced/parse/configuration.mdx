@@ -1,0 +1,293 @@
+---
+title: Parse Configuration
+description: Customize the Parse feature for specialized use cases
+sidebarTitle: Configuration
+---
+
+While our defaults work exceptionally well for almost all use cases, Parse offers extensive customization options for specialized needs. This guide details the advanced configuration parameters you can use to tailor the parsing process to your requirements.
+
+Refer to our [configuration guide](/sdk/configuration) for more details on the Python SDK.
+
+## Pipeline (`pipeline`)
+
+Choose the provider for layout analysis and OCR models. In addition to using Chunkr's default models, you can also use Azure Document Intelligence as a provider.
+
+*   `Chunkr` (default): Uses Chunkr's proprietary models for layout analysis and OCR. Recommended for most use cases.
+*   `Azure`: Uses Azure Document Intelligence for layout analysis and OCR. This can be an alternative if you have specific requirements or integrations.
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import Configuration, Pipeline
+
+chunkr = Chunkr()
+
+task = chunkr.create_task("path/to/your/document.pdf", Configuration(
+    pipeline=Pipeline.AZURE
+))
+```
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+  --header "Authorization: YOUR_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "file": "base64_or_url_to_file",
+    "file_name": "document.pdf",
+    "pipeline": "Azure"
+  }'
+```
+</CodeGroup>
+
+## Layout Analysis & OCR
+
+Control how the document structure is analyzed and how text is extracted.
+
+### Segmentation Strategy (`segmentation_strategy`)
+
+Defines how a document is initially divided into segments.
+
+*   `LayoutAnalysis` (default): Uses a state-of-the-art layout analysis model to identify logical elements like paragraphs, tables, images, and headers. This is the recommended strategy for most documents.
+*   `Page`: Treats each page as a single segment. This is faster and can be useful for documents with simple layouts or when you intend to use a full-page VLM approach for processing.
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import Configuration, SegmentationStrategy
+
+chunkr = Chunkr()
+
+task = chunkr.create_task("path/to/your/document.pdf", Configuration(
+    segmentation_strategy=SegmentationStrategy.PAGE
+))
+```
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+  --header "Authorization: YOUR_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "file": "base64_or_url_to_file",
+    "file_name": "document.pdf",
+    "segmentation_strategy": "Page"
+  }'
+```
+</CodeGroup>
+
+### OCR Strategy (`ocr_strategy`)
+
+Determines how Optical Character Recognition (OCR) is applied.
+
+*   `All` (default): Applies OCR to every page of the document, regardless of whether a text layer is present.
+*   `Auto`: Intelligently applies OCR only to pages where it's needed (e.g., scanned images) or where the existing text layer is of low quality. For pages with a reliable text layer, it uses the existing text.
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import Configuration, OcrStrategy
+
+chunkr = Chunkr()
+
+task = chunkr.create_task("path/to/your/document.pdf", Configuration(
+    ocr_strategy=OcrStrategy.AUTO
+))
+```
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+  --header "Authorization: YOUR_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "file": "base64_or_url_to_file",
+    "file_name": "document.pdf",
+    "ocr_strategy": "Auto"
+  }'
+```
+</CodeGroup>
+
+## Segment-level Customization (`segment_processing`)
+
+Fine-tune the processing for each type of document element (e.g., `Text`, `Table`, `Picture`). You can control the output format, processing strategy, and other options on a per-segment-type basis.
+
+For a full list of defaults, see the [Segment Processing documentation](/docs/features/segment-processing).
+
+Here are the key options you can configure for each segment type:
+
+*   **`strategy`**: The processing strategy.
+    *   `Auto`: Use heuristics and traditional OCR.
+    *   `LLM`: Use a Vision Language Model (VLM) for generation.
+    *   `Ignore`: Remove the segment from the output.
+*   **`format`**: The output format for the `content` field.
+    *   `Markdown`
+    *   `HTML`
+*   **`extended_context`**: A boolean to provide the full page image as additional context for VLM processing. Useful for cases like distant legends for tables and pictures.
+*   **`crop_image`**: Controls if a cropped image of the segment is included.
+    *   `Auto` (default): Crop when necessary for processing.
+    *   `All`: Always crop the segment.
+*   **`description`**: A boolean to generate a descriptive summary for the segment using an LLM.
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import (
+    Configuration,
+    SegmentProcessing,
+    GenerationConfig,
+    GenerationStrategy,
+    SegmentFormat
+)
+
+config = Configuration(
+    segment_processing=SegmentProcessing(
+        Table=GenerationConfig(
+            strategy=GenerationStrategy.LLM,
+            format=SegmentFormat.HTML,
+            extended_context=True,
+            description=True
+        ),
+        Picture=GenerationConfig(
+            strategy=GenerationStrategy.LLM,
+            llm="Describe this image for a visually impaired user."
+        ),
+        PageHeader=GenerationConfig(
+            strategy=GenerationStrategy.IGNORE
+        ),
+        PageFooter=GenerationConfig(
+            strategy=GenerationStrategy.IGNORE
+        )
+    )
+)
+
+task = chunkr.create_task("path/to/your/document.pdf", config)
+```
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+  --header "Authorization: YOUR_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "file": "base64_or_url_to_file",
+    "file_name": "document.pdf",
+    "segment_processing": {
+      "Table": {
+        "strategy": "LLM",
+        "format": "HTML",
+        "extended_context": true,
+        "description": true
+      },
+      "Picture": {
+        "strategy": "LLM",
+        "llm": "Describe this image for a visually impaired user."
+      },
+      "PageHeader": { "strategy": "Ignore" },
+      "PageFooter": { "strategy": "Ignore" }
+    }
+  }'
+```
+</CodeGroup>
+
+## Chunking (`chunk_processing`)
+
+Configure the chunking strategy, size, and the token-counting model. This is crucial for preparing content for RAG applications.
+
+*   **`target_chunk_length`**: The desired size of each chunk in tokens. Default is `4096`.
+*   **`tokenizer`**: The tokenizer to use for counting tokens. This can be a predefined enum or any tokenizer from Hugging Face. Default is `Cl100kBase`.
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import Configuration, ChunkProcessing, Tokenizer
+
+config = Configuration(
+    chunk_processing=ChunkProcessing(
+        target_chunk_length=1024,
+        tokenizer=Tokenizer.CL100K_BASE # or "bert-base-uncased"
+    )
+)
+
+task = chunkr.create_task("path/to/your/document.pdf", config)
+```
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+  --header "Authorization: YOUR_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "file": "base64_or_url_to_file",
+    "file_name": "document.pdf",
+    "chunk_processing": {
+      "target_chunk_length": 1024,
+      "tokenizer": {
+        "Enum": "Cl100kBase"
+      }
+    }
+  }'
+```
+</CodeGroup>
+
+## LLM Processing (`llm_processing`)
+
+Select the VLM provider and model for all VLM-based tasks in `segment_processing`.
+
+*   **`llm_model_id`**: The ID of the primary model to use.
+*   **`fallback_strategy`**: The strategy to use if the primary model fails.
+*   **`max_completion_tokens`**: Maximum tokens for the model's response.
+*   **`temperature`**: Controls the randomness of the output.
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import Configuration, LlmProcessing, FallbackStrategy
+
+config = Configuration(
+    llm_processing=LlmProcessing(
+        llm_model_id="claude-3-5-sonnet-20240620",
+        fallback_strategy=FallbackStrategy.model("gemini-1.5-flash"),
+        temperature=0.1
+    )
+)
+
+task = chunkr.create_task("path/to/your/document.pdf", config)
+```
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+  --header "Authorization: YOUR_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "file": "base64_or_url_to_file",
+    "file_name": "document.pdf",
+    "llm_processing": {
+      "llm_model_id": "claude-3-5-sonnet-20240620",
+      "fallback_strategy": {
+        "model": "gemini-1.5-flash"
+      },
+      "temperature": 0.1
+    }
+  }'
+```
+</CodeGroup>
+
+## Error Handling (`error_handling`)
+
+Configure the behavior when the system encounters an error during processing.
+
+*   `Fail` (default): The task stops immediately and is marked as `Failed`.
+*   `Continue`: The task attempts to continue processing the rest of the document, skipping the element that caused the error. This is useful when partial results are acceptable.
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.models import Configuration, ErrorHandlingStrategy
+
+config = Configuration(
+    error_handling=ErrorHandlingStrategy.CONTINUE
+)
+
+task = chunkr.create_task("path/to/your/document.pdf", config)
+```
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+  --header "Authorization: YOUR_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "file": "base64_or_url_to_file",
+    "file_name": "document.pdf",
+    "error_handling": "Continue"
+  }'
+```
+</CodeGroup>
