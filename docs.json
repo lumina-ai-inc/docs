@@ -38,8 +38,7 @@
             "pages": [
               "docs/parse/overview",
               "docs/parse/outputs",
-              "docs/parse/best-practices",
-              "docs/parse/error-handling"
+              "docs/parse/best-practices"
             ]
           },
           {
@@ -71,10 +70,17 @@
             ]
           },
           {
+            "group": "Models",
+            "icon": "sparkles",
+            "pages": [
+              "docs/models/overview",
+              "docs/models/llm"
+            ]
+          },
+          {
             "group": "Advanced",
             "icon": "gear",
             "pages": [
-              "docs/advanced/overview",
               {
                 "group": "Task System",
                 "pages": [
@@ -87,7 +93,8 @@
                   "docs/advanced/parse/configuration",
                   "docs/advanced/parse/outputs"
                 ]
-              }
+              },
+              "docs/advanced/error-handling"
             ]
           },
           {
