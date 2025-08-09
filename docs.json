@@ -66,6 +66,7 @@
             "pages": [
               "docs/use-cases/overview",
               "docs/use-cases/RAG-+-visual-citations",
+              "docs/use-cases/extraction-workflow",
               "docs/use-cases/excel-agent"
             ]
           },
@@ -90,8 +91,7 @@
               {
                 "group": "Parse",
                 "pages": [
-                  "docs/advanced/parse/configuration",
-                  "docs/advanced/parse/outputs"
+                  "docs/advanced/parse/configuration"
                 ]
               },
               "docs/advanced/error-handling"
@@ -212,5 +212,19 @@
       "discord": "https://discord.gg/XzKWFByKzW",
       "x": "https://x.com/chunkrai"
     }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "chatgpt",
+      "mcp",
+      "cursor",
+      {
+        "title": "Request a feature",
+        "description": "Join the discussion on Discord to request a new feature",
+        "icon": "plus",
+        "href": "https://discord.gg/XzKWFByKzW"
+      }
+    ]
   }
 }

@@ -3,53 +3,13 @@ title: Best Practices
 description: Using the Parse feature for different cases
 ---
 
-
-
-## Data Storage & ZDR 
-
-While we store all outputs, original files, and image crops - we don't recommend using Chunkr as a storage system. 
-
-The best way to use Chunkr is solely as a processing engine. For security and privacy, you can use the `expires_in` parameter to automatically delete all task data from Chunkr's servers after processing. Setting a short expiration achieves Zero Data Retention (ZDR).
-
-Here is an example config that sets the data to expire in 1 second:
-
-<CodeGroup>
-  ```python Python
-  from chunkr_ai import Chunkr
-  from chunkr_ai.models import Configuration
-
-  chunkr = Chunkr()
-
-  # Set expires_in to 1 second for Zero Data Retention (ZDR).
-  # Task data will be deleted from Chunkr almost immediately after processing.
-  config = Configuration(
-      expires_in=1
-  )
-
-  task = chunkr.upload("path/to/file", config)
-
-  # The task object contains the results, but the data will be
-  # deleted from Chunkr's servers shortly.
-  print(task.status)
-  ```
-
-  ```bash cURL
-  curl -X POST https://api.chunkr.ai/api/v1/task/parse \
-    --header "Authorization: YOUR_API_KEY" \
-    --header "Content-Type: application/json" \
-    --data '{
-      "file": "base64_or_url_to_file",
-      "file_name": "document.pdf",
-      "expires_in": 1
-    }'
-  ```
-</CodeGroup>
+This guide covers best practices for configuring the Parse feature to handle a variety of use cases and requirements.
 
 ## Handling Distant Legends with Extended Context
 
 <Frame>Extended context example image</Frame>
 
-When processing documents with complex layouts, some elements like tables or charts might rely on context from other parts of the page. For example, a chart's legend could be located in a different corner of the document that isn't picked up when the cropped chart is sent to a VLM. 
+Elements like tables or charts might rely on context from other parts of the page. For example, a chart's legend could be located in a different corner of the document that isn't picked up when the cropped chart is sent to a VLM. 
 
 For these scenarios, the best practice is to enable `extended_context`. This provides the VLM with the full page image along with the cropped segment as context, leading to more accurate analysis and descriptions.
 
@@ -95,8 +55,12 @@ Here’s how to enable it for `Table` and `Picture` segments:
       };type=application/json'
   ```
 </CodeGroup>
+<Info>
+  Extended context adds some latency.
+</Info>
+---
 
-## Managing File Access: Pre-signed URLs vs. Base64
+## Pre-signed URLs vs. Base64
 
 By default, Chunkr provides access to generated files (like images, the input file, or PDF) via pre-signed URLs. These are secure but temporary, expiring after 10 minutes. This is great for immediate access, but not for long-term storage or if your system needs to access the files later.
 
@@ -120,7 +84,7 @@ To do this, set the `base64_urls=True` parameter when fetching a task:
   ```
 </CodeGroup>
 
-
+---
 
 ## Optimizing for speed 
 
@@ -163,4 +127,44 @@ Here is how you can configure this:
   ```
 </CodeGroup>
 
+---
 
+## Data Storage & ZDR 
+
+While we store all outputs, original files, and image crops - we don't recommend using Chunkr as a storage system. 
+
+The best way to use Chunkr is solely as a processing engine. For security and privacy, you can use the `expires_in` parameter to automatically delete all task data from Chunkr's servers after processing. Setting a short expiration achieves Zero Data Retention (ZDR).
+
+Here is an example config that sets the data to expire in 1 second:
+
+<CodeGroup>
+  ```python Python
+  from chunkr_ai import Chunkr
+  from chunkr_ai.models import Configuration
+
+  chunkr = Chunkr()
+
+  # Set expires_in to 1 second for Zero Data Retention (ZDR).
+  # Task data will be deleted from Chunkr almost immediately after processing.
+  config = Configuration(
+      expires_in=1
+  )
+
+  task = chunkr.upload("path/to/file", config)
+
+  # The task object contains the results, but the data will be
+  # deleted from Chunkr's servers shortly.
+  print(task.status)
+  ```
+
+  ```bash cURL
+  curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+    --header "Authorization: YOUR_API_KEY" \
+    --header "Content-Type: application/json" \
+    --data '{
+      "file": "base64_or_url_to_file",
+      "file_name": "document.pdf",
+      "expires_in": 1
+    }'
+  ```
+</CodeGroup>
