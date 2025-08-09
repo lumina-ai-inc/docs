@@ -5,13 +5,13 @@ description: Using the Parse feature for different cases
 
 This guide covers best practices for configuring the Parse feature to handle a variety of use cases and requirements.
 
-## Handling Distant Legends with Extended Context
+## Extended Context: Handling Distant Legends 
 
 <Frame>Extended context example image</Frame>
 
 Elements like tables or charts might rely on context from other parts of the page. For example, a chart's legend could be located in a different corner of the document that isn't picked up when the cropped chart is sent to a VLM. 
 
-For these scenarios, the best practice is to enable `extended_context`. This provides the VLM with the full page image along with the cropped segment as context, leading to more accurate analysis and descriptions.
+For these scenarios, the best practice is to enable `extended_context`. This provides the VLM with the full page image with the cropped segment as context.
 
 Here’s how to enable it for `Table` and `Picture` segments:
 
