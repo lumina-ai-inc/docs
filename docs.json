@@ -18,7 +18,7 @@
             "pages": [
               "docs/get-started/overview",
               "docs/get-started/quickstart",
-              "docs/get-started/llm",
+              "docs/get-started/llm-docs",
               "docs/get-started/foundry"
             ]
           },
