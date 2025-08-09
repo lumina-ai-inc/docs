@@ -56,6 +56,7 @@ The document is first broken down into `segments`, which represent individual se
 
 The supported segment types are: `Caption`, `Footnote`, `Formula`, `ListItem`, `Page`, `PageFooter`, `PageHeader`, `Picture`, `SectionHeader`, `Table`, `Text`, and `Title`.
 
+---
 ## Key Output Fields
 
 Each `segment` object contains rich information. At the `chunk` level, corresponding fields are concatenated from all of the segments within that chunk. Here are the most important fields, explained from the perspective of a segment.
@@ -115,6 +116,8 @@ Every segment includes a precise bounding box (`bbox`) that pinpoints its exact 
 ```
 </CodeGroup>
 
+---
+
 ## Spreadsheet-Specific Outputs (`ss_*`)
 
 <Frame caption="A financial spreadsheet showing intelligent segmentation of tables and charts.">
@@ -137,7 +140,11 @@ These spreadsheet-native values unlock powerful capabilities:
 
 - **Build Powerful Spreadsheet Agents**: Use the `ss_*` fields to build AI agents that can read, analyze, and even **write** back to spreadsheets. Understanding cell formulas and values enables agents to automate tasks like updating financial models, correcting entries, or adding new rows.
 
+---
+
 ## Advanced Outputs
 
-Beyond the key fields, the Parse output is enriched with additional metadata at the file, page, and segment levels. This includes details like the original file and a PDF version of it, cropped images for segments, and word-level OCR results. For a comprehensive breakdown of every field, you can refer to our [API Reference](/api-references). 
+Beyond the key fields, the Parse output is enriched with additional metadata at the file, page, and segment levels. This includes details like the original file and a PDF version of it, cropped images for segments, and word-level bounding-boxes. 
+
+For a comprehensive breakdown of every field, you can refer to our [API Reference](/api-references). 
 
