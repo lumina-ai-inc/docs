@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "palm",
+  "theme": "mint",
   "name": "Chunkr",
   "colors": {
     "primary": "#8D8D86",
@@ -138,9 +138,9 @@
     "global": {
       "anchors": [
         {
-          "anchor": "GitHub",
-          "href": "https://github.com/lumina-ai-inc/chunkr",
-          "icon": "github"
+          "anchor": "Sign Up",
+          "href": "https://www.chunkr.ai/signup",
+          "icon": "user-plus"
         },
         {
           "anchor": "Discord",
@@ -151,6 +151,11 @@
           "anchor": "Twitter",
           "href": "https://x.com/chunkrai",
           "icon": "x"
+        },
+        {
+          "anchor": "LinkedIn",
+          "href": "https://www.linkedin.com/company/chunkr",
+          "icon": "linkedin"
         }
       ]
     }
