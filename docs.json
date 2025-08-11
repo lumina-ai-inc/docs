@@ -19,26 +19,32 @@
               "docs/get-started/overview",
               "docs/get-started/quickstart",
               "docs/get-started/llm-docs",
-              "docs/get-started/viewer"
+              "docs/get-started/playground"
             ]
           },
           {
-            "group": "Task System",
-            "icon": "upload",
+            "group": "Core Features",
+            "icon": "server",
             "pages": [
-              "docs/task-system/overview",
-              "docs/task-system/task-handling",
-              "docs/task-system/file-types",
-              "docs/task-system/limits"
-            ]
-          },
-          {
-            "group": "Parse",
-            "icon": "crop-simple",
-            "pages": [
-              "docs/parse/overview",
-              "docs/parse/outputs",
-              "docs/parse/best-practices"
+              {
+                "group": "Task System",
+                "icon": "upload",
+                "pages": [
+                  "docs/task-system/overview",
+                  "docs/task-system/task-handling",
+                  "docs/task-system/file-types",
+                  "docs/task-system/limits"
+                ]
+              },
+              {
+                "group": "Parse",
+                "icon": "crop-simple",
+                "pages": [
+                  "docs/parse/overview",
+                  "docs/parse/outputs",
+                  "docs/parse/best-practices"
+                ]
+              }
             ]
           },
           {
@@ -65,16 +71,6 @@
             "icon": "sparkles",
             "pages": ["docs/models/overview", "docs/models/chunkr-parse-1"]
 >>>>>>> 9c1da9a (Working on it)
-          },
-          {
-            "group": "Use Cases",
-            "icon": "rocket",
-            "pages": [
-              "docs/use-cases/overview",
-              "docs/use-cases/RAG-+-visual-citations",
-              "docs/use-cases/extraction-workflow",
-              "docs/use-cases/excel-agent"
-            ]
           },
           {
             "group": "Advanced",
@@ -139,7 +135,7 @@
       "anchors": [
         {
           "anchor": "Sign Up",
-          "href": "https://www.chunkr.ai/signup",
+          "href": "https://www.chunkr.ai",
           "icon": "user-plus"
         },
         {
@@ -148,9 +144,9 @@
           "icon": "discord"
         },
         {
-          "anchor": "Twitter",
+          "anchor": "X",
           "href": "https://x.com/chunkrai",
-          "icon": "x"
+          "icon": "x-twitter"
         },
         {
           "anchor": "LinkedIn",
