@@ -1,51 +1,58 @@
 ---
 title: Parse Overview
-description: Convert documents into the ideal LLM-readable format
+description: Convert documents into LLM-ready data
 sidebarTitle: Overview
 ---
 
-The Parse feature transforms complex documents into structured data that LLMs can read like a human. 
+The Parse feature transforms complex documents into structured data that LLMs can read.
+
+<Frame>Parsing image</Frame>
 
 It intelligently identifies document elements, processes them based on their type, and outputs clean, structured content ready for AI applications and downstream workflow automation.
 
 ## Key Features
-*   **Perfect Markdown & HTML**: Generates clean, structured Markdown and HTML ready for any LLM.
-*   **Reading order intact**: Reconstructs the natural reading flow to preserve context across complex layouts.
-*   **Granular bound boxes & cropping**: Pinpoints element locations with precision for easy citations.
-*   **Optimized for LLM Context**: Enriched content like image descriptions, converting charts to tables, and formulas into LaTeX as embed-ready chunks.
-*   **Native Spreadsheet handling**: Achieves 100% reconstruction, mapping native data (formulas, styling, cell values) to visual bounding boxes/ranges while intelligently cleaning tables and converting charts to structured LLM-ready inputs.
+
+- **Perfect Markdown & HTML**: LLM-ready content (Markdown, HTML, tables, etc).
+- **Reading order intact**: Maintains the natural reading flow for complex layouts.
+- **Granular bounding boxes**: Pinpoints element coordinates with precision for easy citations.
+- **Native Spreadsheet handling**: 100% reconstruction with formulas, styling, and cell values preserved; precise ranges; cleans tables and converts charts to structured data.
+- **Post-processing**: Token-aware chunking, cropped images, and more.
 
 ## Example: Parse and access chunk content
 
 Here’s how you can parse a document and access its chunks using our Python SDK.
 
 <CodeGroup>
-```python Python
+```python title="Python"
 from chunkr_ai import Chunkr
 
 # Initialize the client with your API key
+
 chunkr = Chunkr()
 
 # Parse a document by creating a task
+
 task = chunkr.create_task("path/to/your/document.pdf")
 print(f"Task created with ID: {task.task_id}")
 
 # Poll the task to wait for completion
-task.poll() 
+
+task.poll()
 
 # Access the chunks from the output
+
 if task.status == "Succeeded":
-    print(f"Document has {len(task.output.chunks)} chunks.")
-    # `chunk.content` holds the 1:1 structured representation of document elements
-    for chunk in task.output.chunks:
-        print(chunk.content)
+print(f"Document has {len(task.output.chunks)} chunks.") # `chunk.content` holds the 1:1 structured representation of document elements
+for chunk in task.output.chunks:
+print(chunk.content)
 else:
-    print(f"Task failed with status: {task.status}")
+print(f"Task failed with status: {task.status}")
 
 chunkr.close()
-```
 
-```bash cURL
+````
+
+```bash title="cURL"
 # 1. Create a task to start parsing
 # Copy the `task_id` from the response
 curl -X POST https://api.chunkr.ai/api/v1/task/parse \
@@ -60,28 +67,33 @@ curl -X POST https://api.chunkr.ai/api/v1/task/parse \
 # Once complete, the response will contain the output with chunks
 curl -X GET https://api.chunkr.ai/api/v1/task/{your_task_id} \
   --header "Authorization: YOUR_API_KEY"
-```
+````
+
 </CodeGroup>
 
 ---
 
-## Advanced Configuration
+<Accordion title="Advanced Configuration">
 
 While our defaults work exceptionally well for almost all use cases, Parse offers extensive customization options for specialized needs:
 
 - **[Pipeline (`pipeline`)](/docs/features/pipeline)**: Choose the provider (`Azure` or `Chunkr`) for layout analysis and OCR models.
 - **Layout Analysis & OCR**:
-  - *Segmentation Strategy (`segmentation_strategy`)*: Choose between `LayoutAnalysis` (default) or a full-page VLM approach for parsing.
-  - *OCR Strategy (`ocr_strategy`)*: Use `Auto` to selectively apply OCR or `All` to force it on every page.
+  - _Segmentation Strategy (`segmentation_strategy`)_: Choose between `LayoutAnalysis` (default) or a full-page VLM approach for parsing.
+  - _OCR Strategy (`ocr_strategy`)_: Use `Auto` to selectively apply OCR or `All` to force it on every page.
 - **[Segment-level Customization (`segment_processing`)](/docs/features/segment-processing)**: Control processing for each document element (e.g., `Text`, `Table`, `Picture`):
-  - *Processing Strategy (`strategy`)*: For each segment, set the strategy to generate HTML/Markdown. `Auto` (simple OCR + logic), `LLM` (VLM generation), or `Ignore` (remove from output).
-  - *Format Control (`format`)*: Control the output format (`Markdown` or `HTML`) for segment content.
-  - *Extended Context (`extended_context`)*: Provide the full page image as additional context for VLM processing of a segment. Useful for cases like distant legends for tables and pictures. 
-  - *Cropped Images (`crop_image`)*: Control if a cropped image of the segment is included.
+  - _Processing Strategy (`strategy`)_: For each segment, set the strategy to generate HTML/Markdown. `Auto` (simple OCR + logic), `LLM` (VLM generation), or `Ignore` (remove from output).
+  - _Format Control (`format`)_: Control the output format (`Markdown` or `HTML`) for segment content.
+  - _Extended Context (`extended_context`)_: Provide the full page image as additional context for VLM processing of a segment. Useful for cases like distant legends for tables and pictures.
+  - _Cropped Images (`crop_image`)_: Control if a cropped image of the segment is included.
 - **[Chunking (`chunk_processing`)](/docs/features/chunking)**: Configure chunking strategy, sizes, and token-counting model.
 - **[LLM Processing (`llm_processing`)](/docs/features/llm-processing)**: Select the VLM provider and model for all VLM tasks.
 - **[Error Handling (`error_handling`)](/docs/features/error-handling)**: Set to `Fail` (default) to stop on any error, or `Continue` to process despite non-critical errors.
 
 <Note>
-  Our default configuration is optimized through extensive testing and provides excellent results for most documents. Only customize if you have specific requirements.
+  Our default configuration is optimized through extensive testing and provides
+  excellent results for most documents. Only customize if you have specific
+  requirements.
 </Note>
+
+</Accordion>

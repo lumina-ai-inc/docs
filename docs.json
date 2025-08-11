@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "almond",
+  "theme": "mint",
   "name": "Chunkr",
   "colors": {
     "primary": "#8D8D86",
@@ -19,7 +19,7 @@
               "docs/get-started/overview",
               "docs/get-started/quickstart",
               "docs/get-started/llm-docs",
-              "docs/get-started/foundry"
+              "docs/get-started/viewer"
             ]
           },
           {
@@ -34,7 +34,7 @@
           },
           {
             "group": "Parse",
-            "icon":"crop-simple",
+            "icon": "crop-simple",
             "pages": [
               "docs/parse/overview",
               "docs/parse/outputs",
@@ -42,6 +42,7 @@
             ]
           },
           {
+<<<<<<< HEAD
             "group": "Excel Parser",
             "pages": [
               "docs/excel-parser/overview",
@@ -59,6 +60,11 @@
               "docs/webhooks/examples"
             ],
             "tag": "NEW"
+=======
+            "group": "Models",
+            "icon": "sparkles",
+            "pages": ["docs/models/overview", "docs/models/chunkr-parse-1"]
+>>>>>>> 9c1da9a (Working on it)
           },
           {
             "group": "Use Cases",
@@ -71,28 +77,16 @@
             ]
           },
           {
-            "group": "Models",
-            "icon": "sparkles",
-            "pages": [
-              "docs/models/overview",
-              "docs/models/llm"
-            ]
-          },
-          {
             "group": "Advanced",
             "icon": "gear",
             "pages": [
               {
                 "group": "Task System",
-                "pages": [
-                  "docs/advanced/upload/full-CRUD"
-                ]
+                "pages": ["docs/advanced/upload/full-CRUD"]
               },
               {
                 "group": "Parse",
-                "pages": [
-                  "docs/advanced/parse/configuration"
-                ]
+                "pages": ["docs/advanced/parse/configuration"]
               },
               "docs/advanced/error-handling"
             ]
@@ -102,12 +96,12 @@
             "icon": "shield-check",
             "pages": [
               "docs/security/overview",
+              "docs/security/TOS",
               "docs/security/data-retention",
               "docs/security/certifications",
               "docs/security/on-premise"
             ]
           }
-         
         ]
       },
       {
@@ -115,10 +109,7 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": [
-              "sdk/installation",
-              "sdk/usage"
-            ]
+            "pages": ["sdk/installation", "sdk/usage"]
           },
           {
             "group": "Data Operations",
@@ -132,11 +123,7 @@
           },
           {
             "group": "Utilities",
-            "pages": [
-              "sdk/configuration",
-              "sdk/polling",
-              "sdk/export"
-            ]
+            "pages": ["sdk/configuration", "sdk/polling", "sdk/export"]
           }
         ]
       },
@@ -176,9 +163,7 @@
     "dark": "/logo/dark.svg",
     "href": "https://www.chunkr.ai"
   },
-  "customJS": [
-    "/assets/js/custom.js"
-  ],
+  "customJS": ["/assets/js/custom.js"],
   "api": {
     "playground": {
       "display": "interactive",
@@ -190,9 +175,7 @@
       }
     }
   },
-  "background": {
-    
-  },
+  "background": {},
   "navbar": {
     "links": [
       {

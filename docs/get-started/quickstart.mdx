@@ -6,8 +6,7 @@ icon: "bolt"
 iconType: "solid"
 ---
 
-
-To get started with Chunkr AI, follow these simple steps to set up your account and integrate our API into your application. We support a [variety of document types](/docs/task-system/file-types). 
+Follow these steps to set up your account and integrate with our API. We support a [variety of document types](/docs/task-system/file-types).
 
 <Steps>
     <Step title= "Sign Up and Create an API Key">
@@ -32,7 +31,7 @@ To get started with Chunkr AI, follow these simple steps to set up your account 
 
             # Upload a document via url or local file path
             url = "https://chunkr-web.s3.us-east-1.amazonaws.com/landing_page/input/specs.pdf"
-            task = chunkr.upload(url) 
+            task = chunkr.upload(url)
             ```
         </CodeGroup>
     </Step>
@@ -49,14 +48,16 @@ To get started with Chunkr AI, follow these simple steps to set up your account 
             print(f"Task failed with status: {task.status}")
         ```
         </CodeGroup>
+        You can also explore the output [through our viewer](/docs/parse/outputs) in more detail.
     </Step>
     <Step title = "Clean up">
-        <CodeGroup> 
+        <CodeGroup>
             ```python Python
             chunkr.close()
             ```
         </CodeGroup>
     </Step>
+
 </Steps>
 
 ## Authentication Options
@@ -71,10 +72,14 @@ You can authenticate with the Chunkr AI API in two ways:
 from chunkr_ai import Chunkr
 
 # Option 1: Initialize with API key directly
+
 chunkr = Chunkr(api_key="your_api_key")
 
 # Option 2: Initialize without api_key parameter - will use CHUNKR_API_KEY from environment
+
 chunkr = Chunkr()
+
 ```
 </CodeGroup>
 
+```

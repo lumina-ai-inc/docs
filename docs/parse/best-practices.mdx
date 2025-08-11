@@ -5,11 +5,11 @@ description: Using the Parse feature for different cases
 
 This guide covers best practices for configuring the Parse feature to handle a variety of use cases and requirements.
 
-## Extended Context: Handling Distant Legends 
+## Extended Context: Handling Distant Legends
 
 <Frame>Extended context example image</Frame>
 
-Elements like tables or charts might rely on context from other parts of the page. For example, a chart's legend could be located in a different corner of the document that isn't picked up when the cropped chart is sent to a VLM. 
+Elements like tables or charts might rely on context from other parts of the page. For example, a chart's legend could be located in a different corner of the document that isn't picked up when the cropped chart is sent to a VLM.
 
 For these scenarios, the best practice is to enable `extended_context`. This provides the VLM with the full page image with the cropped segment as context.
 
@@ -24,36 +24,37 @@ Here’s how to enable it for `Table` and `Picture` segments:
       SegmentProcessing,
   )
 
-  chunkr = Chunkr()
+chunkr = Chunkr()
 
-  config = Configuration(
-      segment_processing=SegmentProcessing(
-          Table=GenerationConfig(
-              extended_context=True
-          ),
-          Picture=GenerationConfig(
-              extended_context=True
-          )
-      )
-  )
+config = Configuration(
+segment_processing=SegmentProcessing(
+Table=GenerationConfig(
+extended_context=True
+),
+Picture=GenerationConfig(
+extended_context=True
+)
+)
+)
 
-  chunkr.upload("path/to/file", config)
+chunkr.upload("path/to/file", config)
 
-  ```
+````
 
-  ```bash cURL
-  curl -X POST https://api.chunkr.ai/api/v1/task/parse \
-    -H "Authorization: YOUR_API_KEY" \
-    -F file=@path/to/file \
-    -F 'segment_processing={
-        "Table": {
-          "extended_context": true
-        },
-        "Picture": {
-          "extended_context": true
-        }
-      };type=application/json'
-  ```
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+  -H "Authorization: YOUR_API_KEY" \
+  -F file=@path/to/file \
+  -F 'segment_processing={
+      "Table": {
+        "extended_context": true
+      },
+      "Picture": {
+        "extended_context": true
+      }
+    };type=application/json'
+````
+
 </CodeGroup>
 <Info>
   Extended context adds some latency.
@@ -72,99 +73,61 @@ To do this, set the `base64_urls=True` parameter when fetching a task:
   ```python Python
   from chunkr_ai import Chunkr
 
-  chunkr = Chunkr()
+chunkr = Chunkr()
 
-  # Get task with base64-encoded URLs instead of pre-signed URLs
-  task = chunkr.get_task("task_123", base64_urls=True)
-  ```
+# Get task with base64-encoded URLs instead of pre-signed URLs
 
-  ```bash cURL
-  curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?base64_urls=true" \
-    -H "Authorization: YOUR_API_KEY"
-  ```
+task = chunkr.get_task("task_123", base64_urls=True)
+
+````
+
+```bash cURL
+curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?base64_urls=true" \
+  -H "Authorization: YOUR_API_KEY"
+````
+
 </CodeGroup>
 
 ---
 
-## Optimizing for speed 
+## Optimizing for speed
 
 The most significant factor affecting processing time is the VLM used in the `llm_processing` configuration. By default, Chunkr uses `chunkr-parse-1-thinking`, which provides the highest quality results but can be slower.
 
-To significantly increase processing speed without takign a large hit on accuracy, you can to our non-thinking variant. We recommend setting `chunkr-parse-1` as the main model. For maximum speed, you can also disable the fallback model. This prevents the system from making a second attempt with another model if the first one fails.
-
-Here is how you can configure this:
+To significantly increase processing speed without takign a large hit on accuracy, you can to our non-thinking variant. We recommend setting `chunkr-parse-1` as the main model.
 
 <CodeGroup>
   ```python Python
   from chunkr_ai import Chunkr
   from chunkr_ai.models import Configuration, LlmProcessing, FallbackStrategy
 
-  chunkr = Chunkr()
+chunkr = Chunkr()
 
-  # Optimized for speed
-  config = Configuration(
-      llm_processing=LlmProcessing(
-          llm_model_id="chunkr-parse-1",
-          fallback_strategy=FallbackStrategy.model("chunkr-parse-1"
-      )
-  )
+# Optimized for speed
 
-  task = chunkr.upload("path/to/file", config)
-  ```
+config = Configuration(
+llm_processing=LlmProcessing(
+llm_model_id="chunkr-parse-1",
+fallback_strategy=FallbackStrategy.model("chunkr-parse-1"
+)
+)
 
-  ```bash cURL
-  curl -X POST https://api.chunkr.ai/api/v1/task/parse \
-    --header "Authorization: YOUR_API_KEY" \
-    --header "Content-Type: application/json" \
-    --data '{
-      "file": "base64_or_url_to_file",
-      "file_name": "document.pdf",
-      "llm_processing": {
-          "llm_model_id": "chunkr-parse-1",
-          "fallback_strategy": null
-      }
-    }'
-  ```
-</CodeGroup>
+task = chunkr.upload("path/to/file", config)
 
----
+````
 
-## Data Storage & ZDR 
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+  --header "Authorization: YOUR_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "file": "base64_or_url_to_file",
+    "file_name": "document.pdf",
+    "llm_processing": {
+        "llm_model_id": "chunkr-parse-1",
+        "fallback_strategy": null
+    }
+  }'
+````
 
-While we store all outputs, original files, and image crops - we don't recommend using Chunkr as a storage system. 
-
-The best way to use Chunkr is solely as a processing engine. For security and privacy, you can use the `expires_in` parameter to automatically delete all task data from Chunkr's servers after processing. Setting a short expiration achieves Zero Data Retention (ZDR).
-
-Here is an example config that sets the data to expire in 1 second:
-
-<CodeGroup>
-  ```python Python
-  from chunkr_ai import Chunkr
-  from chunkr_ai.models import Configuration
-
-  chunkr = Chunkr()
-
-  # Set expires_in to 1 second for Zero Data Retention (ZDR).
-  # Task data will be deleted from Chunkr almost immediately after processing.
-  config = Configuration(
-      expires_in=1
-  )
-
-  task = chunkr.upload("path/to/file", config)
-
-  # The task object contains the results, but the data will be
-  # deleted from Chunkr's servers shortly.
-  print(task.status)
-  ```
-
-  ```bash cURL
-  curl -X POST https://api.chunkr.ai/api/v1/task/parse \
-    --header "Authorization: YOUR_API_KEY" \
-    --header "Content-Type: application/json" \
-    --data '{
-      "file": "base64_or_url_to_file",
-      "file_name": "document.pdf",
-      "expires_in": 1
-    }'
-  ```
 </CodeGroup>

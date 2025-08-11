@@ -7,30 +7,13 @@ description: "Understanding (TBD)"
 All file processing in Chunkr is handled through a task-based system. When you submit a file, a new task is created, and you receive a `task_id`. Use this ID to "poll" (or repeatedly check) the task's status until it's complete.
 
 This asynchronous approach allows you to submit long-running jobs without tying up your application. Once the task status is `Succeeded`, the full processing results are available.
-<br></br>
 
 ## Key capabilities
 
-*   **Broad File Support**: Process a variety of file types like PDFs, Excel, PPTs, Doc.
-*   **Multiple Input Sources**: Provide files directly, from a URL, or as a base64-encoded string.
-*   **Full Task Control**: Manage jobs and customize results with our [CRUD operations](./CRUD.mdx).
-*   **Data Retention**: Set custom expiration times for automatic data deletion.
-
-<Mermaid>
-  ```mermaid
-  sequenceDiagram
-    participant You as "Your Application"
-    participant Chunkr
-    You->>Chunkr: 1. Upload File (Create Task)
-    Chunkr-->>You: Returns "task_id"
-    loop Poll for result
-        You->>Chunkr: 2. Get Task Status (using "task_id")
-        Chunkr-->>You: Status: "Processing"
-    end
-    You->>Chunkr: 3. Get Task Status (using "task_id")
-    Chunkr-->>You: Status: "Succeeded" + Results
-  ```
-</Mermaid>
+- **Broad File Support**: Process a variety of file types like PDFs, Excel, PPTs, Doc.
+- **Multiple Input Sources**: Provide files directly, from a URL, or as a base64-encoded string.
+- **Full Task Control**: Manage jobs and customize results with our [CRUD operations](./CRUD.mdx).
+- **Data Retention**: Set custom expiration times for automatic data deletion.
 
 ### Example: Upload and Poll
 
@@ -49,7 +32,7 @@ print(f"Task created with ID: {task.task_id}")
 
 # 2. Poll for the result
 # The poll method will automatically wait until the task is complete
-task.poll() 
+task.poll()
 
 # 3. Access the results
 if task.status == "Succeeded":
@@ -60,5 +43,4 @@ else:
     print(f"Task failed with message: {task.message}")
 
 chunkr.close()
-``` 
-
+```

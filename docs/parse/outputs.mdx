@@ -1,9 +1,9 @@
 ---
 title: Output
-description: Understanding the structured data returned by the Parse feature.
+description: Understanding data returned by the Parse feature.
 ---
 
-import { Frame, CodeGroup, Note, Card, CardGroup } from '@mintlify/components';
+import { Frame, CodeGroup, Note, Card, CardGroup } from "@mintlify/components";
 
 ## High-Level Structure
 
@@ -16,13 +16,13 @@ graph TD;
         Output --> Metadata["<b>Metadata</b><br/>- file_name<br/>- mime_type<br/>- page_count<br/>- pdf_url"];
         Output --> Chunks["<b>chunks</b> [ ]"];
         Output --> Pages["<b>pages</b> [ ]"];
-   
 
     Chunks --> Chunk["<b>Chunk</b><br/>- chunk_id<br/>- chunk_length<br/>- embed<br/>- segments[]"];
     Chunk --> Segment["<b>Segment</b><br/>- content<br/>- description<br/>- bbox<br/>- ss_* fields"<br/>...];
 
     Pages --> Page["<b>Page</b><br/>- page_number<br/>- image<br/>- pg_width, pg_height<br/>- dpi<br/>- ss_sheet_name"];
-```
+
+````
 </Frame>
 
 <b>Parse</b> returns a `Task` object. When processing is successful, the `output` field contains the structured representation of your document. The core of this output is a list of `chunks`, which are composed of individual `segments`.
@@ -44,7 +44,8 @@ graph TD;
   },
   // ... other task metadata
 }
-```
+````
+
 </CodeGroup>
 
 ### Chunks and Segments
@@ -57,9 +58,10 @@ The document is first broken down into `segments`, which represent individual se
 The supported segment types are: `Caption`, `Footnote`, `Formula`, `ListItem`, `Page`, `PageFooter`, `PageHeader`, `Picture`, `SectionHeader`, `Table`, `Text`, and `Title`.
 
 ---
+
 ## Key Output Fields
 
-Each `segment` object contains rich information. At the `chunk` level, corresponding fields are concatenated from all of the segments within that chunk. Here are the most important fields, explained from the perspective of a segment.
+Each `segment` object contains rich information. At the `chunk` level, corresponding fields are concatenated from all of the segments within that chunk. Here are the most important fields:
 
 ### 1. `content`
 
@@ -142,9 +144,10 @@ These spreadsheet-native values unlock powerful capabilities:
 
 ---
 
-## Advanced Outputs
+<Accordion title="Advanced Outputs">
 
-Beyond the key fields, the Parse output is enriched with additional metadata at the file, page, and segment levels. This includes details like the original file and a PDF version of it, cropped images for segments, and word-level bounding-boxes. 
+Beyond the key fields, the Parse output is enriched with additional metadata at the file, page, and segment levels. This includes details like the original file and a PDF version of it, cropped images for segments, and word-level bounding-boxes.
 
-For a comprehensive breakdown of every field, you can refer to our [API Reference](/api-references). 
+For a comprehensive breakdown of every field, you can refer to our [API Reference](/api-references).
 
+</Accordion>

@@ -3,13 +3,13 @@ title: Basic Task Handling
 sidebarTitle: Task handling
 description: "Upload files, check their status, and retrieve processed results"
 ---
-<br></br>
-# Creating Tasks
+
+## Creating Tasks
 
 You can create a task by uploading a file from multiple sources. The SDK provides two primary methods for task creation:
 
-*   `upload()`: Uploads a file and waits for the entire processing job to complete.
-*   `create_task()`: Submits the file for processing and returns a task ID immediately, allowing for asynchronous polling.
+- `upload()`: Uploads a file and waits for the entire processing job to complete.
+- `create_task()`: Submits the file for processing and returns a task ID immediately, allowing for asynchronous polling.
 
 ### Complete Processing with `upload()`
 
@@ -21,12 +21,15 @@ from chunkr_ai import Chunkr
 chunkr = Chunkr()
 
 # Upload and wait for complete processing
+
 task = chunkr.upload("path/to/your/file.pdf")
 
 # All processing is done - you can access results immediately
+
 print(task.status) # Will be "Succeeded"
 print(task.output) # Contains processed results
-```
+
+````
 </CodeGroup>
 
 ### Instant Response with `create_task()`
@@ -41,7 +44,8 @@ task = chunkr.create_task("path/to/your/file.pdf")
 # Task is created but processing may not be complete
 print(task.task_id)
 print(task.status)  # Might be "Starting"
-```
+````
+
 </CodeGroup>
 
 You can check on the task's progress later using `poll()`.
@@ -51,10 +55,12 @@ You can check on the task's progress later using `poll()`.
 # ... do other work ...
 
 # Check status when needed
+
 result = task.poll()
 print(result.status)
-print(result.output)  # Now contains processed results if status is "Succeeded"
-```
+print(result.output) # Now contains processed results if status is "Succeeded"
+
+````
 </CodeGroup>
 
 ### Supported Input Sources
@@ -87,11 +93,13 @@ task = chunkr.upload(base64_string, file_name="document.pdf")
 # From a PIL Image
 img = Image.open("path/to/your/photo.jpg")
 task = chunkr.upload(img)
-```
+````
+
 </CodeGroup>
 
-<br></br>
-# Reading Tasks
+---
+
+## Reading Tasks
 
 Retrieve information for any task using its `task_id`. This is useful for checking the status or accessing results of previously created tasks.
 
@@ -101,12 +109,15 @@ from chunkr_ai import Chunkr
 chunkr = Chunkr()
 
 # Get task by ID
+
 task = chunkr.get_task("task_123")
 
 # Access task information
+
 print(task.status)
 print(task.output)
-```
+
+````
 </CodeGroup>
 
 ### Customizing the Response
@@ -121,11 +132,12 @@ You can tailor the response to include or exclude certain data.
 <CodeGroup>
 ```python Python
 # Get task without chunk data
-task = chunkr.get_task("task_123", include_chunks=False) 
+task = chunkr.get_task("task_123", include_chunks=False)
 
 # Get task with base64-encoded image URLs
 task = chunkr.get_task("task_123", base64_urls=True)
-```
+````
+
 ```bash cURL
 # Get task without chunks
 curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?include_chunks=false" -H "Authorization: YOUR_API_KEY"
@@ -133,56 +145,67 @@ curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?include_chunks=false" -
 # Get task with base64-encoded URLs
 curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?base64_urls=true" -H "Authorization: YOUR_API_KEY"
 ```
+
 </CodeGroup>
 
-<br></br>
-# Data Retention
+---
 
-You can control task deletion behavior using the `expires_in` parameter to set a custom expiration time in seconds. Once a task expires, it cannot be updated, polled, or accessed.
+## Data Storage & ZDR
 
-Set `expires_in` to define the number of seconds until the task is deleted. If you omit this parameter, the default retention period will be applied.
+While we store all outputs, original files, and image crops - we don't recommend using Chunkr as a storage system.
+
+The best way to use Chunkr is solely as a processing engine. For security and privacy, you can use the `expires_in` parameter to automatically delete all task data from Chunkr's servers after processing.
+
+Here is an example config that sets the data to expire in 1 second:
 
 <CodeGroup>
-```python Python
-from chunkr_ai import Chunkr
+  ```python Python
+  from chunkr_ai import Chunkr
+  from chunkr_ai.models import Configuration
 
 chunkr = Chunkr()
 
-# Create a task that expires in one hour (3600 seconds)
-task = chunkr.create_task(
-    "path/to/your/file.pdf",
-    expires_in=3600
+# Set expires_in to 1 second for Zero Data Retention (ZDR).
+
+# Task data will be deleted from Chunkr almost immediately after processing.
+
+config = Configuration(
+expires_in=1
 )
 
-# You can also set it with upload()
-task = chunkr.upload(
-    "path/to/your/file.pdf",
-    expires_in=3600
-)
-```
+task = chunkr.upload("path/to/file", config)
+
+# The task object contains the results, but the data will be
+
+# deleted from Chunkr's servers shortly.
+
+print(task.status)
+
+````
+
 ```bash cURL
-# Create a task that expires in one hour
-curl --request POST \
-  --url https://api.chunkr.ai/api/v1/task/parse \
-  --header 'Authorization: YOUR_API_KEY' \
-  --header 'Content-Type: application/json' \
+curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+  --header "Authorization: YOUR_API_KEY" \
+  --header "Content-Type: application/json" \
   --data '{
-  "file": "<base64_encoded_file_content>",
-  "file_name": "document.pdf",
-  "expires_in": 3600
-}'
-```
+    "file": "base64_or_url_to_file",
+    "file_name": "document.pdf",
+    "expires_in": 1
+  }'
+````
+
 </CodeGroup>
 
-<br></br>
-# Advanced Features
+---
+
+## Advanced Features
 
 While creating and reading tasks are the most common operations, Chunkr also provides functionality for more advanced task management.
 
 The following advanced operations are available:
 
-*   **[Update Tasks](./update.mdx)**: Modify the configuration of a task after it has been created. You can use this to re-process a file with different settings.
-*   **[Delete Tasks](./delete.mdx)**: Permanently remove tasks that have already completed or failed to clean up your workspace.
-*   **[Cancel Tasks](./cancel.mdx)**: Stop a queued task before it begins processing if it's no longer needed.
+- **[Update Tasks](./update.mdx)**: Modify the configuration of a task after it has been created. You can use this to re-process a file with different settings.
+- **[Delete Tasks](./delete.mdx)**: Permanently remove tasks that have already completed or failed to clean up your workspace.
+- **[Cancel Tasks](./cancel.mdx)**: Stop a queued task before it begins processing if it's no longer needed.
 
 For full CRUD operations, see the (TBD) [Task Management (CRUD)](/upload/CRUD) documentation.

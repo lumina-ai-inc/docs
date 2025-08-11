@@ -4,17 +4,17 @@ sidebarTitle: Limits
 description: "Task timeouts and file size restrictions."
 ---
 
-Chunkr is designed for high-throughput processing. In general there are no file size or page count limits, but there are a few considerations that are discussed here. 
+Chunkr is designed for high-throughput processing. In general there are no file size or page count limits, but there are a few considerations that are discussed here.
 
-<br></br>
-# Task Timeout
+## Task Timeout
 
 All tasks are subject to a **10-minute** timeout. If a task does not complete within this time, it will automatically fail.
 
 If you have a file that consistently times out, please [contact our support team](mailto:support@chunkr.ai) to discuss potential solutions.
 
-<br></br>
-# Rate Limiting
+---
+
+## Rate Limiting
 
 To ensure fair usage and system stability, we enforce a rate limit of **10 files per second**. If you exceed this limit, our API will respond with a `429 Too Many Requests` error.
 
@@ -27,14 +27,18 @@ from chunkr_ai import Chunkr
 chunkr = Chunkr()
 
 # The SDK will automatically handle rate limiting for you.
+
 # No extra code is needed.
+
 for i in range(20):
-    chunkr.create_task(f"path/to/file_{i}.pdf")
-```
+chunkr.create*task(f"path/to/file*{i}.pdf")
+
+````
 </CodeGroup>
 
-<br></br>
-# File Size Limits
+---
+
+## File Size Limits
 
 In general, there are no hard limits on the size of the files you can upload. Our architecture is built to handle large files by processing them in parallel. However, there is one exception:
 
@@ -53,11 +57,12 @@ task = chunkr.upload("path/to/very/large/file.pdf")
 
 # This will fail if the request size exceeds 1GB
 # task = chunkr.upload(large_base64_string, file_name="large_file.pdf")
-```
+````
+
 </CodeGroup>
 
-<br></br>
-# Page Limits
+---
+
+## Page Limits
 
 There are **no page limits** for documents. Our parallel processing architecture allows us to handle documents with any number of pages, from a single page to thousands.
-
