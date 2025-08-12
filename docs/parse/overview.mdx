@@ -73,6 +73,12 @@ curl -X GET https://api.chunkr.ai/api/v1/task/{your_task_id} \
 
 ---
 
+<Note>
+  Our default configuration is optimized through extensive testing and provides
+  excellent results for most documents. You can customize parse if you have specific
+  requirements.
+</Note>
+
 <Accordion title="Advanced Configuration">
 
 While our defaults work exceptionally well for almost all use cases, Parse offers extensive customization options for specialized needs:
@@ -89,11 +95,5 @@ While our defaults work exceptionally well for almost all use cases, Parse offer
 - **[Chunking (`chunk_processing`)](/docs/features/chunking)**: Configure chunking strategy, sizes, and token-counting model.
 - **[LLM Processing (`llm_processing`)](/docs/features/llm-processing)**: Select the VLM provider and model for all VLM tasks.
 - **[Error Handling (`error_handling`)](/docs/features/error-handling)**: Set to `Fail` (default) to stop on any error, or `Continue` to process despite non-critical errors.
-
-<Note>
-  Our default configuration is optimized through extensive testing and provides
-  excellent results for most documents. Only customize if you have specific
-  requirements.
-</Note>
 
 </Accordion>
