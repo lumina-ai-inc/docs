@@ -19,24 +19,13 @@ Another important aspect of handling webhooks is verifying the signature and tim
 You can learn more about this in the signature verification section.
 
 ## Events & payloads
-Chunkr currently emits two events:
+Chunkr currently emits pnly 1 event:
 
-- `task.updated`: Webhook event payload for any task updates
 - `task.parse.updated`: Webhook event payload for parse task updates
 
 Example payload shape:
 
 <CodeGroup>
-
-```javascript Task Updated
-{
-  "event_type": "task.updated",
-  "message": null,
-  "status": "Starting",
-  "task_id": "..."
-}
-```
-
 ```javascript Task Parse Updated
 {
   "event_type": "task.parse.updated",
