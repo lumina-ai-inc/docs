@@ -51,6 +51,14 @@
             "tag": "NEW"
           },
           {
+            "group": "Webhooks",
+            "pages": [
+              "docs/webhooks/overview",
+              "docs/webhooks/troubleshooting"
+            ],
+            "tag": "NEW"
+          },
+          {
             "group": "Use Cases",
             "pages": [
               "docs/use-cases/usage-patterns",
@@ -99,7 +107,7 @@
       {
         "tab": "API References",
         "openapi": {
-          "source": "https://api.chunkr.ai/docs/openapi.json",
+          "source": "/openapi.json",
           "directory": "api-references"
         }
       }

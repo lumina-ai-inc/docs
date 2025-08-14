@@ -1,0 +1,115 @@
+---
+title: Overview
+---
+
+## What are webhooks?
+Webhooks are how services notify each other of events.
+
+At their core, webhooks are just POST requests to predetermined endpoints.
+Endpoints can be whatever you want, and you can add them from the UI.
+You normally use one endpoint per service, and that endpoint listens to all event types.
+
+For example, if you receive webhooks from Acme Inc., you can structure your URL like: `https://www.example.com/acme/webhooks/`.
+
+Indicate that a webhook has been processed by returning a 2xx (status code 200-299) response to the webhook message within a reasonable time frame (15 seconds).
+
+It's also important to disable CSRF protection for this endpoint if your framework enables it by default.
+
+Another important aspect of handling webhooks is verifying the signature and timestamp when processing them.
+
+You can learn more about this in the signature verification section.
+
+## Events & payloads
+Chunkr currently emits two events:
+
+- `task.updated`: Webhook event payload for any task updates
+- `task.parse.updated`: Webhook event payload for parse task updates
+
+Example payload shape:
+
+<CodeGroup>
+
+```javascript Task Updated
+{
+  "event_type": "task.updated",
+  "message": null,
+  "status": "Starting",
+  "task_id": "..."
+}
+```
+
+```javascript Task Parse Updated
+{
+  "event_type": "task.parse.updated",
+  "message": null,
+  "status": "Starting",
+  "task_id": "..."
+}
+```
+</CodeGroup>
+
+<Tip>You can see more information in the [API references](/api-references/task-parse-updated)</Tip>
+
+## Add an endpoint
+To start listening to messages, you need to configure your endpoints.
+
+Adding an endpoint is as simple as providing a URL that you control and selecting the event types that you want to listen to.
+
+If you don't specify any event types, by default, your endpoint will receive all events, regardless of type.
+
+This can be helpful for getting started and for testing, but we recommend changing this to a subset later on to avoid receiving extraneous messages.
+
+If your endpoint isn't quite ready to start receiving events, you can click the "Svix Play" button to have a unique URL generated for you.
+
+You'll be able to view and inspect webhooks sent to your Svix Play URL, making it effortless to get started.
+
+<Tip>To add your first endpoint, click the Webhooks section on the Chunkr dashboard</Tip>
+
+## Test an endpoint
+
+Once you've added an endpoint, you'll want to make sure it's working.
+
+The "Testing" tab lets you send test events to your endpoint.
+
+After sending an example event, you can click into the message to view the message payload, all of the message attempts, and whether it succeeded or failed.
+
+## Verifying webhooks
+It’s important to know whether a webhook has come from `chunkr.ai`, or a third party that might be trying to exploit a vulnerability. 
+To avoid this, we send a signature in the header of our webhooks, which you can verify using a signing secret.
+
+The webhooks we send will have three headers that you’ll want to look at:
+
+```javascript Headers
+{ 
+  "webhook-id": "123", 
+  "webhook-timestamp": 1755204338,
+  "webhook-signature": "v1,g0h..." 
+}
+```
+
+To verify the signatures, see Svix's guide on how to verify webhooks with the [Svix libraries](https://docs.svix.com/receiving/verifying-payloads/how) or how to verify [webhooks manually](https://docs.svix.com/receiving/verifying-payloads/how-manual).
+
+## Retries
+
+We attempt to deliver each webhook message based on a retry schedule with exponential backoff.
+
+### The schedule
+
+Each message is attempted on the following schedule. Each period starts after the preceding attempt fails:
+
+-   Immediately
+-   5 seconds
+-   5 minutes
+-   30 minutes
+-   2 hours
+-   5 hours
+-   10 hours
+-   10 hours (in addition to the previous)
+
+If an endpoint is removed or disabled, delivery attempts to the endpoint will be disabled as well.
+
+For example, an attempt that fails three times before eventually succeeding will be delivered roughly 35 minutes and 5 seconds following the first attempt.
+
+### Manual retries
+
+You can also use the application portal to manually retry each message at any time, or automatically retry ("Recover") all failed messages starting from a given date.
