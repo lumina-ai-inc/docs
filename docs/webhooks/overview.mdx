@@ -76,16 +76,6 @@ After sending an example event, you can click into the message to view the messa
 It’s important to know whether a webhook has come from `chunkr.ai`, or a third party that might be trying to exploit a vulnerability. 
 To avoid this, we send a signature in the header of our webhooks, which you can verify using a signing secret.
 
-The webhooks we send will have three headers that you’ll want to look at:
-
-```javascript Headers
-{ 
-  "webhook-id": "123", 
-  "webhook-timestamp": 1755204338,
-  "webhook-signature": "v1,g0h..." 
-}
-```
-
 To verify the signatures, see Svix's guide on how to verify webhooks with the [Svix libraries](https://docs.svix.com/receiving/verifying-payloads/how) or how to verify [webhooks manually](https://docs.svix.com/receiving/verifying-payloads/how-manual).
 
 ## Retries

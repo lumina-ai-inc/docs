@@ -54,7 +54,8 @@
             "group": "Webhooks",
             "pages": [
               "docs/webhooks/overview",
-              "docs/webhooks/troubleshooting"
+              "docs/webhooks/troubleshooting",
+              "docs/webhooks/examples"
             ],
             "tag": "NEW"
           },
