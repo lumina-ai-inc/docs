@@ -72,6 +72,40 @@ The "Testing" tab lets you send test events to your endpoint.
 
 After sending an example event, you can click into the message to view the message payload, all of the message attempts, and whether it succeeded or failed.
 
+### Local testing with Svix Play (CLI)
+
+For local development, you can use [Svix Play](https://docs.svix.com/play) to relay a publicly accessible URL to your local server. Point your Chunkr webhook endpoint to the Play URL, and the CLI will forward requests to your localhost for easy debugging.
+
+1. Install the CLI:
+
+<CodeGroup>
+```bash macOS
+brew install svix/svix/svix
+```
+
+```bash Linux
+snap install svix
+```
+
+```bash Windows
+scoop bucket add svix https://github.com/svix/scoop-svix.git
+scoop install svix
+```
+
+</CodeGroup>
+
+2. Start a relay to your local webhook handler:
+
+```bash Start relay
+svix listen http://localhost:8000/webhook/chunkr
+# -> Prints: https://play.svix.com/in/<token>/ and a view URL
+```
+
+3. In the Chunkr dashboard, set your webhook endpoint URL to the printed Play URL. All messages sent to this URL will be forwarded to your local server.
+
+4. Watch requests in the Svix Play UI (the CLI prints a "view" link) and in your local server logs.
+
+
 ## Verifying webhooks
 It’s important to know whether a webhook has come from `chunkr.ai`, or a third party that might be trying to exploit a vulnerability. 
 To avoid this, we send a signature in the header of our webhooks, which you can verify using a signing secret.
