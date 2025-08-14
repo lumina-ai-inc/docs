@@ -3,13 +3,12 @@ title: Overview
 ---
 
 ## What are webhooks?
-Webhooks are how services notify each other of events.
+Chunkr uses webhooks to notify your application in real time when task events occur in your account.
 
-At their core, webhooks are just POST requests to predetermined endpoints.
-Endpoints can be whatever you want, and you can add them from the UI.
-You normally use one endpoint per service, and that endpoint listens to all event types.
+Webhooks are HTTPS POST requests sent to an endpoint you control. You can add and manage endpoints from the Chunkr dashboard.
+You can use a single endpoint per service that listens to all event types, or restrict it to only the events you care about.
 
-For example, if you receive webhooks from Acme Inc., you can structure your URL like: `https://www.example.com/acme/webhooks/`.
+For example, you might receive webhooks from Chunkr at a URL like: `https://www.example.com/chunkr/webhooks/`.
 
 Indicate that a webhook has been processed by returning a 2xx (status code 200-299) response to the webhook message within a reasonable time frame (15 seconds).
 
