@@ -108,7 +108,7 @@
       {
         "tab": "API References",
         "openapi": {
-          "source": "/openapi.json",
+          "source": "https://api.chunkr.ai/docs/openapi.json",
           "directory": "api-references"
         }
       }
