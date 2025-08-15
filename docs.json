@@ -22,14 +22,20 @@
               "docs/get-started/playground"
             ]
           },
-    
               {
                 "group": "Task System",
                 "icon": "upload",
                 "pages": [
                   "docs/task-system/overview",
                   "docs/task-system/task-handling",
-                   "docs/task-system/webhooks",
+                  {
+                    "group": "Webhooks",
+                    "pages": [
+                      "docs/task-system/webhooks/overview",
+                      "docs/task-system/webhooks/troubleshooting",
+                      "docs/task-system/webhooks/examples"
+                    ]
+                  },
                   "docs/task-system/file-types",
                   "docs/task-system/limits"
                  
