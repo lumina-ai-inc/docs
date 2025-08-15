@@ -47,29 +47,9 @@
             
           ,
           {
-<<<<<<< HEAD
-            "group": "Excel Parser",
-            "pages": [
-              "docs/excel-parser/overview",
-              "docs/excel-parser/understanding-the-output",
-              "docs/excel-parser/configuration",
-              "docs/excel-parser/agent"
-            ],
-            "tag": "NEW"
-          },
-          {
-            "group": "Webhooks",
-            "pages": [
-              "docs/webhooks/overview",
-              "docs/webhooks/troubleshooting",
-              "docs/webhooks/examples"
-            ],
-            "tag": "NEW"
-=======
             "group": "Models",
             "icon": "sparkles",
             "pages": ["docs/models/overview", "docs/models/chunkr-parse-1"]
->>>>>>> 9c1da9a (Working on it)
           },
           {
             "group": "Advanced",
