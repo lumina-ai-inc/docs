@@ -1,0 +1,57 @@
+---
+title: Example
+description: Quick, copy‑pasteable snippets for receiving Chunkr webhooks, verifying them with Svix, and then fetching the related task via the Chunkr SDK.
+---
+
+<Tip>See the end‑to‑end flow in the <a href="/webhooks/overview">Webhooks overview</a>.</Tip>
+
+## Installation
+
+Install the required packages:
+
+```bash
+pip install fastapi uvicorn svix chunkr_ai
+```
+
+## Python (FastAPI) — Verify with Svix and fetch Task
+
+This minimal FastAPI handler verifies the webhook signature using Svix and then calls `chunkr.get_task(task_id)`.
+
+```python
+from fastapi import FastAPI, Request, Response, status
+from svix.webhooks import Webhook, WebhookVerificationError
+from chunkr_ai import Chunkr
+import os
+
+app = FastAPI()
+
+CHUNKR_WEBHOOK_SECRET = os.environ["CHUNKR_WEBHOOK_SECRET"]  # starts with "whsec_"
+chunkr = Chunkr()  # uses CHUNKR_API_KEY from env if not provided
+
+@app.post("/webhook/chunkr", status_code=status.HTTP_204_NO_CONTENT)
+async def webhook_handler(request: Request) -> Response:
+    headers = request.headers
+    payload = await request.body()  # Verify against the raw body
+
+    try:
+        msg = Webhook(CHUNKR_WEBHOOK_SECRET).verify(payload, headers)  # dict
+    except WebhookVerificationError:
+        return Response(status_code=status.HTTP_400_BAD_REQUEST)
+
+    task_id = msg.get("task_id")
+    status_str = msg.get("status")
+
+    # Fetch only once the task is completed
+    if task_id and status_str == "Succeeded":
+        _task = chunkr.get_task(task_id)
+        # Do something with _task (e.g., persist results)
+
+    # No content response for webhook receivers
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+```
+
+Run the server locally:
+
+```bash
+uvicorn main:app --reload --port 8000
+```

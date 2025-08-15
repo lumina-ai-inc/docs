@@ -1,0 +1,47 @@
+---
+title: Troubleshooting
+---
+
+## Troubleshooting Tips
+
+**Not using the raw payload body**
+
+This is the most common issue. When generating the signed content, we use the raw string body of the message payload.
+
+If you convert JSON payloads into strings using methods like `JSON.stringify`, different implementations may produce different string representations of the JSON object, which can lead to discrepancies when verifying the signature. It's crucial to verify the payload exactly as it was sent, byte-for-byte or string-for-string, to ensure accurate verification.
+
+**Missing the secret key**
+
+From time to time, we see people simply using the wrong secret key. Remember that keys are unique to endpoints.
+
+**Sending the wrong response codes**
+
+When we receive a response with a 2xx status code, we interpret that as a successful delivery even if you indicate a failure in the response payload. Make sure to use the correct response status codes so we know when messages are supposed to succeed or fail.
+
+**Responses timing out**
+
+We will consider any message that fails to send a response within the configured timeout a failed message. If your endpoint is also processing complicated workflows, it may time out and result in failed messages.
+
+We suggest having your endpoint simply receive the message and add it to a queue to be processed asynchronously so you can respond promptly and avoid timing out.
+
+## Failure Recovery
+
+**Re-enable a disabled endpoint**
+
+If all attempts to a specific endpoint fail for a period of 5 days, the endpoint will be disabled. To re-enable a disabled endpoint, go to the webhook dashboard, find the endpoint from the list and select "Enable Endpoint".
+
+**Recovering and resending failed messages**
+
+If your service has downtime or if your endpoint was misconfigured, you probably want to recover any messages that failed during the downtime.
+
+If you want to replay a single event, you can find the message in the UI and click the options menu next to the attempt.
+
+From there, click "Resend" to have the same message sent to your endpoint again.
+
+If you need to recover from a service outage and want to replay all the events since a given time, you can do so from the endpoint page. On an endpoint's details page, click "Options > Recover Failed Messages".
+
+From there, you can choose a time window to recover from.
+
+For a more granular recovery - for example, if you know the exact timestamp that you want to recover from - you can click the options menu on any message from the endpoint page.
+
+From there, you can click "Replay..." and choose to "Replay all failed messages since this time."
