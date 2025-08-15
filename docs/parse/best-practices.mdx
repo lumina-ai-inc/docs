@@ -18,42 +18,71 @@ Here’s how to enable it for `Table` and `Picture` segments:
 <CodeGroup>
   ```python Python
   from chunkr_ai import Chunkr
-  from chunkr_ai.models import (
-      Configuration,
-      GenerationConfig,
+  from chunkr_ai.types.tasks.parse_create_params import (
       SegmentProcessing,
+      SegmentProcessingTable,
+      SegmentProcessingPicture
   )
 
-chunkr = Chunkr()
+  client = Chunkr(api_key="your_api_key")
 
-config = Configuration(
-segment_processing=SegmentProcessing(
-Table=GenerationConfig(
-extended_context=True
-),
-Picture=GenerationConfig(
-extended_context=True
-)
-)
-)
+  # Parse with extended context for tables and pictures
+  task = client.tasks.parse.create(
+      file="path/to/file.pdf",
+      segment_processing=SegmentProcessing(
+          Table=SegmentProcessingTable(
+              extended_context=True
+          ),
+          Picture=SegmentProcessingPicture(
+              extended_context=True
+          )
+      )
+  )
 
-chunkr.upload("path/to/file", config)
+  # Wait for completion
+  task = client.tasks.get(task_id=task.task_id, wait_for_completion=True)
+  ```
 
-````
+  ```typescript TypeScript
+  import Chunkr from 'chunkr-ai';
 
-```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task/parse \
-  -H "Authorization: YOUR_API_KEY" \
-  -F file=@path/to/file \
-  -F 'segment_processing={
-      "Table": {
-        "extended_context": true
-      },
-      "Picture": {
-        "extended_context": true
+  const client = new Chunkr({ apiKey: 'your_api_key' });
+
+  // Parse with extended context for tables and pictures
+  const task = await client.tasks.parse.create({
+      file: 'path/to/file.pdf',
+      segment_processing: {
+          Table: {
+              extended_context: true
+          },
+          Picture: {
+              extended_context: true
+          }
       }
-    };type=application/json'
-````
+  });
+
+  // Wait for completion
+  const completedTask = await client.tasks.get(task.task_id, {
+      wait_for_completion: true
+  });
+  ```
+
+  ```bash cURL
+  curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+    -H "Authorization: YOUR_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "file": "https://example.com/document.pdf",
+        "segment_processing": {
+            "Table": {
+                "extended_context": true
+            },
+            "Picture": {
+                "extended_context": true
+            }
+        }
+    }'
+  ````
 
 </CodeGroup>
 <Tip>
@@ -73,18 +102,25 @@ To do this, set the `base64_urls=True` parameter when fetching a task:
   ```python Python
   from chunkr_ai import Chunkr
 
-chunkr = Chunkr()
+  client = Chunkr(api_key="your_api_key")
 
-# Get task with base64-encoded URLs instead of pre-signed URLs
+  # Get task with base64-encoded URLs instead of pre-signed URLs
+  task = client.tasks.get(task_id="task_123", base64_urls=True)
+  ```
 
-task = chunkr.get_task("task_123", base64_urls=True)
+  ```typescript TypeScript
+  import Chunkr from 'chunkr-ai';
 
-````
+  const client = new Chunkr({ apiKey: 'your_api_key' });
 
-```bash cURL
-curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?base64_urls=true" \
-  -H "Authorization: YOUR_API_KEY"
-````
+  // Get task with base64-encoded URLs instead of pre-signed URLs
+  const task = await client.tasks.get('task_123', { base64_urls: true });
+  ```
+
+  ```bash cURL
+  curl -X GET "https://api.chunkr.ai/api/v1/tasks/{task_id}?base64_urls=true" \
+    -H "Authorization: YOUR_API_KEY"
+  ````
 
 </CodeGroup>
 
@@ -94,41 +130,69 @@ curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?base64_urls=true" \
 
 The most significant factor affecting processing time is the VLM used in the `llm_processing` configuration. By default, Chunkr uses `chunkr-parse-1-thinking`, which provides the highest quality results but can be slower.
 
-To significantly increase processing speed without takign a large hit on accuracy, you can to our non-thinking variant. We recommend setting `chunkr-parse-1` as the main model.
+To significantly increase processing speed without taking a large hit on accuracy, you can switch to our non-thinking variant. We recommend setting `chunkr-parse-1` as the main model.
 
 <CodeGroup>
   ```python Python
   from chunkr_ai import Chunkr
-  from chunkr_ai.models import Configuration, LlmProcessing, FallbackStrategy
+  from chunkr_ai.types.tasks.parse_create_params import (
+      LlmProcessing,
+      LlmProcessingFallbackStrategyModel
+  )
 
-chunkr = Chunkr()
+  client = Chunkr(api_key="your_api_key")
 
-# Optimized for speed
+  # Optimized for speed
+  task = client.tasks.parse.create(
+      file="path/to/file.pdf",
+      llm_processing=LlmProcessing(
+          llm_model_id="chunkr-parse-1",
+          fallback_strategy=LlmProcessingFallbackStrategyModel(
+              model="chunkr-parse-1"
+          )
+      )
+  )
 
-config = Configuration(
-llm_processing=LlmProcessing(
-llm_model_id="chunkr-parse-1",
-fallback_strategy=FallbackStrategy.model("chunkr-parse-1"
-)
-)
+  # Wait for completion
+  task = client.tasks.get(task_id=task.task_id, wait_for_completion=True)
+  ```
 
-task = chunkr.upload("path/to/file", config)
+  ```typescript TypeScript
+  import Chunkr from 'chunkr-ai';
 
-````
+  const client = new Chunkr({ apiKey: 'your_api_key' });
 
-```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task/parse \
-  --header "Authorization: YOUR_API_KEY" \
-  --header "Content-Type: application/json" \
-  --data '{
-    "file": "base64_or_url_to_file",
-    "file_name": "document.pdf",
-    "llm_processing": {
-        "llm_model_id": "chunkr-parse-1",
-        "fallback_strategy": null
-    }
-  }'
-````
+  // Optimized for speed
+  const task = await client.tasks.parse.create({
+      file: 'path/to/file.pdf',
+      llm_processing: {
+          llm_model_id: 'chunkr-parse-1',
+          fallback_strategy: {
+              model: 'chunkr-parse-1'
+          }
+      }
+  });
+
+  // Wait for completion
+  const completedTask = await client.tasks.get(task.task_id, {
+      wait_for_completion: true
+  });
+  ```
+
+  ```bash cURL
+  curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+    --header "Authorization: YOUR_API_KEY" \
+    --header "Content-Type: application/json" \
+    --data '{
+      "file": "https://example.com/document.pdf",
+      "llm_processing": {
+          "llm_model_id": "chunkr-parse-1",
+          "fallback_strategy": {
+              "model": "chunkr-parse-1"
+          }
+      }
+    }'
+  ````
 
 </CodeGroup>
 

@@ -20,52 +20,88 @@ It intelligently identifies document elements, processes them based on their typ
 
 ## Example: Parse and access chunk content
 
-Here’s how you can parse a document and access its chunks using our Python SDK.
+Here's how you can parse a document and access its chunks using our SDKs.
 
 <CodeGroup>
-```python title="Python"
+```python Python
 from chunkr_ai import Chunkr
 
 # Initialize the client with your API key
+client = Chunkr(api_key="your_api_key")
 
-chunkr = Chunkr()
+# Parse a document from URL or local file
+url = "https://example.com/document.pdf"
+task = client.tasks.parse.create(file=url)
 
-# Parse a document by creating a task
+# OR parse from local file
+# with open("path/to/document.pdf", "rb") as f:
+#     file = client.files.create(file=f)
+#     task = client.tasks.parse.create(file=file.url)
 
-task = chunkr.create_task("path/to/your/document.pdf")
 print(f"Task created with ID: {task.task_id}")
 
-# Poll the task to wait for completion
-
-task.poll()
+# Wait for the task to complete
+task = client.tasks.get(task_id=task.task_id, wait_for_completion=True)
 
 # Access the chunks from the output
-
 if task.status == "Succeeded":
-print(f"Document has {len(task.output.chunks)} chunks.") # `chunk.content` holds the 1:1 structured representation of document elements
-for chunk in task.output.chunks:
-print(chunk.content)
+    print(f"Document has {len(task.output.chunks)} chunks.")
+    # `chunk.content` holds the structured representation of document elements
+    for chunk in task.output.chunks:
+        print(chunk.content)
 else:
-print(f"Task failed with status: {task.status}")
+    print(f"Task failed with status: {task.status}")
+```
 
-chunkr.close()
+```typescript TypeScript
+import Chunkr from 'chunkr-ai';
+import fs from 'fs';
 
+// Initialize the client with your API key
+const client = new Chunkr({ apiKey: 'your_api_key' });
+
+// Parse a document from URL
+const url = 'https://example.com/document.pdf';
+const task = await client.tasks.parse.create({ file: url });
+
+// OR parse from local file
+// const file = await client.files.create({ 
+//     file: fs.createReadStream('./document.pdf') 
+// });
+// const task = await client.tasks.parse.create({ file: file.url });
+
+console.log(`Task created with ID: ${task.task_id}`);
+
+// Wait for the task to complete
+const completedTask = await client.tasks.get(task.task_id, {
+    wait_for_completion: true
+});
+
+// Access the chunks from the output
+if (completedTask.status === "Succeeded") {
+    console.log(`Document has ${completedTask.output.chunks.length} chunks.`);
+    // `chunk.content` holds the structured representation
+    for (const chunk of completedTask.output.chunks) {
+        console.log(chunk.content);
+    }
+} else {
+    console.log(`Task failed with status: ${completedTask.status}`);
+}
 ````
 
-```bash title="cURL"
-# 1. Create a task to start parsing
+```bash cURL
+# 1. Create a parse task
 # Copy the `task_id` from the response
-curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
   --header "Authorization: YOUR_API_KEY" \
   --header "Content-Type: application/json" \
   --data '{
-    "file": "base64_or_url_to_file",
-    "file_name": "document.pdf"
+    "file": "https://example.com/document.pdf"
   }'
 
 # 2. Poll the Get Task endpoint until status is "Succeeded"
 # Once complete, the response will contain the output with chunks
-curl -X GET https://api.chunkr.ai/api/v1/task/{your_task_id} \
+curl -X GET https://api.chunkr.ai/api/v1/tasks/{your_task_id} \
   --header "Authorization: YOUR_API_KEY"
 ````
 

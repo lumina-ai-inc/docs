@@ -6,8 +6,6 @@ sidebarTitle: Configuration
 
 While our defaults work exceptionally well for almost all use cases, Parse offers extensive customization options for specialized needs. This guide details the advanced configuration parameters you can use to tailor the parsing process to your requirements.
 
-Refer to our [configuration guide](/sdk/configuration) for more details on the Python SDK.
-
 ## Pipeline (`pipeline`)
 
 Choose the provider for layout analysis and OCR models. In addition to using Chunkr's default models, you can also use Azure Document Intelligence as a provider.
@@ -18,21 +16,41 @@ Choose the provider for layout analysis and OCR models. In addition to using Chu
 <CodeGroup>
 ```python Python
 from chunkr_ai import Chunkr
-from chunkr_ai.models import Configuration, Pipeline
+from chunkr_ai.types.tasks.parse_create_params import PipelineType
 
-chunkr = Chunkr()
+client = Chunkr(api_key="your_api_key")
 
-task = chunkr.create_task("path/to/your/document.pdf", Configuration(
-    pipeline=Pipeline.AZURE
-))
+task = client.tasks.parse.create(
+    file="path/to/document.pdf",
+    pipeline="Azure"
+)
+
+# Wait for completion
+task = client.tasks.get(task_id=task.task_id, wait_for_completion=True)
 ```
+
+```typescript TypeScript
+import Chunkr from 'chunkr-ai';
+
+const client = new Chunkr({ apiKey: 'your_api_key' });
+
+const task = await client.tasks.parse.create({
+    file: 'path/to/document.pdf',
+    pipeline: 'Azure'
+});
+
+// Wait for completion
+const completedTask = await client.tasks.get(task.task_id, {
+    wait_for_completion: true
+});
+```
+
 ```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
   --header "Authorization: YOUR_API_KEY" \
   --header "Content-Type: application/json" \
   --data '{
-    "file": "base64_or_url_to_file",
-    "file_name": "document.pdf",
+    "file": "https://example.com/document.pdf",
     "pipeline": "Azure"
   }'
 ```
@@ -54,21 +72,40 @@ Defines how a document is initially divided into segments.
 <CodeGroup>
 ```python Python
 from chunkr_ai import Chunkr
-from chunkr_ai.models import Configuration, SegmentationStrategy
 
-chunkr = Chunkr()
+client = Chunkr(api_key="your_api_key")
 
-task = chunkr.create_task("path/to/your/document.pdf", Configuration(
-    segmentation_strategy=SegmentationStrategy.PAGE
-))
+task = client.tasks.parse.create(
+    file="path/to/document.pdf",
+    segmentation_strategy="Page"
+)
+
+# Wait for completion
+task = client.tasks.get(task_id=task.task_id, wait_for_completion=True)
 ```
+
+```typescript TypeScript
+import Chunkr from 'chunkr-ai';
+
+const client = new Chunkr({ apiKey: 'your_api_key' });
+
+const task = await client.tasks.parse.create({
+    file: 'path/to/document.pdf',
+    segmentation_strategy: 'Page'
+});
+
+// Wait for completion
+const completedTask = await client.tasks.get(task.task_id, {
+    wait_for_completion: true
+});
+```
+
 ```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
   --header "Authorization: YOUR_API_KEY" \
   --header "Content-Type: application/json" \
   --data '{
-    "file": "base64_or_url_to_file",
-    "file_name": "document.pdf",
+    "file": "https://example.com/document.pdf",
     "segmentation_strategy": "Page"
   }'
 ```
@@ -84,21 +121,40 @@ Determines how Optical Character Recognition (OCR) is applied.
 <CodeGroup>
 ```python Python
 from chunkr_ai import Chunkr
-from chunkr_ai.models import Configuration, OcrStrategy
 
-chunkr = Chunkr()
+client = Chunkr(api_key="your_api_key")
 
-task = chunkr.create_task("path/to/your/document.pdf", Configuration(
-    ocr_strategy=OcrStrategy.AUTO
-))
+task = client.tasks.parse.create(
+    file="path/to/document.pdf",
+    ocr_strategy="Auto"
+)
+
+# Wait for completion
+task = client.tasks.get(task_id=task.task_id, wait_for_completion=True)
 ```
+
+```typescript TypeScript
+import Chunkr from 'chunkr-ai';
+
+const client = new Chunkr({ apiKey: 'your_api_key' });
+
+const task = await client.tasks.parse.create({
+    file: 'path/to/document.pdf',
+    ocr_strategy: 'Auto'
+});
+
+// Wait for completion
+const completedTask = await client.tasks.get(task.task_id, {
+    wait_for_completion: true
+});
+```
+
 ```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
   --header "Authorization: YOUR_API_KEY" \
   --header "Content-Type: application/json" \
   --data '{
-    "file": "base64_or_url_to_file",
-    "file_name": "document.pdf",
+    "file": "https://example.com/document.pdf",
     "ocr_strategy": "Auto"
   }'
 ```
@@ -130,54 +186,91 @@ Here are the key options you can configure for each segment type:
 <CodeGroup>
 ```python Python
 from chunkr_ai import Chunkr
-from chunkr_ai.models import (
-    Configuration,
+from chunkr_ai.types.tasks.parse_create_params import (
     SegmentProcessing,
-    GenerationConfig,
-    GenerationStrategy,
-    SegmentFormat
+    SegmentProcessingTable,
+    SegmentProcessingPicture,
+    SegmentProcessingPageHeader,
+    SegmentProcessingPageFooter
 )
 
-config = Configuration(
+client = Chunkr(api_key="your_api_key")
+
+task = client.tasks.parse.create(
+    file="path/to/document.pdf",
     segment_processing=SegmentProcessing(
-        Table=GenerationConfig(
-            strategy=GenerationStrategy.LLM,
-            format=SegmentFormat.HTML,
+        Table=SegmentProcessingTable(
+            strategy="LLM",
+            format="Html",
             extended_context=True,
             description=True
         ),
-        Picture=GenerationConfig(
-            strategy=GenerationStrategy.LLM,
-            llm="Describe this image for a visually impaired user."
+        Picture=SegmentProcessingPicture(
+            strategy="LLM",
+            description=True
         ),
-        PageHeader=GenerationConfig(
-            strategy=GenerationStrategy.IGNORE
+        PageHeader=SegmentProcessingPageHeader(
+            strategy="Ignore"
         ),
-        PageFooter=GenerationConfig(
-            strategy=GenerationStrategy.IGNORE
+        PageFooter=SegmentProcessingPageFooter(
+            strategy="Ignore"
         )
     )
 )
 
-task = chunkr.create_task("path/to/your/document.pdf", config)
+# Wait for completion
+task = client.tasks.get(task_id=task.task_id, wait_for_completion=True)
 ```
+
+```typescript TypeScript
+import Chunkr from 'chunkr-ai';
+
+const client = new Chunkr({ apiKey: 'your_api_key' });
+
+const task = await client.tasks.parse.create({
+    file: 'path/to/document.pdf',
+    segment_processing: {
+        Table: {
+            strategy: 'LLM',
+            format: 'Html',
+            extended_context: true,
+            description: true
+        },
+        Picture: {
+            strategy: 'LLM',
+            description: true
+        },
+        PageHeader: {
+            strategy: 'Ignore'
+        },
+        PageFooter: {
+            strategy: 'Ignore'
+        }
+    }
+});
+
+// Wait for completion
+const completedTask = await client.tasks.get(task.task_id, {
+    wait_for_completion: true
+});
+```
+
 ```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
   --header "Authorization: YOUR_API_KEY" \
   --header "Content-Type: application/json" \
   --data '{
-    "file": "base64_or_url_to_file",
-    "file_name": "document.pdf",
+    "file": "https://example.com/document.pdf",
     "segment_processing": {
       "Table": {
         "strategy": "LLM",
-        "format": "HTML",
+        "format": "Html",
         "extended_context": true,
         "description": true
       },
       "Picture": {
         "strategy": "LLM",
-        "llm": "Describe this image for a visually impaired user."
+        "description": true
       },
       "PageHeader": { "strategy": "Ignore" },
       "PageFooter": { "strategy": "Ignore" }
@@ -192,32 +285,60 @@ curl -X POST https://api.chunkr.ai/api/v1/task/parse \
 
 Configure the chunking strategy, size, and the token-counting model. This is crucial for preparing content for RAG applications.
 
-*   **`target_chunk_length`**: The desired size of each chunk in tokens. Default is `4096`.
+*   **`target_length`**: The desired size of each chunk in tokens. Default is `4096`.
 *   **`tokenizer`**: The tokenizer to use for counting tokens. This can be a predefined enum or any tokenizer from Hugging Face. Default is `Cl100kBase`.
 
 <CodeGroup>
 ```python Python
 from chunkr_ai import Chunkr
-from chunkr_ai.models import Configuration, ChunkProcessing, Tokenizer
+from chunkr_ai.types.tasks.parse_create_params import (
+    ChunkProcessing,
+    ChunkProcessingTokenizerEnum
+)
 
-config = Configuration(
+client = Chunkr(api_key="your_api_key")
+
+task = client.tasks.parse.create(
+    file="path/to/document.pdf",
     chunk_processing=ChunkProcessing(
-        target_chunk_length=1024,
-        tokenizer=Tokenizer.CL100K_BASE # or "bert-base-uncased"
+        target_length=1024,
+        tokenizer=ChunkProcessingTokenizerEnum(enum="Cl100kBase")
     )
 )
 
-task = chunkr.create_task("path/to/your/document.pdf", config)
+# Wait for completion
+task = client.tasks.get(task_id=task.task_id, wait_for_completion=True)
 ```
+
+```typescript TypeScript
+import Chunkr from 'chunkr-ai';
+
+const client = new Chunkr({ apiKey: 'your_api_key' });
+
+const task = await client.tasks.parse.create({
+    file: 'path/to/document.pdf',
+    chunk_processing: {
+        target_length: 1024,
+        tokenizer: {
+            Enum: 'Cl100kBase'
+        }
+    }
+});
+
+// Wait for completion
+const completedTask = await client.tasks.get(task.task_id, {
+    wait_for_completion: true
+});
+```
+
 ```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
   --header "Authorization: YOUR_API_KEY" \
   --header "Content-Type: application/json" \
   --data '{
-    "file": "base64_or_url_to_file",
-    "file_name": "document.pdf",
+    "file": "https://example.com/document.pdf",
     "chunk_processing": {
-      "target_chunk_length": 1024,
+      "target_length": 1024,
       "tokenizer": {
         "Enum": "Cl100kBase"
       }
@@ -240,25 +361,56 @@ Select the VLM provider and model for all VLM-based tasks in `segment_processing
 <CodeGroup>
 ```python Python
 from chunkr_ai import Chunkr
-from chunkr_ai.models import Configuration, LlmProcessing, FallbackStrategy
+from chunkr_ai.types.tasks.parse_create_params import (
+    LlmProcessing,
+    LlmProcessingFallbackStrategyModel
+)
 
-config = Configuration(
+client = Chunkr(api_key="your_api_key")
+
+task = client.tasks.parse.create(
+    file="path/to/document.pdf",
     llm_processing=LlmProcessing(
         llm_model_id="claude-3-5-sonnet-20240620",
-        fallback_strategy=FallbackStrategy.model("gemini-1.5-flash"),
+        fallback_strategy=LlmProcessingFallbackStrategyModel(
+            model="gemini-1.5-flash"
+        ),
         temperature=0.1
     )
 )
 
-task = chunkr.create_task("path/to/your/document.pdf", config)
+# Wait for completion
+task = client.tasks.get(task_id=task.task_id, wait_for_completion=True)
 ```
+
+```typescript TypeScript
+import Chunkr from 'chunkr-ai';
+
+const client = new Chunkr({ apiKey: 'your_api_key' });
+
+const task = await client.tasks.parse.create({
+    file: 'path/to/document.pdf',
+    llm_processing: {
+        llm_model_id: 'claude-3-5-sonnet-20240620',
+        fallback_strategy: {
+            model: 'gemini-1.5-flash'
+        },
+        temperature: 0.1
+    }
+});
+
+// Wait for completion
+const completedTask = await client.tasks.get(task.task_id, {
+    wait_for_completion: true
+});
+```
+
 ```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
   --header "Authorization: YOUR_API_KEY" \
   --header "Content-Type: application/json" \
   --data '{
-    "file": "base64_or_url_to_file",
-    "file_name": "document.pdf",
+    "file": "https://example.com/document.pdf",
     "llm_processing": {
       "llm_model_id": "claude-3-5-sonnet-20240620",
       "fallback_strategy": {
@@ -282,21 +434,40 @@ Configure the behavior when the system encounters an error during processing.
 <CodeGroup>
 ```python Python
 from chunkr_ai import Chunkr
-from chunkr_ai.models import Configuration, ErrorHandlingStrategy
 
-config = Configuration(
-    error_handling=ErrorHandlingStrategy.CONTINUE
+client = Chunkr(api_key="your_api_key")
+
+task = client.tasks.parse.create(
+    file="path/to/document.pdf",
+    error_handling="Continue"
 )
 
-task = chunkr.create_task("path/to/your/document.pdf", config)
+# Wait for completion
+task = client.tasks.get(task_id=task.task_id, wait_for_completion=True)
 ```
+
+```typescript TypeScript
+import Chunkr from 'chunkr-ai';
+
+const client = new Chunkr({ apiKey: 'your_api_key' });
+
+const task = await client.tasks.parse.create({
+    file: 'path/to/document.pdf',
+    error_handling: 'Continue'
+});
+
+// Wait for completion
+const completedTask = await client.tasks.get(task.task_id, {
+    wait_for_completion: true
+});
+```
+
 ```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task/parse \
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
   --header "Authorization: YOUR_API_KEY" \
   --header "Content-Type: application/json" \
   --data '{
-    "file": "base64_or_url_to_file",
-    "file_name": "document.pdf",
+    "file": "https://example.com/document.pdf",
     "error_handling": "Continue"
   }'
 ```

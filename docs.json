@@ -62,10 +62,6 @@
             "icon": "gear",
             "pages": [
               {
-                "group": "Task System",
-                "pages": ["docs/advanced/upload/full-CRUD"]
-              },
-              {
                 "group": "Parse",
                 "pages": ["docs/advanced/parse/defaults","docs/advanced/parse/configuration"]
               },

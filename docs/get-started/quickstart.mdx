@@ -19,6 +19,9 @@ Follow these steps to set up your account and integrate with our API. We support
         ```bash Python
         pip install chunkr-ai
         ```
+        ```bash TypeScript
+        npm install chunkr-ai
+        ```
         </CodeGroup>
     </Step>
     <Step title = "Parse a document">
@@ -26,34 +29,85 @@ Follow these steps to set up your account and integrate with our API. We support
             ```python Python
             from chunkr_ai import Chunkr
 
-            # Initialize the Chunkr client with your API key - get this from https://chunkr.ai
-            chunkr = Chunkr(api_key="your_api_key")
+            # Initialize the Chunkr client with your API key
+            client = Chunkr(api_key="your_api_key")
 
-            # Upload a document via url or local file path
-            url = "https://chunkr-web.s3.us-east-1.amazonaws.com/landing_page/input/specs.pdf"
-            task = chunkr.upload(url)
+            # Parse from URL
+            url = "https://example.com/document.pdf"
+            task = client.tasks.parse.create(file=url)
+            
+            # OR parse from local file
+            with open("path/to/document.pdf", "rb") as f:
+                file = client.files.create(file=f)
+                task = client.tasks.parse.create(file=file.url)
+            
+            # Wait for the task to complete
+            task = client.tasks.get(task_id=task.task_id, wait_for_completion=True)
+            ```
+            ```typescript TypeScript
+            import Chunkr from 'chunkr-ai';
+            import fs from 'fs';
+
+            // Initialize the Chunkr client with your API key  
+            const client = new Chunkr({ 
+                apiKey: 'your_api_key' 
+            });
+
+            // Parse from URL
+            const url = 'https://example.com/document.pdf';
+            const task = await client.tasks.parse.create({ file: url });
+
+            // OR parse from local file
+            const file = await client.files.create({ 
+                file: fs.createReadStream('./document.pdf') 
+            });
+            const taskFromFile = await client.tasks.parse.create({ 
+                file: file.url 
+            });
+
+            // Wait for the task to complete
+            const completedTask = await client.tasks.get(task.task_id, {
+                wait_for_completion: true
+            });
             ```
         </CodeGroup>
     </Step>
     <Step title = "Explore Output">
         <CodeGroup>
         ```python Python
-                # Access the chunks from the output
+        # Access the chunks from the output
         if task.status == "Succeeded":
             print(f"Document has {len(task.output.chunks)} chunks.")
-            # `chunk.content` holds the 1:1 structured representation of document elements
+            # `chunk.content` holds the structured representation
             for chunk in task.output.chunks:
                 print(chunk.content)
         else:
             print(f"Task failed with status: {task.status}")
         ```
+        ```typescript TypeScript
+        // Access the chunks from the output
+        if (completedTask.status === "Succeeded") {
+            console.log(`Document has ${completedTask.output.chunks.length} chunks.`);
+            // `chunk.content` holds the structured representation
+            for (const chunk of completedTask.output.chunks) {
+                console.log(chunk.content);
+            }
+        } else {
+            console.log(`Task failed with status: ${completedTask.status}`);
+        }
+        ```
         </CodeGroup>
         You can also explore the output [through our viewer](/docs/parse/outputs) in more detail.
     </Step>
-    <Step title = "Clean up">
+    <Step title = "Clean up (Optional)">
         <CodeGroup>
             ```python Python
-            chunkr.close()
+            # Delete the file if no longer needed
+            client.files.delete(file.file_id)
+            ```
+            ```typescript TypeScript
+            // Delete the file if no longer needed
+            await client.files.delete(file.file_id);
             ```
         </CodeGroup>
     </Step>
@@ -72,14 +126,23 @@ You can authenticate with the Chunkr AI API in two ways:
 from chunkr_ai import Chunkr
 
 # Option 1: Initialize with API key directly
+client = Chunkr(api_key="your_api_key")
 
-chunkr = Chunkr(api_key="your_api_key")
+# Option 2: Initialize without api_key parameter 
+# Will use CHUNKR_API_KEY from environment
+client = Chunkr()
+```
+```typescript TypeScript
+import Chunkr from 'chunkr-ai';
 
-# Option 2: Initialize without api_key parameter - will use CHUNKR_API_KEY from environment
+// Option 1: Initialize with API key directly
+const client = new Chunkr({ apiKey: 'your_api_key' });
 
-chunkr = Chunkr()
-
+// Option 2: Initialize without apiKey parameter
+// Will use CHUNKR_API_KEY from environment
+const client = new Chunkr();
 ```
 </CodeGroup>
 
-```
+
+
