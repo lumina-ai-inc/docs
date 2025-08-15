@@ -6,96 +6,305 @@ description: "Upload files, check their status, and retrieve processed results"
 
 ## Creating Tasks
 
-You can create a task by uploading a file from multiple sources. The SDK provides two primary methods for task creation:
+You can create a task by uploading a file from multiple sources. The SDK provides flexible methods for task creation with different processing configurations.
 
-- `upload()`: Uploads a file and waits for the entire processing job to complete.
-- `create_task()`: Submits the file for processing and returns a task ID immediately, allowing for asynchronous polling.
+- `client.tasks.parse.create()`: Submits the file for processing and returns a task object immediately
+- `client.tasks.get()`: Retrieves task status and results, with optional automatic polling
 
-### Complete Processing with `upload()`
+### Complete Processing with Auto-Polling
 
-Use `upload()` for simplicity when you want to wait for the results.
+Use `wait_for_completion=True` to automatically wait for results.
 
 <CodeGroup>
 ```python Python
 from chunkr_ai import Chunkr
-chunkr = Chunkr()
 
-# Upload and wait for complete processing
+client = Chunkr(
+    api_key="your_api_key"  # Optional if CHUNKR_API_KEY env var is set
+)
 
-task = chunkr.upload("path/to/your/file.pdf")
+# Create task and wait for completion
+task = client.tasks.parse.create(
+    file="https://example.com/document.pdf"
+)
 
-# All processing is done - you can access results immediately
+# Get results with automatic polling
+task = client.tasks.get(
+    task_id=task.task_id,
+    wait_for_completion=True
+)
 
-print(task.status) # Will be "Succeeded"
-print(task.output) # Contains processed results
+# All processing is done - access results immediately
+print(task.status)  # Will be "Succeeded"
+print(f"Found {len(task.output.chunks)} chunks")
+```
 
-````
+```typescript TypeScript
+import ChunkrAI from 'chunkr-ai';
+
+const client = new ChunkrAI({
+  apiKey: 'your_api_key' // Optional if CHUNKR_API_KEY env var is set
+});
+
+// Create task from URL
+const task = await client.tasks.parse.create({
+  file: 'https://example.com/document.pdf'
+});
+
+// Get results with automatic polling
+const result = await client.tasks.get(task.taskId, {
+  waitForCompletion: true
+});
+
+console.log(result.status); // Will be "Succeeded"
+console.log(`Found ${result.output.chunks.length} chunks`);
+```
+
+```bash cURL
+# 1. Create a task
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file": "https://example.com/document.pdf"
+  }'
+
+# Response: {"task_id": "task_123", "status": "Starting"}
+
+# 2. Poll for completion (repeat until status is "Succeeded")
+curl -X GET "https://api.chunkr.ai/api/v1/tasks/task_123" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+# When succeeded, response will include chunks
+```
 </CodeGroup>
 
-### Instant Response with `create_task()`
+### Instant Response with Manual Polling
 
-Use `create_task()` in asynchronous applications where you don't want to block execution.
+Create tasks without blocking execution for asynchronous applications.
 
 <CodeGroup>
 ```python Python
+from chunkr_ai import Chunkr
+import time
+
+client = Chunkr()
+
 # Create task without waiting
-task = chunkr.create_task("path/to/your/file.pdf")
+task = client.tasks.parse.create(
+    file="https://example.com/document.pdf"
+)
 
 # Task is created but processing may not be complete
-print(task.task_id)
-print(task.status)  # Might be "Starting"
-````
+print(f"Task ID: {task.task_id}")
+print(f"Status: {task.status}")  # Might be "Starting" or "Processing"
 
-</CodeGroup>
+# Do other work...
 
-You can check on the task's progress later using `poll()`.
+# Check status manually when needed
+while True:
+    task = client.tasks.get(task_id=task.task_id)
+    if task.status in ["Succeeded", "Failed", "Cancelled"]:
+        break
+    time.sleep(2)  # Wait before checking again
 
-<CodeGroup>
-```python Python
-# ... do other work ...
+if task.status == "Succeeded":
+    print(f"Found {len(task.output.chunks)} chunks")
+```
 
-# Check status when needed
+```typescript TypeScript
+import ChunkrAI from 'chunkr-ai';
 
-result = task.poll()
-print(result.status)
-print(result.output) # Now contains processed results if status is "Succeeded"
+const client = new ChunkrAI();
 
-````
+// Create task without waiting
+const task = await client.tasks.parse.create({
+  file: 'https://example.com/document.pdf'
+});
+
+console.log(`Task ID: ${task.taskId}`);
+console.log(`Status: ${task.status}`); // Might be "Starting"
+
+// Check status manually when needed
+let result;
+do {
+  await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+  result = await client.tasks.get(task.taskId);
+} while (!['Succeeded', 'Failed', 'Cancelled'].includes(result.status));
+
+if (result.status === 'Succeeded') {
+  console.log(`Found ${result.output.chunks.length} chunks`);
+}
+```
+
+```bash cURL
+# 1. Create a task
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file": "https://example.com/document.pdf"
+  }'
+
+# Response: {"task_id": "task_123", "status": "Starting"}
+
+# 2. Manually poll for status
+while true; do
+  curl -X GET "https://api.chunkr.ai/api/v1/tasks/task_123" \
+    -H "Authorization: Bearer YOUR_API_KEY"
+  sleep 2
+done
+```
 </CodeGroup>
 
 ### Supported Input Sources
 
-Our SDK automatically detects the input type from various sources:
+The SDK automatically handles various input types:
 
 <CodeGroup>
 ```python Python
 from chunkr_ai import Chunkr
-from PIL import Image
-import base64
 
-chunkr = Chunkr()
-
-# From a file path
-task = chunkr.upload("path/to/your/file.pdf")
-
-# From an opened file
-with open("path/to/your/file.pdf", "rb") as f:
-    task = chunkr.upload(f)
+client = Chunkr()
 
 # From a URL
-task = chunkr.upload("https://example.com/document.pdf")
+task = client.tasks.parse.create(
+    file="https://example.com/document.pdf"
+)
+
+# From a local file
+with open("document.pdf", "rb") as f:
+    # First upload the file
+    uploaded_file = client.files.create(file=f)
+    # Then create a task with the uploaded file URL
+    task = client.tasks.parse.create(
+        file=uploaded_file.url
+    )
 
 # From a base64 string
-with open("path/to/your/document.pdf", "rb") as f:
+import base64
+with open("document.pdf", "rb") as f:
     base64_string = base64.b64encode(f.read()).decode("utf-8")
-task = chunkr.upload(base64_string, file_name="document.pdf")
+    task = client.tasks.parse.create(
+        file=f"data:application/pdf;base64,{base64_string}"
+    )
+```
 
-# From a PIL Image
-img = Image.open("path/to/your/photo.jpg")
-task = chunkr.upload(img)
-````
+```typescript TypeScript
+import ChunkrAI from 'chunkr-ai';
+import fs from 'fs';
 
+const client = new ChunkrAI();
+
+// From a URL
+const task1 = await client.tasks.parse.create({
+  file: 'https://example.com/document.pdf'
+});
+
+// From a local file
+const fileStream = fs.createReadStream('./document.pdf');
+const uploadedFile = await client.files.create({ 
+  file: fileStream 
+});
+const task2 = await client.tasks.parse.create({
+  file: uploadedFile.url
+});
+
+// From a File object (browser)
+const file = new File(['file contents'], 'document.pdf');
+const uploaded = await client.files.create({ file });
+const task3 = await client.tasks.parse.create({
+  file: uploaded.url
+});
+```
+
+```bash cURL
+# From a URL
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file": "https://example.com/document.pdf"
+  }'
+
+# From a local file (requires two steps)
+# Step 1: Upload the file
+curl -X POST https://api.chunkr.ai/api/v1/files \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F "file=@document.pdf"
+
+# Response: {"url": "https://storage.chunkr.ai/file_123"}
+
+# Step 2: Create task with uploaded file URL
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file": "https://storage.chunkr.ai/file_123"
+  }'
+
+# From a base64 string
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file": "data:application/pdf;base64,JVBERi0xLjQKJeLj..."
+  }'
+```
 </CodeGroup>
+
+### Common Configuration Options
+
+You can customize task processing with a few simple parameters:
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+
+client = Chunkr()
+
+# Simple configuration example
+task = client.tasks.parse.create(
+    file="https://example.com/document.pdf",
+    
+    # Set target chunk size (optional)
+    target_chunk_length=500,
+    
+    # Auto-delete data after processing (optional)
+    expires_in=3600  # Delete after 1 hour
+)
+```
+
+```typescript TypeScript
+import ChunkrAI from 'chunkr-ai';
+
+const client = new ChunkrAI();
+
+// Simple configuration example
+const task = await client.tasks.parse.create({
+    file: 'https://example.com/document.pdf',
+    
+    // Set target chunk size (optional)
+    targetChunkLength: 500,
+    
+    // Auto-delete data after processing (optional)
+    expiresIn: 3600  // Delete after 1 hour
+});
+```
+
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file": "https://example.com/document.pdf",
+    "target_chunk_length": 500,
+    "expires_in": 3600
+  }'
+```
+</CodeGroup>
+
+For detailed configuration options, see the [Parse Configuration](/docs/advanced/parse/configuration) documentation.
 
 ---
 
@@ -106,106 +315,163 @@ Retrieve information for any task using its `task_id`. This is useful for checki
 <CodeGroup>
 ```python Python
 from chunkr_ai import Chunkr
-chunkr = Chunkr()
+
+client = Chunkr()
 
 # Get task by ID
-
-task = chunkr.get_task("task_123")
+task = client.tasks.get(task_id="task_123")
 
 # Access task information
-
-print(task.status)
-print(task.output)
-
-````
-</CodeGroup>
-
-### Customizing the Response
-
-You can tailor the response to include or exclude certain data.
-
-| Parameter        | Default | Description                                                                                                                  |
-| ---------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `include_chunks` | `True`  | When `True`, includes all processed chunks. Set to `False` for a lighter response with only task metadata. |
-| `base64_urls`    | `False` | When `True`, returns asset URLs as base64-encoded strings instead of temporary pre-signed URLs. Ideal for offline use.                 |
-
-<CodeGroup>
-```python Python
-# Get task without chunk data
-task = chunkr.get_task("task_123", include_chunks=False)
-
-# Get task with base64-encoded image URLs
-task = chunkr.get_task("task_123", base64_urls=True)
-````
-
-```bash cURL
-# Get task without chunks
-curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?include_chunks=false" -H "Authorization: YOUR_API_KEY"
-
-# Get task with base64-encoded URLs
-curl -X GET "https://api.chunkr.ai/api/v1/task/{task_id}?base64_urls=true" -H "Authorization: YOUR_API_KEY"
+print(f"Status: {task.status}")
+if task.status == "Succeeded":
+    print(f"Chunks: {len(task.output.chunks)}")
+    for chunk in task.output.chunks[:5]:  # First 5 chunks
+        print(f"- {chunk.text[:100]}...")
 ```
 
+```typescript TypeScript
+import ChunkrAI from 'chunkr-ai';
+
+const client = new ChunkrAI();
+
+// Get task by ID
+const task = await client.tasks.get('task_123');
+
+// Access task information
+console.log(`Status: ${task.status}`);
+if (task.status === 'Succeeded') {
+    console.log(`Chunks: ${task.output.chunks.length}`);
+    task.output.chunks.slice(0, 5).forEach(chunk => {
+        console.log(`- ${chunk.text.substring(0, 100)}...`);
+    });
+}
+```
+
+```bash cURL
+# Get task by ID
+curl -X GET "https://api.chunkr.ai/api/v1/tasks/task_123" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+# Response includes status and chunks if succeeded
+# Parse the JSON response to extract status and chunks
+```
 </CodeGroup>
 
 ---
 
-## Data Storage & ZDR
+## Asynchronous Processing (Python)
 
-While we store all outputs, original files, and image crops - we don't recommend using Chunkr as a storage system.
-
-The best way to use Chunkr is solely as a processing engine. For security and privacy, you can use the `expires_in` parameter to automatically delete all task data from Chunkr's servers after processing.
-
-Here is an example config that sets the data to expire in 1 second:
+For Python applications that require non-blocking operations, you can use the `AsyncChunkr` client instead of `Chunkr`. The async client provides the exact same methods and parameters, but all operations are awaitable.
 
 <CodeGroup>
-  ```python Python
-  from chunkr_ai import Chunkr
-  from chunkr_ai.models import Configuration
+```python Python
+import asyncio
+from chunkr_ai import AsyncChunkr
 
-chunkr = Chunkr()
+async def process_document():
+    # Use AsyncChunkr instead of Chunkr
+    client = AsyncChunkr(
+        api_key="your_api_key"
+    )
+    
+    # All methods are the same, just add 'await'
+    task = await client.tasks.parse.create(
+        file="https://example.com/document.pdf"
+    )
+    
+    # Get results with automatic polling (awaitable)
+    task = await client.tasks.get(
+        task_id=task.task_id,
+        wait_for_completion=True
+    )
+    
+    print(f"Processed {len(task.output.chunks)} chunks")
 
-# Set expires_in to 1 second for Zero Data Retention (ZDR).
+# Run with asyncio
+asyncio.run(process_document())
+```
+</CodeGroup>
 
-# Task data will be deleted from Chunkr almost immediately after processing.
+**Key points about async processing:**
+- Import `AsyncChunkr` instead of `Chunkr`
+- Use `await` before all client method calls
+- All method names and parameters remain exactly the same
+- Perfect for applications already using `asyncio` or handling multiple concurrent operations
 
-config = Configuration(
-expires_in=1
+This means you don't need to learn a different API - just switch the client class and add `await` to your calls.
+
+---
+
+## Data Storage & Zero Data Retention (ZDR)
+
+While we store all outputs, original files, and image crops, we don't recommend using Chunkr as a storage system.
+
+The best way to use Chunkr is solely as a processing engine. For security and privacy, use the `expires_in` parameter to automatically delete all task data from Chunkr's servers after processing.
+
+Here's an example config that sets the data to expire in 1 second for Zero Data Retention:
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+
+client = Chunkr()
+
+# Set expires_in to 1 second for Zero Data Retention (ZDR)
+# Task data will be deleted from Chunkr almost immediately after processing
+task = client.tasks.parse.create(
+    file="https://example.com/document.pdf",
+    expires_in=1  # Delete after 1 second
 )
 
-task = chunkr.upload("path/to/file", config)
+# Get results immediately before deletion
+task = client.tasks.get(
+    task_id=task.task_id,
+    wait_for_completion=True
+)
 
 # The task object contains the results, but the data will be
+# deleted from Chunkr's servers shortly
+print(f"Status: {task.status}")
+```
 
-# deleted from Chunkr's servers shortly.
+```typescript TypeScript
+import ChunkrAI from 'chunkr-ai';
 
-print(task.status)
+const client = new ChunkrAI();
 
-````
+// Set expiresIn to 1 second for Zero Data Retention (ZDR)
+const task = await client.tasks.parse.create({
+    file: 'https://example.com/document.pdf',
+    expiresIn: 1  // Delete after 1 second
+});
+
+// Get results immediately before deletion
+const result = await client.tasks.get(task.taskId, {
+    waitForCompletion: true
+});
+
+console.log(`Status: ${result.status}`);
+```
 
 ```bash cURL
-curl -X POST https://api.chunkr.ai/api/v1/task/parse \
-  --header "Authorization: YOUR_API_KEY" \
-  --header "Content-Type: application/json" \
-  --data '{
-    "file": "base64_or_url_to_file",
-    "file_name": "document.pdf",
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file": "https://example.com/document.pdf",
     "expires_in": 1
   }'
-````
-
+```
 </CodeGroup>
 
 ---
 
 ## Advanced Features
 
-While creating and reading tasks are the most common operations, Chunkr also provides functionality for more advanced task management.
+While creating and reading tasks are the most common operations, Chunkr also provides functionality for more advanced task management:
 
-The following advanced operations are available:
+- **Update Tasks**: Modify the configuration of a task after it has been created to re-process with different settings
+- **Delete Tasks**: Permanently remove completed or failed tasks to clean up your workspace
+- **Cancel Tasks**: Stop a queued task before it begins processing if it's no longer needed
 
-- **[Update Tasks](./update.mdx)**: Modify the configuration of a task after it has been created. You can use this to re-process a file with different settings.
-- **[Delete Tasks](./delete.mdx)**: Permanently remove tasks that have already completed or failed to clean up your workspace.
-- **[Cancel Tasks](./cancel.mdx)**: Stop a queued task before it begins processing if it's no longer needed.
-
-For full CRUD operations, see the (TBD) [Task Management (CRUD)](/upload/CRUD) documentation.
+For detailed information on these operations, see the respective documentation sections.

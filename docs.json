@@ -22,18 +22,17 @@
               "docs/get-started/playground"
             ]
           },
-          {
-            "group": "Core Features",
-            "icon": "server",
-            "pages": [
+    
               {
                 "group": "Task System",
                 "icon": "upload",
                 "pages": [
                   "docs/task-system/overview",
                   "docs/task-system/task-handling",
+                   "docs/task-system/webhooks",
                   "docs/task-system/file-types",
                   "docs/task-system/limits"
+                 
                 ]
               },
               {
@@ -45,8 +44,8 @@
                   "docs/parse/best-practices"
                 ]
               }
-            ]
-          },
+            
+          ,
           {
 <<<<<<< HEAD
             "group": "Excel Parser",
@@ -82,7 +81,7 @@
               },
               {
                 "group": "Parse",
-                "pages": ["docs/advanced/parse/configuration"]
+                "pages": ["docs/advanced/parse/defaults","docs/advanced/parse/configuration"]
               },
               "docs/advanced/error-handling"
             ]
@@ -101,32 +100,9 @@
         ]
       },
       {
-        "tab": "SDK",
-        "groups": [
-          {
-            "group": "Getting Started",
-            "pages": ["sdk/installation", "sdk/usage"]
-          },
-          {
-            "group": "Data Operations",
-            "pages": [
-              "sdk/data-operations/create",
-              "sdk/data-operations/get",
-              "sdk/data-operations/update",
-              "sdk/data-operations/delete",
-              "sdk/data-operations/cancel"
-            ]
-          },
-          {
-            "group": "Utilities",
-            "pages": ["sdk/configuration", "sdk/polling", "sdk/export"]
-          }
-        ]
-      },
-      {
         "tab": "API References",
         "openapi": {
-          "source": "https://api.chunkr.ai/docs/openapi.json",
+          "source": "https://app.stainless.com/api/spec/documented/chunkr/openapi.documented.yml",
           "directory": "api-references"
         }
       }

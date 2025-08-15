@@ -24,16 +24,48 @@ Our Python SDK is designed to handle this gracefully. It automatically detects `
 ```python Python
 from chunkr_ai import Chunkr
 
-chunkr = Chunkr()
+client = Chunkr()
 
 # The SDK will automatically handle rate limiting for you.
-
 # No extra code is needed.
 
 for i in range(20):
-chunkr.create*task(f"path/to/file*{i}.pdf")
+    task = client.tasks.parse.create(
+        file=f"https://example.com/file_{i}.pdf"
+    )
+    print(f"Created task {task.task_id}")
+```
 
-````
+```typescript TypeScript
+import ChunkrAI from 'chunkr-ai';
+
+const client = new ChunkrAI();
+
+// The SDK will automatically handle rate limiting for you.
+// No extra code is needed.
+
+for (let i = 0; i < 20; i++) {
+    const task = await client.tasks.parse.create({
+        file: `https://example.com/file_${i}.pdf`
+    });
+    console.log(`Created task ${task.taskId}`);
+}
+```
+
+```bash cURL
+# Shell script with basic rate limiting
+for i in {1..20}; do
+    curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d "{
+        \"file\": \"https://example.com/file_${i}.pdf\"
+      }"
+    
+    # Add a small delay to avoid rate limiting
+    sleep 0.1
+done
+```
 </CodeGroup>
 
 ---
@@ -44,20 +76,81 @@ In general, there are no hard limits on the size of the files you can upload. Ou
 
 *   **Base64 Uploads**: When uploading a file as a base64-encoded string, the total request size is limited to **1GB**. This is a practical limit to ensure reliable transfer over HTTP.
 
-If you need to upload files larger than 1GB, we recommend using a file path or URL instead of base64 encoding.
+If you need to upload files larger than 1GB, we recommend using a URL or uploading the file first, then creating a task with the uploaded file URL.
 
 <CodeGroup>
 ```python Python
 from chunkr_ai import Chunkr
 
-chunkr = Chunkr()
+client = Chunkr()
 
-# Recommended for large files
-task = chunkr.upload("path/to/very/large/file.pdf")
+# Recommended for large files - use URL directly
+task = client.tasks.parse.create(
+    file="https://example.com/very-large-file.pdf"
+)
 
-# This will fail if the request size exceeds 1GB
-# task = chunkr.upload(large_base64_string, file_name="large_file.pdf")
-````
+# Or upload file first
+with open("path/to/very/large/file.pdf", "rb") as f:
+    uploaded_file = client.files.create(file=f)
+    task = client.tasks.parse.create(
+        file=uploaded_file.url
+    )
+
+# Avoid base64 for large files (>1GB will fail)
+# task = client.tasks.parse.create(
+#     file=f"data:application/pdf;base64,{large_base64_string}"
+# )
+```
+
+```typescript TypeScript
+import ChunkrAI from 'chunkr-ai';
+import fs from 'fs';
+
+const client = new ChunkrAI();
+
+// Recommended for large files - use URL directly
+const task1 = await client.tasks.parse.create({
+    file: 'https://example.com/very-large-file.pdf'
+});
+
+// Or upload file first
+const fileStream = fs.createReadStream('path/to/very/large/file.pdf');
+const uploadedFile = await client.files.create({ file: fileStream });
+const task2 = await client.tasks.parse.create({
+    file: uploadedFile.url
+});
+
+// Avoid base64 for large files (>1GB will fail)
+// const task = await client.tasks.parse.create({
+//     file: `data:application/pdf;base64,${largeBase64String}`
+// });
+```
+
+```bash cURL
+# Recommended for large files - use URL directly
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file": "https://example.com/very-large-file.pdf"
+  }'
+
+# Or upload file first (for local files)
+# Step 1: Upload the file
+curl -X POST https://api.chunkr.ai/api/v1/files \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F "file=@path/to/very/large/file.pdf"
+
+# Step 2: Use the returned URL to create a task
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file": "<URL_FROM_UPLOAD_RESPONSE>"
+  }'
+
+# Avoid base64 for large files (>1GB will fail)
+```
 
 </CodeGroup>
 

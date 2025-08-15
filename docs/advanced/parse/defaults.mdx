@@ -1,0 +1,185 @@
+---
+title: Default Configuration
+---
+
+Chunkr is designed to be highly configurable, but it also comes with sensible defaults to get you started quickly. This page outlines the default settings for various processing options.
+
+Understanding these defaults can help you decide when you need to provide a custom configuration.
+
+## Summary of Defaults
+
+For quick reference, here’s a summary of the most important default settings.
+
+| Feature                 | Default Value                                     | Notes                                                      |
+| ----------------------- | ------------------------------------------------- | ---------------------------------------------------------- |
+| Segmentation Strategy   | `LayoutAnalysis`                                  | Identifies layout elements like tables, text, and images.  |
+| OCR Strategy            | `All`                                             | Processes all pages with OCR for maximum text extraction.  |
+| Error Handling          | `Fail`                                            | The task will fail immediately if any error occurs.        |
+| Pipeline Provider       | `Chunkr`                                          | Uses Chunkr's native models for processing.                |
+| Chunk Target Length     | `4096` tokens                                     | Optimal size for many RAG applications.                    |
+| Chunk Tokenizer         | `Cl100kBase`                                      | Aligned with OpenAI models like GPT-4.                     |
+| LLM Model               | System Default (`chunkr-parse-1-thinking`)        | Our recommended model for general-purpose parsing.         |
+| LLM Temperature         | `0.0`                                             | Ensures deterministic, consistent output.                  |
+| Task Expiration         | Never                                             | Tasks are stored indefinitely unless `expires_in` is set.  |
+
+---
+
+## Core Processing Defaults
+
+These settings control the fundamental steps of document analysis and processing.
+
+### Segmentation Strategy
+
+The `segmentation_strategy` determines how a document is initially broken down into logical pieces.
+
+*   **Default**: `LayoutAnalysis`
+
+By default, Chunkr uses its state-of-the-art layout analysis model to identify distinct regions like tables, paragraphs, headers, and images. This provides a rich, structured understanding of the document. The alternative is `Page`, which treats each page as a single segment.
+
+### OCR Strategy
+
+The `ocr_strategy` controls how Optical Character Recognition (OCR) is applied to extract text.
+
+*   **Default**: `All`
+
+The `All` strategy processes every page with our OCR model to ensure all text, including text within images, is extracted. The alternative is `Auto`, which intelligently applies OCR only when a high-quality text layer is not already present.
+
+### Error Handling
+
+The `error_handling` strategy defines the system's behavior when it encounters a processing error.
+
+*   **Default**: `Fail`
+
+By default, any error encountered during processing will cause the task to stop and be marked as `Failed`. This is the safest option for critical workflows. You can change this to `Continue` to allow the task to complete with partial results if non-critical errors occur.
+
+### Pipeline Provider
+
+The `pipeline` setting allows you to choose between different underlying processing engines.
+
+*   **Default**: `Chunkr`
+
+Chunkr's native processing pipeline is used by default. We also support `Azure` Document Intelligence as an alternative provider for layout analysis and OCR.
+
+---
+
+## Chunking Defaults
+
+Chunking settings control how segments are grouped into larger pieces for RAG and LLM applications.
+
+*   **`target_length`**: `4096` tokens
+*   **`tokenizer`**: `Cl100kBase`
+
+By default, chunks are created with a target size of 4096 tokens, using the `Cl100kBase` tokenizer, which is compatible with modern OpenAI models. This ensures chunks are well-sized for providing context to LLMs without exceeding token limits.
+
+---
+
+## LLM Processing Defaults
+
+These settings control how Vision Language Models (VLMs) are used for content generation and analysis.
+
+*   **`llm_model_id`**: System Default
+*   **`fallback_strategy`**: System Default Fallback
+*   **`temperature`**: `0.0`
+
+Chunkr uses a system-default model for VLM-based tasks (like generating content for tables or pictures). If the primary model fails, it automatically switches to a default fallback model. The temperature is set to `0.0` for deterministic and repeatable results.
+
+---
+
+## Segment Processing Defaults
+
+`segment_processing` offers fine-grained control over how each type of segment is handled after layout analysis. If you don't specify a configuration for a segment type, these defaults are applied.
+
+### At-a-Glance Summary
+
+| Segment Type        | Format      | Strategy | Crop Image | Description |
+| ------------------- | ----------- | -------- | ---------- | ----------- |
+| `Table`             | `HTML`      | `LLM`    | `AUTO`     | `true`      |
+| `Picture`           | `MARKDOWN`  | `LLM`    | `ALL`      | `false`     |
+| `Page`              | `MARKDOWN`  | `LLM`    | `AUTO`     | `false`     |
+| `Formula`           | `MARKDOWN`  | `LLM`    | `AUTO`     | `false`     |
+| `PageHeader`        | `MARKDOWN`  | `IGNORE` | `AUTO`     | `false`     |
+| `PageFooter`        | `MARKDOWN`  | `IGNORE` | `AUTO`     | `false`     |
+| All Other Segments  | `MARKDOWN`  | `AUTO`   | `AUTO`     | `false`     |
+
+### Detailed Breakdowns
+
+#### `Table`
+Tables are processed with an LLM to generate a structured HTML representation. A description is also generated by default.
+
+<CodeGroup>
+  ```python Python
+  # Default for Table segments
+  GenerationConfig(
+      format=SegmentFormat.HTML,
+      strategy=GenerationStrategy.LLM,
+      crop_image=CroppingStrategy.AUTO,
+      description=True,
+      extended_context=False
+  )
+  ```
+</CodeGroup>
+
+#### `Picture`
+Pictures (including charts and graphs) are processed by an LLM to generate a Markdown description, and the image is always cropped.
+
+<CodeGroup>
+  ```python Python
+  # Default for Picture segments
+  GenerationConfig(
+      format=SegmentFormat.MARKDOWN,
+      strategy=GenerationStrategy.LLM,
+      crop_image=CroppingStrategy.ALL,
+      description=False,
+      extended_context=False
+  )
+  ```
+</CodeGroup>
+
+#### `Page` and `Formula`
+When using the `Page` segmentation strategy or when a `Formula` is detected, an LLM is used to generate Markdown content. Formulas are converted to LaTeX.
+
+<CodeGroup>
+  ```python Python
+  # Default for Page and Formula segments
+  GenerationConfig(
+      format=SegmentFormat.MARKDOWN,
+      strategy=GenerationStrategy.LLM,
+      crop_image=CroppingStrategy.AUTO,
+      description=False,
+      extended_context=False
+  )
+  ```
+</CodeGroup>
+
+#### `PageHeader` and `PageFooter`
+Page headers and footers are ignored by default to avoid including repetitive, low-value content in the output.
+
+<CodeGroup>
+  ```python Python
+  # Default for PageHeader and PageFooter
+  GenerationConfig(
+      format=SegmentFormat.MARKDOWN,
+      strategy=GenerationStrategy.IGNORE,
+      crop_image=CroppingStrategy.AUTO,
+      description=False,
+      extended_context=False
+  )
+  ```
+</CodeGroup>
+
+#### Other Text-Based Segments
+All other standard text-based segments (`Title`, `SectionHeader`, `Text`, `ListItem`, `Caption`, `Footnote`) are processed using fast, heuristic-based methods (`AUTO`) and returned as Markdown.
+
+<CodeGroup>
+  ```python Python
+  # Default for other text segments
+  GenerationConfig(
+      format=SegmentFormat.MARKDOWN,
+      strategy=GenerationStrategy.AUTO,
+      crop_image=CroppingStrategy.AUTO,
+      description=False,
+      extended_context=False
+  )
+  ```
+</CodeGroup>
+

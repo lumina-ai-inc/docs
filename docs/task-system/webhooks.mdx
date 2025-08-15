@@ -1,0 +1,570 @@
+---
+title: Webhooks
+sidebarTitle: Webhooks
+description: "Receive real-time notifications when tasks complete"
+---
+
+Webhooks allow you to receive HTTP POST notifications when your tasks complete, eliminating the need for constant polling. This is particularly useful for processing large batches of documents or integrating Chunkr into event-driven architectures.
+
+## How Webhooks Work
+
+When you create a task with a webhook URL, Chunkr will send an HTTP POST request to your endpoint when the task completes (whether it succeeds, fails, or is cancelled). The webhook payload contains the complete task results, identical to what you'd receive from a `client.tasks.get()` call.
+
+## Setting Up Webhooks
+
+### Basic Webhook Configuration
+
+Provide a `webhook_url` parameter when creating a task:
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+
+client = Chunkr()
+
+task = client.tasks.parse.create(
+    file="https://example.com/document.pdf",
+    webhook_url="https://your-app.com/webhooks/chunkr"
+)
+
+print(f"Task {task.task_id} created with webhook")
+# Your endpoint will receive the results when processing completes
+```
+
+```typescript TypeScript
+import ChunkrAI from 'chunkr-ai';
+
+const client = new ChunkrAI();
+
+const task = await client.tasks.parse.create({
+    file: 'https://example.com/document.pdf',
+    webhookUrl: 'https://your-app.com/webhooks/chunkr'
+});
+
+console.log(`Task ${task.taskId} created with webhook`);
+// Your endpoint will receive the results when processing completes
+```
+
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+  --header "Authorization: YOUR_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "file": "https://example.com/document.pdf",
+    "webhook_url": "https://your-app.com/webhooks/chunkr"
+  }'
+```
+</CodeGroup>
+
+### Webhook with Custom Headers
+
+You can include custom headers for authentication or tracking:
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+
+client = Chunkr()
+
+task = client.tasks.parse.create(
+    file="https://example.com/document.pdf",
+    webhook_url="https://your-app.com/webhooks/chunkr",
+    webhook_headers={
+        "X-API-Key": "your-webhook-api-key",
+        "X-Custom-ID": "batch-123"
+    }
+)
+```
+
+```typescript TypeScript
+const task = await client.tasks.parse.create({
+    file: 'https://example.com/document.pdf',
+    webhookUrl: 'https://your-app.com/webhooks/chunkr',
+    webhookHeaders: {
+        'X-API-Key': 'your-webhook-api-key',
+        'X-Custom-ID': 'batch-123'
+    }
+});
+```
+</CodeGroup>
+
+## Webhook Payload
+
+The webhook payload is a JSON object containing the complete task results:
+
+```json
+{
+  "task_id": "task_abc123",
+  "status": "Succeeded",
+  "created_at": "2024-01-01T12:00:00Z",
+  "updated_at": "2024-01-01T12:05:00Z",
+  "finished_at": "2024-01-01T12:05:00Z",
+  "expires_at": "2024-01-02T12:05:00Z",
+  "file_name": "document.pdf",
+  "page_count": 10,
+  "output": {
+    "chunks": [
+      {
+        "chunk_id": "chunk_1",
+        "text": "This is the extracted text...",
+        "page": 1,
+        "bbox": {
+          "x": 72,
+          "y": 72,
+          "width": 468,
+          "height": 648
+        },
+        "confidence": 0.98,
+        "metadata": {
+          "segment_type": "paragraph"
+        }
+      }
+      // ... more chunks
+    ],
+    "extracted_json": {
+      // Structured data if applicable
+    }
+  }
+}
+```
+
+### Handling Different Status Types
+
+<CodeGroup>
+```python Python (Flask)
+# Example webhook handler (Flask)
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/webhooks/chunkr', methods=['POST'])
+def handle_chunkr_webhook():
+    payload = request.json
+    
+    task_id = payload.get('task_id')
+    status = payload.get('status')
+    
+    if status == 'Succeeded':
+        # Process successful results
+        chunks = payload.get('output', {}).get('chunks', [])
+        print(f"Task {task_id} completed with {len(chunks)} chunks")
+        
+        # Store results, trigger next steps, etc.
+        process_chunks(chunks)
+        
+    elif status == 'Failed':
+        # Handle failure
+        error_message = payload.get('message')
+        print(f"Task {task_id} failed: {error_message}")
+        
+        # Retry logic, alerting, etc.
+        handle_failure(task_id, error_message)
+        
+    elif status == 'Cancelled':
+        # Handle cancellation
+        print(f"Task {task_id} was cancelled")
+    
+    return jsonify({'received': True}), 200
+
+def process_chunks(chunks):
+    # Your processing logic here
+    pass
+
+def handle_failure(task_id, error_message):
+    # Your error handling logic here
+    pass
+```
+
+```typescript TypeScript (Express)
+// Example webhook handler (Express)
+import express from 'express';
+
+const app = express();
+app.use(express.json());
+
+app.post('/webhooks/chunkr', (req, res) => {
+    const payload = req.body;
+    
+    const taskId = payload.task_id;
+    const status = payload.status;
+    
+    if (status === 'Succeeded') {
+        // Process successful results
+        const chunks = payload.output?.chunks || [];
+        console.log(`Task ${taskId} completed with ${chunks.length} chunks`);
+        
+        // Store results, trigger next steps, etc.
+        processChunks(chunks);
+        
+    } else if (status === 'Failed') {
+        // Handle failure
+        const errorMessage = payload.message;
+        console.log(`Task ${taskId} failed: ${errorMessage}`);
+        
+        // Retry logic, alerting, etc.
+        handleFailure(taskId, errorMessage);
+        
+    } else if (status === 'Cancelled') {
+        // Handle cancellation
+        console.log(`Task ${taskId} was cancelled`);
+    }
+    
+    res.json({ received: true });
+});
+
+function processChunks(chunks: any[]) {
+    // Your processing logic here
+}
+
+function handleFailure(taskId: string, errorMessage: string) {
+    // Your error handling logic here
+}
+
+app.listen(3000, () => {
+    console.log('Webhook server listening on port 3000');
+});
+```
+</CodeGroup>
+
+## Webhook Security
+
+### Validating Webhook Requests
+
+To ensure webhook requests are genuinely from Chunkr, implement these security measures:
+
+1. **Use HTTPS**: Always use HTTPS URLs for your webhook endpoints
+2. **Verify Headers**: Check for custom authentication headers you've configured
+3. **IP Allowlisting**: Restrict incoming requests to Chunkr's IP ranges (contact support for current ranges)
+4. **Request Signing**: Validate webhook signatures (coming soon)
+
+### Example with Authentication
+
+<CodeGroup>
+```python Python
+from flask import Flask, request, abort, jsonify
+import hmac
+import hashlib
+
+app = Flask(__name__)
+
+WEBHOOK_SECRET = "your-webhook-secret"
+
+@app.route('/webhooks/chunkr', methods=['POST'])
+def handle_webhook():
+    # Verify custom header
+    auth_header = request.headers.get('X-API-Key')
+    if auth_header != WEBHOOK_SECRET:
+        abort(401)
+    
+    # Process webhook
+    payload = request.json
+    # ... handle payload
+    
+    return jsonify({'received': True}), 200
+```
+
+```typescript TypeScript
+import express from 'express';
+
+const app = express();
+app.use(express.json());
+
+const WEBHOOK_SECRET = 'your-webhook-secret';
+
+app.post('/webhooks/chunkr', (req, res) => {
+    // Verify custom header
+    const authHeader = req.headers['x-api-key'];
+    if (authHeader !== WEBHOOK_SECRET) {
+        return res.status(401).send('Unauthorized');
+    }
+    
+    // Process webhook
+    const payload = req.body;
+    // ... handle payload
+    
+    res.json({ received: true });
+});
+```
+</CodeGroup>
+
+## Retry Policy
+
+Chunkr implements a robust retry policy for failed webhook deliveries:
+
+- **Initial Delivery**: Immediate upon task completion
+- **Retry Schedule**: Exponential backoff - 1, 2, 4, 8, 16 minutes
+- **Max Retries**: 5 attempts
+- **Timeout**: 30 seconds per request
+- **Success Criteria**: HTTP status codes 200-299
+
+If all retry attempts fail, the webhook delivery is marked as failed, but you can still retrieve the results using `client.tasks.get()`.
+
+## Testing Webhooks
+
+### Using Request Bin Services
+
+For development and testing, use services like webhook.site or ngrok:
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+
+client = Chunkr()
+
+# Using webhook.site for testing
+test_webhook_url = "https://webhook.site/your-unique-url"
+
+task = client.tasks.parse.create(
+    file="https://example.com/sample.pdf",
+    webhook_url=test_webhook_url
+)
+
+print(f"Check {test_webhook_url} for the webhook payload")
+```
+
+```typescript TypeScript
+import ChunkrAI from 'chunkr-ai';
+
+const client = new ChunkrAI();
+
+// Using webhook.site for testing
+const testWebhookUrl = 'https://webhook.site/your-unique-url';
+
+const task = await client.tasks.parse.create({
+    file: 'https://example.com/sample.pdf',
+    webhookUrl: testWebhookUrl
+});
+
+console.log(`Check ${testWebhookUrl} for the webhook payload`);
+```
+
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file": "https://example.com/sample.pdf",
+    "webhook_url": "https://webhook.site/your-unique-url"
+  }'
+
+# Check https://webhook.site/your-unique-url for the webhook payload
+```
+</CodeGroup>
+
+### Local Development with ngrok
+
+```bash
+# Start your local server
+python app.py  # Running on port 5000
+
+# In another terminal, expose it with ngrok
+ngrok http 5000
+
+# Use the ngrok URL for webhooks
+# https://abc123.ngrok.io/webhooks/chunkr
+```
+
+## Batch Processing with Webhooks
+
+Webhooks are particularly powerful for batch processing:
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+import json
+
+client = Chunkr()
+
+# Process multiple documents
+documents = [
+    "https://example.com/doc1.pdf",
+    "https://example.com/doc2.pdf",
+    "https://example.com/doc3.pdf"
+]
+
+batch_id = "batch_20240101_001"
+webhook_url = "https://your-app.com/webhooks/batch"
+
+tasks = []
+for doc_url in documents:
+    task = client.tasks.parse.create(
+        file=doc_url,
+        webhook_url=webhook_url,
+        webhook_headers={
+            "X-Batch-ID": batch_id,
+            "X-Document-URL": doc_url
+        }
+    )
+    tasks.append(task.task_id)
+
+print(f"Created {len(tasks)} tasks with webhooks")
+print(f"Batch ID: {batch_id}")
+
+# Your webhook endpoint will receive results as each task completes
+# No need to poll - just wait for the webhooks!
+```
+
+```typescript TypeScript
+import ChunkrAI from 'chunkr-ai';
+
+const client = new ChunkrAI();
+
+// Process multiple documents
+const documents = [
+    'https://example.com/doc1.pdf',
+    'https://example.com/doc2.pdf',
+    'https://example.com/doc3.pdf'
+];
+
+const batchId = 'batch_20240101_001';
+const webhookUrl = 'https://your-app.com/webhooks/batch';
+
+const tasks = [];
+for (const docUrl of documents) {
+    const task = await client.tasks.parse.create({
+        file: docUrl,
+        webhookUrl: webhookUrl,
+        webhookHeaders: {
+            'X-Batch-ID': batchId,
+            'X-Document-URL': docUrl
+        }
+    });
+    tasks.push(task.taskId);
+}
+
+console.log(`Created ${tasks.length} tasks with webhooks`);
+console.log(`Batch ID: ${batchId}`);
+
+// Your webhook endpoint will receive results as each task completes
+// No need to poll - just wait for the webhooks!
+```
+
+```bash cURL
+#!/bin/bash
+
+# Process multiple documents
+DOCUMENTS=(
+    "https://example.com/doc1.pdf"
+    "https://example.com/doc2.pdf"
+    "https://example.com/doc3.pdf"
+)
+
+BATCH_ID="batch_20240101_001"
+WEBHOOK_URL="https://your-app.com/webhooks/batch"
+
+# Create tasks for each document
+for DOC_URL in "${DOCUMENTS[@]}"; do
+    curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d "{
+        \"file\": \"$DOC_URL\",
+        \"webhook_url\": \"$WEBHOOK_URL\",
+        \"webhook_headers\": {
+          \"X-Batch-ID\": \"$BATCH_ID\",
+          \"X-Document-URL\": \"$DOC_URL\"
+        }
+      }"
+    echo "Created task for $DOC_URL"
+done
+
+echo "Batch ID: $BATCH_ID"
+# Your webhook endpoint will receive results as each task completes
+```
+</CodeGroup>
+
+## Best Practices
+
+1. **Idempotency**: Design webhook handlers to be idempotent - processing the same webhook multiple times should have the same effect
+2. **Async Processing**: Handle webhooks asynchronously to quickly return 200 OK and process data in the background
+3. **Error Handling**: Implement robust error handling and logging in your webhook endpoints
+4. **Monitoring**: Set up alerts for webhook failures or unexpected payloads
+5. **Data Persistence**: Store webhook payloads before processing for debugging and recovery
+6. **Timeouts**: Set appropriate timeouts in your webhook handler to avoid blocking
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue | Solution |
+| :--- | :--- |
+| Webhooks not received | Verify endpoint is publicly accessible and returns 200-299 status |
+| Duplicate webhooks | Implement idempotency using task_id as unique key |
+| Timeout errors | Process webhooks asynchronously; return 200 immediately |
+| Authentication failures | Double-check webhook_headers configuration |
+| Large payloads | Consider using `include_chunks=false` if you don't need full content |
+
+### Debugging Tips
+
+<CodeGroup>
+```python Python
+# Log all incoming webhooks for debugging
+import logging
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+logging.basicConfig(level=logging.INFO)
+
+@app.route('/webhooks/chunkr', methods=['POST'])
+def handle_webhook():
+    # Log full request details
+    logging.info(f"Headers: {dict(request.headers)}")
+    logging.info(f"Body: {request.get_data(as_text=True)}")
+    
+    try:
+        payload = request.json
+        logging.info(f"Task ID: {payload.get('task_id')}")
+        logging.info(f"Status: {payload.get('status')}")
+        
+        # Process webhook
+        # ...
+        
+        return jsonify({'received': True}), 200
+    except Exception as e:
+        logging.error(f"Webhook processing failed: {e}")
+        # Return 200 to prevent retries if error is on our side
+        return jsonify({'error': str(e)}), 200
+```
+
+```typescript TypeScript
+// Log all incoming webhooks for debugging
+import express from 'express';
+import { createLogger, format, transports } from 'winston';
+
+const app = express();
+app.use(express.json());
+
+const logger = createLogger({
+    level: 'info',
+    format: format.json(),
+    transports: [
+        new transports.Console()
+    ]
+});
+
+app.post('/webhooks/chunkr', (req, res) => {
+    // Log full request details
+    logger.info('Headers:', req.headers);
+    logger.info('Body:', req.body);
+    
+    try {
+        const payload = req.body;
+        logger.info(`Task ID: ${payload.task_id}`);
+        logger.info(`Status: ${payload.status}`);
+        
+        // Process webhook
+        // ...
+        
+        res.json({ received: true });
+    } catch (error) {
+        logger.error(`Webhook processing failed: ${error}`);
+        // Return 200 to prevent retries if error is on our side
+        res.status(200).json({ error: error.message });
+    }
+});
+
+app.listen(3000, () => {
+    logger.info('Webhook server listening on port 3000');
+});
+```
+</CodeGroup>

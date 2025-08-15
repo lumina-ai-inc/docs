@@ -148,8 +148,14 @@ These spreadsheet-native values unlock powerful capabilities:
 
 <Accordion title="Advanced Outputs">
 
-Beyond the key fields, the Parse output is enriched with additional metadata at the file, page, and segment levels. This includes details like the original file and a PDF version of it, cropped images for segments, and word-level bounding-boxes.
+Beyond the key fields discussed above, the Parse output is enriched with a variety of other useful metadata at the file, page, and segment levels. Here are some of the most valuable advanced fields:
 
-For a comprehensive breakdown of every field, you can refer to our [API Reference](/api-references).
+- **Word-Level Bounding Boxes**: Included in the `ocr` array for each page, this provides the precise coordinates for every single word detected by the OCR process. This is ideal for building applications that require highlighting specific words or phrases in a document viewer.
+
+- **Cropped Segment Images**: Each segment object contains an `image` field with a URL to a cropped image of just that segment. This is incredibly useful for providing visual context to an LLM or displaying the source of a specific chunk of text.
+
+- **File & Page Metadata**: The top-level `output` object contains file-level metadata like the original `file_name`, `mime_type`, and `page_count`. Additionally, the `pages` array contains detailed information for each page, including a full-page image URL, dimensions (`pg_width`, `pg_height`), and DPI.
+
+For a comprehensive breakdown of every field available in the output, please refer to our [API Reference](/api-references).
 
 </Accordion>

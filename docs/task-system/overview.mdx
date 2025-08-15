@@ -1,10 +1,10 @@
 ---
 title: Task System Overview
 sidebarTitle: Overview
-description: "Understanding (TBD)"
+description: "Understanding Chunkr's asynchronous task-based processing system"
 ---
 
-All file processing in Chunkr is handled through a task-based system. When you submit a file, a new task is created, and you receive a `task_id`. Use this ID to "poll" (or repeatedly check) the task's status until it's complete.
+All file processing in Chunkr is handled through a task-based system. When you submit a file, a new task is created, and you receive a `task_id`. Use this ID to check the task's status until it's complete, or use the `wait_for_completion` parameter to automatically wait for results.
 
 This asynchronous approach allows you to submit long-running jobs without tying up your application. Once the task status is `Succeeded`, the full processing results are available.
 
@@ -12,35 +12,89 @@ This asynchronous approach allows you to submit long-running jobs without tying 
 
 - **Broad File Support**: Process a variety of file types like PDFs, Excel, PPTs, Doc.
 - **Multiple Input Sources**: Provide files directly, from a URL, or as a base64-encoded string.
-- **Full Task Control**: Manage jobs and customize results with our [CRUD operations](./CRUD.mdx).
+- **Full Task Control**: Manage jobs and customize results with processing parameters.
 - **Data Retention**: Set custom expiration times for automatic data deletion.
+- **Async Support**: Use synchronous or asynchronous clients based on your application needs.
+- **Webhook Support**: Receive real-time notifications when tasks complete, eliminating the need for polling.
 
-### Example: Upload and Poll
+### Example: Create and Poll
 
-Here’s how you can upload a file and poll for its results using our Python SDK.
+Here's how you can process a file and poll for its results using our SDKs.
 
-```python
+<CodeGroup>
+```python Python
 from chunkr_ai import Chunkr
-import time
 
 # Initialize the client
-chunkr = Chunkr()
+client = Chunkr(
+    api_key="your_api_key",  # Optional if CHUNKR_API_KEY env var is set
+)
 
-# 1. Create a task without waiting for completion
-task = chunkr.create_task("path/to/your/document.pdf")
+# 1. Create a task from a URL
+task = client.tasks.parse.create(
+    file="https://example.com/document.pdf"
+)
 print(f"Task created with ID: {task.task_id}")
 
-# 2. Poll for the result
-# The poll method will automatically wait until the task is complete
-task.poll()
+# 2. Get the task result (with automatic polling)
+task = client.tasks.get(
+    task_id=task.task_id, 
+    wait_for_completion=True
+)
 
 # 3. Access the results
 if task.status == "Succeeded":
     print("Task completed successfully!")
-    # Now you can work with the output
-    print(f"Document has {len(task.output.chunks)} chunks.")
+    print(f"Document has {len(task.output.chunks)} chunks")
 else:
-    print(f"Task failed with message: {task.message}")
-
-chunkr.close()
+    print(f"Task status: {task.status}")
 ```
+
+```typescript TypeScript
+import ChunkrAI from 'chunkr-ai';
+
+// Initialize the client
+const client = new ChunkrAI({
+    apiKey: 'your_api_key'  // Optional if CHUNKR_API_KEY env var is set
+});
+
+// 1. Create a task from a URL
+const task = await client.tasks.parse.create({
+    file: 'https://example.com/document.pdf'
+});
+console.log(`Task created with ID: ${task.taskId}`);
+
+// 2. Get the task result (with automatic polling)
+const result = await client.tasks.get(task.taskId, {
+    waitForCompletion: true
+});
+
+// 3. Access the results
+if (result.status === 'Succeeded') {
+    console.log('Task completed successfully!');
+    console.log(`Document has ${result.output.chunks.length} chunks`);
+} else {
+    console.log(`Task status: ${result.status}`);
+}
+```
+
+```bash cURL
+# 1. Create a task from a URL
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file": "https://example.com/document.pdf"
+  }'
+
+# Response will include task_id
+# {"task_id": "task_123", "status": "Starting", ...}
+
+# 2. Poll for task completion
+curl -X GET "https://api.chunkr.ai/api/v1/tasks/task_123" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+# 3. Keep polling until status is "Succeeded"
+# Response will include the processed chunks when complete
+```
+</CodeGroup>
