@@ -285,7 +285,7 @@ curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
 
 Configure the chunking strategy, size, and the token-counting model. This is crucial for preparing content for RAG applications.
 
-*   **`target_length`**: The desired size of each chunk in tokens. Default is `4096`.
+*   **`target_length`**: The desired size of each chunk in tokens. Default is `4096`. Set to `0` to disable chunking entirely (useful for extraction workflows).
 *   **`tokenizer`**: The tokenizer to use for counting tokens. This can be a predefined enum or any tokenizer from Hugging Face. Default is `Cl100kBase`.
 
 <CodeGroup>
@@ -342,6 +342,51 @@ curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
       "tokenizer": {
         "Enum": "Cl100kBase"
       }
+    }
+  }'
+```
+</CodeGroup>
+
+### Disabling Chunking
+
+For extraction and non-RAG workflows, you can disable chunking by setting `target_length` to `0`:
+
+<CodeGroup>
+```python Python
+from chunkr_ai import Chunkr
+from chunkr_ai.types.tasks.parse_create_params import ChunkProcessing
+
+client = Chunkr(api_key="your_api_key")
+
+task = client.tasks.parse.create(
+    file="path/to/document.pdf",
+    chunk_processing=ChunkProcessing(
+        target_length=0  # Disables chunking - one segment per chunk
+    )
+)
+```
+
+```typescript TypeScript
+import Chunkr from 'chunkr-ai';
+
+const client = new Chunkr({ apiKey: 'your_api_key' });
+
+const task = await client.tasks.parse.create({
+    file: 'path/to/document.pdf',
+    chunk_processing: {
+        target_length: 0  // Disables chunking - one segment per chunk
+    }
+});
+```
+
+```bash cURL
+curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+  --header "Authorization: YOUR_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "file": "https://example.com/document.pdf",
+    "chunk_processing": {
+      "target_length": 0
     }
   }'
 ```

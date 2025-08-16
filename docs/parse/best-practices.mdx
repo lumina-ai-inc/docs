@@ -85,9 +85,9 @@ Here’s how to enable it for `Table` and `Picture` segments:
   ````
 
 </CodeGroup>
-<Tip>
+<Note>
   Extended context adds some latency.
-</Tip>
+</Note>
 ---
 
 ## Pre-signed URLs vs. Base64
@@ -122,6 +122,83 @@ To do this, set the `base64_urls=True` parameter when fetching a task:
     -H "Authorization: YOUR_API_KEY"
   ````
 
+</CodeGroup>
+
+---
+
+## Disabling Chunking for Non-RAG Workflows
+
+If you're using Chunkr for data extraction, document analysis, or other non-RAG workflows, you may want to disable chunking entirely. When chunking is disabled, each chunk in the output will contain exactly one segment that represents a full page.
+
+To disable chunking, set `target_length` to `0` in the `chunk_processing` configuration:
+
+<CodeGroup>
+  ```python Python
+  from chunkr_ai import Chunkr
+  from chunkr_ai.types.tasks.parse_create_params import ChunkProcessing
+
+  client = Chunkr(api_key="your_api_key")
+
+  # Disable chunking for extraction workflows
+  task = client.tasks.parse.create(
+      file="path/to/file.pdf",
+      chunk_processing=ChunkProcessing(
+          target_length=0  # Disables chunking
+      )
+  )
+
+  # Wait for completion
+  task = client.tasks.get(task_id=task.task_id, wait_for_completion=True)
+  
+  # Access individual segments directly
+  if task.status == "Succeeded":
+      # Each chunk will contain exactly one segment
+      for chunk in task.output.chunks:
+          segment = chunk.segments[0]
+          print(f"Segment type: {segment.segment_type}")
+          print(f"Content: {segment.content}")
+  ```
+
+  ```typescript TypeScript
+  import Chunkr from 'chunkr-ai';
+
+  const client = new Chunkr({ apiKey: 'your_api_key' });
+
+  // Disable chunking for extraction workflows
+  const task = await client.tasks.parse.create({
+      file: 'path/to/file.pdf',
+      chunk_processing: {
+          target_length: 0  // Disables chunking
+      }
+  });
+
+  // Wait for completion
+  const completedTask = await client.tasks.get(task.task_id, {
+      wait_for_completion: true
+  });
+  
+  // Access individual segments directly
+  if (completedTask.status === "Succeeded") {
+      // Each chunk will contain exactly one segment
+      for (const chunk of completedTask.output.chunks) {
+          const segment = chunk.segments[0];
+          console.log(`Segment type: ${segment.segment_type}`);
+          console.log(`Content: ${segment.content}`);
+      }
+  }
+  ```
+
+  ```bash cURL
+  curl -X POST https://api.chunkr.ai/api/v1/tasks/parse \
+    -H "Authorization: YOUR_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "file": "https://example.com/document.pdf",
+        "chunk_processing": {
+            "target_length": 0
+        }
+    }'
+  ```
 </CodeGroup>
 
 ---
